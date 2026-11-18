@@ -53,6 +53,16 @@ class Course extends Model
         return $this->hasMany(CourseMaterial::class)->orderBy('sort_order')->orderBy('id');
     }
 
+    public function enrollments(): HasMany
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', CourseStatus::Published);
