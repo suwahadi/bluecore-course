@@ -31,3 +31,14 @@ it('builds course slugs from the title', function () {
 
     expect($course->slug)->toBe('budidaya-lele-dalam-galon');
 });
+
+it('keeps generated slugs within the 120 character column', function () {
+    $title = str_repeat('Budidaya lele galon ', 7);
+    $first = Course::factory()->create(['title' => $title, 'slug' => null]);
+    $second = Course::factory()->create(['title' => $title, 'slug' => null]);
+
+    expect(strlen($first->slug))->toBeLessThanOrEqual(120)
+        ->and(strlen($second->slug))->toBeLessThanOrEqual(120)
+        ->and($second->slug)->toEndWith('-2')
+        ->and($first->slug)->not->toEndWith('-');
+});

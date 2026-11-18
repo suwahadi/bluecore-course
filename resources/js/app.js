@@ -104,6 +104,17 @@ document.addEventListener('submit', (event) => {
 
     form.dataset.busy = 'true';
 
+    const submitter = event.submitter;
+
+    if (submitter?.name) {
+        const carriedValue = document.createElement('input');
+        carriedValue.type = 'hidden';
+        carriedValue.name = submitter.name;
+        carriedValue.value = submitter.value;
+        carriedValue.dataset.carriedSubmitter = 'true';
+        form.append(carriedValue);
+    }
+
     form.querySelectorAll('button[type="submit"], button:not([type])').forEach((button) => {
         button.dataset.idleLabel = button.innerHTML;
         button.disabled = true;
@@ -115,6 +126,7 @@ document.addEventListener('submit', (event) => {
 window.addEventListener('pageshow', () => {
     document.querySelectorAll('form[data-busy="true"]').forEach((form) => {
         delete form.dataset.busy;
+        form.querySelectorAll('input[data-carried-submitter]').forEach((input) => input.remove());
 
         form.querySelectorAll('button[aria-busy="true"]').forEach((button) => {
             button.disabled = false;

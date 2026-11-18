@@ -49,3 +49,25 @@ it('queries the database at most once per request', function () {
 
     expect($settingQueries)->toHaveCount(1);
 });
+
+it('casts form strings to each setting type', function () {
+    Settings::set(['admin_fee' => '2500', 'featured_course_id' => '5', 'site_slogan' => 'Panen tiap bulan']);
+
+    expect(Settings::get('admin_fee'))->toBe(2500)
+        ->and(Settings::get('featured_course_id'))->toBe(5)
+        ->and(Settings::get('site_slogan'))->toBe('Panen tiap bulan');
+});
+
+it('stores empty optional values as null', function () {
+    Settings::set(['shopee_url' => '', 'featured_course_id' => '']);
+
+    expect(Settings::get('shopee_url'))->toBeNull()
+        ->and(Settings::get('featured_course_id'))->toBeNull();
+});
+
+it('declares a type for every setting', function () {
+    foreach (config('settings') as $key => $definition) {
+        expect($definition)->toHaveKey('type')
+            ->and(in_array($definition['type'], ['string', 'int'], true))->toBeTrue("Setting {$key} has an unknown type");
+    }
+});

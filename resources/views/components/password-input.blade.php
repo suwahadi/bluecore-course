@@ -4,8 +4,8 @@
     $error = isset($errors) ? $errors->first($name) : null;
     $describedBy = trim(($help ? $fieldId.'-help ' : '').($error ? $fieldId.'-error' : ''));
 @endphp
-<label class="field">
-    <span>{{ $label }}</span>
+<div class="field">
+    <label for="{{ $fieldId }}">{{ $label }}</label>
     <span class="password-field" x-data="{ visible: false }">
         <input id="{{ $fieldId }}" name="{{ $name }}" type="password" x-bind:type="visible ? 'text' : 'password'" autocomplete="{{ $autocomplete }}" @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif @if ($error) aria-invalid="true" @endif @required($required) {{ $attributes }}>
         <button type="button" class="password-toggle" aria-pressed="false" x-bind:aria-pressed="visible.toString()" aria-label="Tampilkan kata sandi" x-bind:aria-label="visible ? 'Sembunyikan kata sandi' : 'Tampilkan kata sandi'" x-on:click="visible = ! visible">
@@ -19,4 +19,4 @@
     @if ($error)
         <span class="field__error" id="{{ $fieldId }}-error" role="alert">{{ $error }}</span>
     @endif
-</label>
+</div>

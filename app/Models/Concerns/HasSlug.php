@@ -19,7 +19,8 @@ trait HasSlug
 
     public function uniqueSlugFrom(string $source): string
     {
-        $base = Str::slug($source) ?: Str::lower(Str::random(8));
+        $maxLengthLeavingRoomForSuffix = 116;
+        $base = rtrim(substr(Str::slug($source), 0, $maxLengthLeavingRoomForSuffix), '-') ?: Str::lower(Str::random(8));
         $slug = $base;
         $suffix = 2;
 

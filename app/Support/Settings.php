@@ -32,12 +32,24 @@ class Settings
 
     public static function set(array $values): void
     {
-        foreach (array_intersect_key($values, config('settings')) as $key => $value) {
-            Setting::query()->updateOrCreate(['key' => $key], ['value' => json_encode($value)]);
+        $definitions = config('settings');
+
+        foreach (array_intersect_key($values, $definitions) as $key => $value) {
+            $typed = static::cast($value, $definitions[$key]['type']);
+            Setting::query()->updateOrCreate(['key' => $key], ['value' => json_encode($typed)]);
         }
 
         Cache::forget(self::CACHE_KEY);
         app()->forgetInstance(self::REQUEST_KEY);
+    }
+
+    private static function cast(mixed $value, string $type): mixed
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return $type === 'int' ? (int) $value : (string) $value;
     }
 
     private static function stored(): array

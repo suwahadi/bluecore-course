@@ -5,7 +5,7 @@ use App\Enums\OrderStatus;
 it('renders a labelled field with helper text', function () {
     $html = (string) $this->blade('<x-field name="phone" label="Nomor telepon" type="tel" help="Wajib diisi. Format 08xx atau 628xx." />');
 
-    expect($html)->toContain('<span>Nomor telepon</span>')
+    expect($html)->toContain('<label for="phone">Nomor telepon</label>')
         ->toContain('id="phone-help"')
         ->toContain('Wajib diisi. Format 08xx atau 628xx.')
         ->toContain('aria-describedby="phone-help"')
@@ -98,4 +98,22 @@ it('draws a thumbnail placeholder with the title initials', function () {
     expect((string) $this->blade('<x-thumbnail-placeholder title="Budidaya Lele Galon" />'))
         ->toContain('aria-label="Thumbnail Budidaya Lele Galon"')
         ->toContain('>BL</text>');
+});
+
+it('can start a modal open, for example after a failed submit', function () {
+    expect((string) $this->blade('<x-modal name="kategori" title="Kategori baru" :show="true"><p>Isi</p></x-modal>'))
+        ->toContain('x-data="{ open: true }"')
+        ->and((string) $this->blade('<x-modal name="kategori" title="Kategori baru"><p>Isi</p></x-modal>'))
+        ->toContain('x-data="{ open: false }"');
+});
+
+it('keeps helper text, errors and buttons out of the accessible label', function () {
+    $field = (string) $this->withViewErrors(['phone' => 'Nomor telepon wajib diisi.'])
+        ->blade('<x-field name="phone" label="Nomor telepon" help="Format 08xx atau 628xx." />');
+    $password = (string) $this->blade('<x-password-input name="password" label="Kata sandi" help="Minimal 8 karakter." />');
+
+    expect($field)->toContain('<div class="field">')
+        ->toContain('<label for="phone">Nomor telepon</label>')
+        ->and($password)->toContain('<label for="password">Kata sandi</label>')
+        ->and(preg_match('/<label[^>]*>[^<]*<\/label>/', $field))->toBe(1);
 });
