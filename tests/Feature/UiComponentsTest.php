@@ -117,3 +117,31 @@ it('keeps helper text, errors and buttons out of the accessible label', function
         ->and($password)->toContain('<label for="password">Kata sandi</label>')
         ->and(preg_match('/<label[^>]*>[^<]*<\/label>/', $field))->toBe(1);
 });
+
+it('wraps forms in the spaced grid with CSRF and pending state', function () {
+    $html = (string) $this->blade('<x-form action="/account"><x-field name="name" label="Nama" /></x-form>');
+
+    expect($html)->toContain('method="POST"')
+        ->toContain('action="/account"')
+        ->toContain('class="form-grid"')
+        ->toContain('data-pending')
+        ->toContain('novalidate')
+        ->toContain('name="_token"');
+});
+
+it('spoofs PUT and DELETE and skips CSRF on GET forms', function () {
+    $put = (string) $this->blade('<x-form method="PUT" action="/user/profile-information" :columns="2"></x-form>');
+    $get = (string) $this->blade('<x-form method="GET" action="/orders"></x-form>');
+
+    expect($put)->toContain('method="POST"')
+        ->toContain('name="_method" value="PUT"')
+        ->toContain('class="form-grid form-grid--2"')
+        ->and($get)->toContain('method="GET"')
+        ->not->toContain('name="_token"');
+});
+
+it('lets a field span both columns of a two-column form', function () {
+    expect((string) $this->blade('<x-field name="email" label="Email" type="email" :full="true" />'))->toContain('<div class="field field--full">')
+        ->and((string) $this->blade('<x-password-input name="password" label="Kata sandi" :full="true" />'))->toContain('<div class="field field--full">')
+        ->and((string) $this->blade('<x-field name="name" label="Nama" />'))->toContain('<div class="field">');
+});

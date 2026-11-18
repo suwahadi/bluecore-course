@@ -651,6 +651,8 @@ table { border-collapse: collapse; width: 100%; }
 
 .form-grid { display: grid; gap: 14px; }
 .form-grid--2 > .field--full { grid-column: 1 / -1; }
+.form-grid--2 > .btn-pair, .form-grid--2 > .btn-row { grid-column: 1 / -1; }
+.form-grid > .btn-pair, .form-grid > .btn-row { margin-top: 4px; }
 .field input[type="file"] { padding: 8px 10px; }
 .thumb-field { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
 .thumb-field .thumb { width: 168px; flex: none; }

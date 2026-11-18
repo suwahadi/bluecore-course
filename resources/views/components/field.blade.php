@@ -1,10 +1,10 @@
-@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'required' => false, 'id' => null])
+@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'required' => false, 'id' => null, 'full' => false])
 @php
     $fieldId = $id ?? $name;
     $error = isset($errors) ? $errors->first($name) : null;
     $describedBy = trim(($help ? $fieldId.'-help ' : '').($error ? $fieldId.'-error' : ''));
 @endphp
-<div class="field">
+<div class="{{ $full ? 'field field--full' : 'field' }}">
     <label for="{{ $fieldId }}">{{ $label }}</label>
     @if ($type === 'textarea')
         <textarea id="{{ $fieldId }}" name="{{ $name }}" @if ($describedBy) aria-describedby="{{ $describedBy }}" @endif @if ($error) aria-invalid="true" @endif @required($required) {{ $attributes }}>{{ old($name, $value) }}</textarea>
