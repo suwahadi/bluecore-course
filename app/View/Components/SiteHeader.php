@@ -3,9 +3,9 @@
 namespace App\View\Components;
 
 use App\Models\User;
+use App\Support\Format;
 use App\Support\Settings;
 use App\Support\SiteLogo;
-use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 
@@ -54,12 +54,7 @@ class SiteHeader extends Component
 
     public function initials(): string
     {
-        return Str::of($this->user?->name ?? '')
-            ->explode(' ')
-            ->filter()
-            ->take(2)
-            ->map(fn (string $word) => Str::upper(Str::substr($word, 0, 1)))
-            ->implode('');
+        return Format::initials($this->user?->name ?? '');
     }
 
     public function render(): View

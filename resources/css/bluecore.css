@@ -641,7 +641,7 @@ table { border-collapse: collapse; width: 100%; }
 .field input:focus-visible, .field select:focus-visible, .field textarea:focus-visible { border-color: var(--laut); }
 .field__help, .field > span.field__help { font-size: 13px; font-weight: 400; color: var(--ink-soft); }
 .field__error, .field > span.field__error { font-size: 13px; font-weight: 400; color: var(--bad); }
-.field input[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: var(--bad); }
+.field input[aria-invalid="true"], .field select[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: var(--bad); }
 .form-section { min-width: 0; margin: 0; padding: 0; border: 0; }
 .form-section + .form-section { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line-soft); }
 .form-section legend { float: left; width: 100%; margin-bottom: 10px; padding: 0; font-size: 15px; font-weight: 600; color: var(--ink); }

@@ -28,3 +28,9 @@ it('formats file sizes in KB and MB', function () {
         ->and(Format::fileSize(1468006))->toBe('1,4 MB')
         ->and(Format::fileSize(500))->toBe('1 KB');
 });
+
+it('takes up to two initials from a name', function () {
+    expect(Format::initials('Budi Santoso Wijaya'))->toBe('BS')
+        ->and(Format::initials('admin'))->toBe('A')
+        ->and(Format::initials('  '))->toBe('');
+});

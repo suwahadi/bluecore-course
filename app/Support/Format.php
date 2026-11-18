@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use Carbon\CarbonInterface;
+use Illuminate\Support\Str;
 
 class Format
 {
@@ -36,5 +37,15 @@ class Format
         }
 
         return number_format($bytes / 1024 / 1024, 1, ',', '.').' MB';
+    }
+
+    public static function initials(string $name): string
+    {
+        return Str::of($name)
+            ->explode(' ')
+            ->filter()
+            ->take(2)
+            ->map(fn (string $word) => Str::upper(Str::substr($word, 0, 1)))
+            ->implode('');
     }
 }

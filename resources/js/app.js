@@ -55,3 +55,75 @@ window.addEventListener('resize', () => {
 
 document.addEventListener('DOMContentLoaded', fitBrand);
 document.fonts?.ready.then(fitBrand);
+
+const slugify = (value) => value
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+document.addEventListener('alpine:init', () => {
+    window.Alpine.data('slugField', (sourceName, fillAutomatically) => ({
+        manual: !fillAutomatically,
+
+        init() {
+            const source = this.$el.form?.elements.namedItem(sourceName);
+
+            source?.addEventListener('input', () => {
+                if (!this.manual) {
+                    this.$el.value = slugify(source.value);
+                }
+            });
+        },
+
+        markManual() {
+            this.manual = true;
+        },
+
+        normalize() {
+            this.$el.value = slugify(this.$el.value);
+        },
+    }));
+});
+
+const pendingLabel = 'Memproses...';
+
+document.addEventListener('submit', (event) => {
+    const form = event.target;
+
+    if (!form.matches('form[data-pending]')) {
+        return;
+    }
+
+    if (form.dataset.busy === 'true') {
+        event.preventDefault();
+
+        return;
+    }
+
+    form.dataset.busy = 'true';
+
+    form.querySelectorAll('button[type="submit"], button:not([type])').forEach((button) => {
+        button.dataset.idleLabel = button.innerHTML;
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        button.textContent = pendingLabel;
+    });
+});
+
+window.addEventListener('pageshow', () => {
+    document.querySelectorAll('form[data-busy="true"]').forEach((form) => {
+        delete form.dataset.busy;
+
+        form.querySelectorAll('button[aria-busy="true"]').forEach((button) => {
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+            button.innerHTML = button.dataset.idleLabel ?? button.innerHTML;
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('[aria-invalid="true"]')?.focus();
+});
