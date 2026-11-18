@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 #[Fillable(['title', 'slug', 'content', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
 class Page extends Model
 {
     use HasFactory, HasSlug, HasSortOrder;
+
+    public const FOOTER_CACHE_KEY = 'footer_pages';
 
     public const RESERVED_SLUGS = [
         'account', 'admin', 'api', 'assets', 'build', 'checkout', 'contact', 'course', 'courses',
@@ -26,6 +29,12 @@ class Page extends Model
         'show_in_footer' => true,
         'sort_order' => 1,
     ];
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
+        static::deleted(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
+    }
 
     protected function casts(): array
     {
