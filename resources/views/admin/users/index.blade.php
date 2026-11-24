@@ -4,7 +4,7 @@
     $exportUrl = route('admin.users.export', array_filter($filters, 'is_string'));
 @endphp
 <x-admin.layout title="Pengguna">
-    <form method="GET" action="{{ route('admin.users.index') }}" class="toolbar">
+    <form method="GET" action="{{ route('admin.users.index') }}" class="toolbar toolbar--users">
         <div class="field">
             <label for="filter-q">Cari nama atau email</label>
             <input id="filter-q" type="search" name="q" value="{{ is_string($filters['q'] ?? null) ? $filters['q'] : '' }}">

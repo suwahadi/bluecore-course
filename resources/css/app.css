@@ -73,7 +73,9 @@ img.thumb {
 
 .seg-editor__duration {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
+    justify-content: flex-start;
     gap: 10px;
     align-items: center;
     margin: 0;
@@ -90,6 +92,7 @@ img.thumb {
 
 .seg-editor__time {
     display: inline-flex;
+    flex-direction: row;
     align-items: center;
     gap: 6px;
 }
@@ -116,8 +119,13 @@ img.thumb {
     margin-top: 0;
 }
 
+.settings-form .panel-title {
+    margin: 0 0 14px;
+}
+
 .settings-form .panel > .field__help {
-    margin: -4px 0 12px;
+    display: block;
+    margin: -8px 0 14px;
 }
 
 .logo-field {
@@ -132,6 +140,17 @@ img.thumb {
     max-width: 200px;
     height: 56px;
     object-fit: contain;
+}
+
+.toolbar__actions .btn {
+    white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+    .toolbar--users {
+        grid-template-columns: 2fr 1fr auto;
+        align-items: end;
+    }
 }
 
 .inline-form {

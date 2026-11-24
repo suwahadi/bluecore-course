@@ -65,7 +65,7 @@
                     <tbody>
                         @foreach ($pendingOrders as $order)
                             <tr>
-                                <td class="num">{{ $order->order_number }}</td>
+                                <td>{{ $order->order_number }}</td>
                                 <td>{{ $order->user->name }}<div class="muted small">{{ $order->user->email }}</div></td>
                                 <td>{{ $order->course->title }}</td>
                                 <td class="num">{{ Format::rupiah($order->amount) }}</td>

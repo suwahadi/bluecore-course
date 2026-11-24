@@ -14,7 +14,7 @@
             </x-form>
         </div>
     </div>
-    <x-form method="PUT" :action="route('admin.courses.update', $course)" :columns="2" class="panel panel--form" enctype="multipart/form-data">
+    <x-form method="PUT" :action="route('admin.courses.update', $course)" :columns="2" class="panel" enctype="multipart/form-data">
         <h2 class="panel-title field--full">Data kursus</h2>
         @include('admin.courses.fields')
         <x-button-pair class="field--full">

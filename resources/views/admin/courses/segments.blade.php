@@ -18,7 +18,7 @@
                     <input type="url" required placeholder="https://youtu.be/..." autocapitalize="off" spellcheck="false" x-bind:id="`segment-${row.key}-url`" x-bind:name="`segments[${index}][url]`" x-model="row.url" x-bind:aria-invalid="row.errors.url ? 'true' : null" x-bind:aria-describedby="row.errors.url ? `segment-${row.key}-url-error` : null">
                     <span class="field__error" role="alert" x-show="row.errors.url" x-text="row.errors.url" x-bind:id="`segment-${row.key}-url-error`"></span>
                 </div>
-                <fieldset class="seg-editor__duration">
+                <fieldset class="field seg-editor__duration">
                     <legend>Durasi (opsional)</legend>
                     <label class="seg-editor__time">
                         <input type="number" min="0" max="600" step="1" inputmode="numeric" x-bind:name="`segments[${index}][minutes]`" x-model="row.minutes" x-bind:aria-invalid="row.errors.duration ? 'true' : null">
