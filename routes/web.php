@@ -15,6 +15,7 @@ use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
 Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {

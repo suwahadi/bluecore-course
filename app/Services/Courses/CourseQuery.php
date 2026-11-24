@@ -2,6 +2,7 @@
 
 namespace App\Services\Courses;
 
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
@@ -32,6 +33,20 @@ class CourseQuery
 
         return ($chosen ? $query()->whereKey($chosen)->first() : null)
             ?? $query()->latest('published_at')->latest('id')->first();
+    }
+
+    public function catalog(string $term, ?Category $category, string $sort): Builder
+    {
+        $query = $this->cards()
+            ->when($term !== '', fn (Builder $query) => $query->where('title', 'like', '%'.addcslashes($term, '%_\\').'%'))
+            ->when($category, fn (Builder $query) => $query->where('category_id', $category->id));
+
+        return match ($sort) {
+            'cheapest' => $query->orderBy('price')->latest('published_at'),
+            'priciest' => $query->orderByDesc('price')->latest('published_at'),
+            'popular' => $query->withCount('enrollments')->orderByDesc('enrollments_count')->latest('published_at'),
+            default => $query->latest('published_at')->latest('id'),
+        };
     }
 
     public function ownedIds(?User $user): array

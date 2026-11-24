@@ -2,7 +2,7 @@
 @php
     $percent = $owned ? 0 : $course->discountPercent();
 @endphp
-<a class="course-card" href="{{ route('courses.show', $course) }}">
+<a {{ $attributes->merge(['class' => 'course-card']) }} href="{{ route('courses.show', $course) }}">
     <span class="course-card__media">
         @if ($course->thumbnail_path)
             <img class="thumb" src="{{ Storage::disk('public')->url($course->thumbnail_path) }}" alt="Thumbnail {{ $course->title }}" width="1200" height="675" loading="lazy">
