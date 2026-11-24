@@ -1,8 +1,11 @@
 @php
     $ga4 = \App\Support\Settings::get('ga4_measurement_id');
     $pixel = \App\Support\Settings::get('meta_pixel_id');
-    $enabled = ($ga4 || $pixel) && ! request()->routeIs('admin.*') && ! request()->is('admin', 'admin/*') && ! auth()->user()?->isAdmin();
-    $events = $enabled ? array_values(array_filter((array) session('tracking_events', []), 'is_string')) : [];
+    $enabled = ($ga4 || $pixel)
+        && ! request()->routeIs('admin.*', 'password.reset', 'verification.verify')
+        && ! request()->is('admin', 'admin/*')
+        && ! auth()->user()?->isAdmin();
+    $events = $enabled ? array_values(array_filter((array) session()->pull('tracking_events', []), 'is_string')) : [];
 @endphp
 @if ($enabled && $ga4)
 <script async src="https://www.googletagmanager.com/gtag/js?id={{ $ga4 }}"></script>

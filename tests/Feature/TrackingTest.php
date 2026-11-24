@@ -45,3 +45,25 @@ it('sends sign_up and CompleteRegistration once after registering, without perso
     preg_match_all('#<script[^>]*>(.*?)</script>#s', $first, $scripts);
     expect(implode("\n", $scripts[1]))->not->toContain('Sari Lestari')->not->toContain('sari@contoh.id')->not->toContain('08123456789');
 });
+
+it('keeps trackers off pages whose URL carries a reset token or a verification hash', function () {
+    Settings::set(['ga4_measurement_id' => 'G-ABC123', 'meta_pixel_id' => '1234567890']);
+
+    $reset = $this->get('/reset-password/token-rahasia?email=sari@contoh.id')->assertOk()->getContent();
+    $verify = $this->get('/email/verify/1/'.sha1('sari@contoh.id').'?expires=1&signature=abc')->getContent();
+
+    expect($reset)->not->toContain('googletagmanager')->not->toContain('fbq(')
+        ->and($verify)->not->toContain('googletagmanager')->not->toContain('fbq(');
+});
+
+it('keeps the sign_up event until a page with the layout renders, even after redirects', function () {
+    Settings::set(['ga4_measurement_id' => 'G-ABC123']);
+
+    $html = $this->followingRedirects()->post('/register', [
+        'name' => 'Sari Lestari', 'phone' => '08123456789', 'email' => 'sari@contoh.id',
+        'password' => 'rahasia123', 'password_confirmation' => 'rahasia123', 'next' => '/forgot-password',
+    ])->getContent();
+
+    expect($html)->toContain("gtag('event', 'sign_up')")
+        ->and($this->get('/')->getContent())->not->toContain('sign_up');
+});
