@@ -2,7 +2,7 @@
     @if (session('status'))
         <div class="toast toast--ok" x-data="{ shown: true }" x-init="setTimeout(() => shown = false, 4000)" x-show="shown" x-transition.opacity>
             <span class="toast__icon"><x-icon name="check" :size="16" /></span>
-            <span>{{ session('status') }}</span>
+            <span>{{ __(session('status')) }}</span>
         </div>
     @endif
     @if (session('error'))
