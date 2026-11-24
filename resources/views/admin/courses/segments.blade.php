@@ -1,5 +1,6 @@
 <x-form method="PUT" :action="route('admin.courses.segments.update', $course)" class="panel panel--form" x-data="segmentEditor({{ \Illuminate\Support\Js::from($segmentRows) }})">
     <h2 class="panel-title">Video kursus</h2>
+    <input type="hidden" name="editor" value="" x-bind:value="'ready'">
     <p class="field__help">Satu baris per video. Tempel tautan video YouTube unlisted untuk setiap segmen.</p>
     @error('segments')
         <p class="field__error" role="alert">{{ $message }}</p>

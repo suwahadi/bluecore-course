@@ -15,7 +15,7 @@ function saveSegments(array $segments)
     $course = test()->course;
 
     return test()->actingAs(test()->admin)->from(route('admin.courses.edit', $course))
-        ->put(route('admin.courses.segments.update', $course), $segments === [] ? [] : ['segments' => $segments]);
+        ->put(route('admin.courses.segments.update', $course), ['editor' => 'ready', ...($segments === [] ? [] : ['segments' => $segments])]);
 }
 
 function segmentRows(): array
@@ -118,8 +118,18 @@ it('renders the editor with the saved rows and the PRD help text', function () {
 
 it('brings back the typed rows and their errors after a failed save', function () {
     $html = $this->actingAs($this->admin)->from(route('admin.courses.edit', $this->course))->followingRedirects()
-        ->put(route('admin.courses.segments.update', $this->course), ['segments' => [['title' => 'Ketikan saya', 'url' => 'salah']]])
+        ->put(route('admin.courses.segments.update', $this->course), ['editor' => 'ready', 'segments' => [['title' => 'Ketikan saya', 'url' => 'salah']]])
         ->getContent();
 
     expect($html)->toContain('Ketikan saya')->toContain('Tautan YouTube belum benar.');
+});
+
+it('refuses to save when the editor never loaded, so no video is lost', function () {
+    CourseSegment::factory()->for($this->course)->create();
+
+    $this->actingAs($this->admin)->from(route('admin.courses.edit', $this->course))
+        ->put(route('admin.courses.segments.update', $this->course), [])
+        ->assertSessionHas('error', 'Editor video belum siap. Muat ulang halaman lalu coba lagi.');
+
+    expect($this->course->segments()->count())->toBe(1);
 });

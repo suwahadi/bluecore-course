@@ -15,6 +15,10 @@ class SegmentController extends Controller
 {
     public function update(SegmentsRequest $request, Course $course): RedirectResponse
     {
+        if ($request->input('editor') !== 'ready') {
+            return back()->with('error', 'Editor video belum siap. Muat ulang halaman lalu coba lagi.');
+        }
+
         $rows = $request->rows();
 
         if ($rows === [] && $course->status === CourseStatus::Published) {

@@ -1,7 +1,8 @@
 @php
     use App\Enums\UserRole;
     use App\Support\Format;
-    $exportUrl = route('admin.users.export', array_filter($filters, 'is_string'));
+    $activeFilters = array_filter($filters, fn ($value) => is_string($value) && $value !== '');
+    $exportUrl = route('admin.users.export', $activeFilters);
 @endphp
 <x-admin.layout title="Pengguna">
     <form method="GET" action="{{ route('admin.users.index') }}" class="toolbar toolbar--users">
@@ -19,7 +20,10 @@
             </select>
         </div>
         <div class="toolbar__actions">
-            <button type="submit" class="btn">Cari</button>
+            <button type="submit" class="btn">Terapkan</button>
+            @if ($activeFilters !== [])
+                <a class="btn" href="{{ route('admin.users.index') }}">Hapus filter</a>
+            @endif
             <a class="btn" href="{{ $exportUrl }}">Ekspor CSV</a>
         </div>
     </form>

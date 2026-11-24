@@ -17,6 +17,7 @@ class UserAnonymizer
             SegmentProgress::query()->where('user_id', $user->id)->delete();
             $user->enrollments()->delete();
             DB::table(config('session.table', 'sessions'))->where('user_id', $user->id)->delete();
+            DB::table(config('auth.passwords.users.table', 'password_reset_tokens'))->where('email', $user->email)->delete();
 
             $user->forceFill([
                 'name' => "Pengguna dihapus #{$user->id}",

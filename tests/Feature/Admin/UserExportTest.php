@@ -34,8 +34,8 @@ it('exports the PRD columns with semicolons, a BOM and a dated file name', funct
 });
 
 it('follows the active filters', function () {
-    User::factory()->create(['name' => 'Sari Lestari']);
-    User::factory()->create(['name' => 'Budi Santoso']);
+    User::factory()->create(['name' => 'Sari Lestari', 'email' => 'sari@contoh.id']);
+    User::factory()->create(['name' => 'Budi Santoso', 'email' => 'budi@contoh.id']);
 
     $names = array_column(array_slice(exportRows('?q=lestari'), 1), 0);
     expect($names)->toBe(['Sari Lestari']);

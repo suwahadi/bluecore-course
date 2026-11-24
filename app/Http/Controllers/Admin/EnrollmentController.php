@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\AccessGrantedNotification;
 use Illuminate\Database\UniqueConstraintViolationException;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Log;
 
 class EnrollmentController extends Controller
 {
@@ -33,6 +34,13 @@ class EnrollmentController extends Controller
         } catch (UniqueConstraintViolationException) {
             return $alreadyEnrolled();
         }
+
+        Log::info('Admin granted course access', [
+            'user_id' => $user->id,
+            'course_id' => $course->id,
+            'admin_id' => $request->user()->id,
+            'at' => now()->toIso8601String(),
+        ]);
 
         $user->notify(new AccessGrantedNotification($course));
 

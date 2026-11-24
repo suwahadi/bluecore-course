@@ -225,3 +225,37 @@ it('shows the anonymize confirmation in the edit dialog', function () {
         ->assertSeeText('Kosongkan jika kata sandi tidak diganti.')
         ->assertSeeText('Wajib diisi dan tersimpan bersama akses sebagai catatan audit.');
 });
+
+it('logs every manual course grant', function () {
+    Notification::fake();
+    Log::spy();
+    $user = User::factory()->create();
+    $course = Course::factory()->create();
+
+    $this->actingAs($this->admin)->from('/admin/users')->post("/admin/users/{$user->id}/enrollments", [
+        '_modal' => "grant-{$user->id}", 'course_id' => $course->id, 'note' => 'Kompensasi',
+    ]);
+
+    Log::shouldHaveReceived('info')->withArgs(fn ($message, $context) => $message === 'Admin granted course access'
+        && $context['user_id'] === $user->id && $context['course_id'] === $course->id && $context['admin_id'] === $this->admin->id);
+});
+
+it('uses Terapkan for the search and shows Hapus filter only while a filter is active', function () {
+    User::factory()->create(['name' => 'Sari Lestari', 'email' => 'sari@contoh.id']);
+
+    $this->actingAs($this->admin)->get('/admin/users')
+        ->assertSee('<button type="submit" class="btn">Terapkan</button>', false)
+        ->assertDontSeeText('Hapus filter');
+
+    $this->get('/admin/users?q=sari')->assertSeeText('Sari Lestari')->assertSee('>Hapus filter</a>', false);
+    $this->get('/admin/users?role=admin')->assertSee('>Hapus filter</a>', false);
+});
+
+it('clears password reset tokens that still hold the old email', function () {
+    $user = User::factory()->create(['email' => 'sari@contoh.id']);
+    DB::table('password_reset_tokens')->insert(['email' => 'sari@contoh.id', 'token' => 'hash', 'created_at' => now()]);
+
+    $this->actingAs($this->admin)->from('/admin/users')->delete("/admin/users/{$user->id}/personal-data");
+
+    expect(DB::table('password_reset_tokens')->where('email', 'sari@contoh.id')->count())->toBe(0);
+});
