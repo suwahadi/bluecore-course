@@ -57,6 +57,15 @@
     pointer-events: none;
 }
 
+.admin-thumb {
+    display: block;
+    width: 96px;
+}
+
+img.thumb {
+    object-fit: cover;
+}
+
 .inline-form {
     margin: 0;
 }

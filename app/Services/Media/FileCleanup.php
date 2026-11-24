@@ -17,12 +17,14 @@ class FileCleanup
         }
     }
 
-    public static function onFailure(string $disk, string $path, callable $work): mixed
+    public static function onFailure(string $disk, ?string $path, callable $work): mixed
     {
         try {
             return $work();
         } catch (Throwable $exception) {
-            Storage::disk($disk)->delete($path);
+            if ($path !== null) {
+                Storage::disk($disk)->delete($path);
+            }
 
             throw $exception;
         }

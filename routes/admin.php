@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -19,3 +20,6 @@ Route::post('testimonials/{testimonial}/toggle', [TestimonialController::class, 
 Route::resource('pages', PageController::class)->only(['index', 'store', 'update', 'destroy']);
 Route::post('pages/{page}/move', [PageController::class, 'move'])->name('pages.move');
 Route::post('pages/{page}/toggle', [PageController::class, 'toggle'])->name('pages.toggle');
+
+Route::resource('courses', CourseController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
+Route::post('courses/{course}/publish', [CourseController::class, 'publish'])->name('courses.publish');
