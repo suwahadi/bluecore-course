@@ -36,6 +36,27 @@
     top: 12px;
 }
 
+.admin-toolbar {
+    margin-bottom: 14px;
+}
+
+.admin-note {
+    margin-top: 10px;
+}
+
+.pager {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 14px;
+}
+
+.pager [aria-disabled="true"] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
 .inline-form {
     margin: 0;
 }
