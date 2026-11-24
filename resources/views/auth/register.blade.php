@@ -7,11 +7,7 @@
             @if ($next)
                 <input type="hidden" name="next" value="{{ $next }}">
             @endif
-            <x-field name="name" label="Nama" required autocomplete="name" placeholder="Nama lengkap" />
-            <x-field name="phone" label="Nomor telepon" type="tel" help="Wajib diisi. Format 08xx atau 628xx." required inputmode="tel" autocomplete="tel" placeholder="08xxxxxxxxxx" />
-            <x-field name="email" label="Email" type="email" :full="true" required autocomplete="username" placeholder="email@contoh.com" />
-            <x-password-input name="password" label="Kata sandi" help="Minimal 8 karakter." autocomplete="new-password" required />
-            <x-password-input name="password_confirmation" label="Ulangi kata sandi" autocomplete="new-password" required />
+            @include('auth.partials.register-fields')
             <div class="btn-row field--full">
                 <button type="submit" class="btn btn--brand btn--block">Daftar</button>
             </div>

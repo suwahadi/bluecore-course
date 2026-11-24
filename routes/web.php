@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
 use App\Http\Middleware\EnsureScalarAuthInput;
@@ -21,6 +22,7 @@ Route::get('/', HomeController::class)->name('home');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 Route::get('/contact', ContactController::class)->name('contact');
+Route::get('/free-video', FreeVideoController::class)->name('free-video');
 
 Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
