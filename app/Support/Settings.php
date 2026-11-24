@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class Settings
@@ -39,8 +40,10 @@ class Settings
             Setting::query()->updateOrCreate(['key' => $key], ['value' => json_encode($typed)]);
         }
 
-        Cache::forget(self::CACHE_KEY);
-        app()->forgetInstance(self::REQUEST_KEY);
+        DB::afterCommit(function () {
+            Cache::forget(self::CACHE_KEY);
+            app()->forgetInstance(self::REQUEST_KEY);
+        });
     }
 
     private static function cast(mixed $value, string $type): mixed

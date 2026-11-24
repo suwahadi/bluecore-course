@@ -112,6 +112,28 @@ img.thumb {
     border-top: 1px solid var(--line-soft);
 }
 
+.settings-form > .panel + .panel {
+    margin-top: 0;
+}
+
+.settings-form .panel > .field__help {
+    margin: -4px 0 12px;
+}
+
+.logo-field {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: flex-start;
+}
+
+.logo-field__preview {
+    width: auto;
+    max-width: 200px;
+    height: 56px;
+    object-fit: contain;
+}
+
 .inline-form {
     margin: 0;
 }

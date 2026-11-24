@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SegmentController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\UserExportController;
@@ -42,3 +43,6 @@ Route::get('users', [UserController::class, 'index'])->name('users.index');
 Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
 Route::delete('users/{user}/personal-data', [UserController::class, 'anonymize'])->name('users.anonymize');
 Route::post('users/{user}/enrollments', [EnrollmentController::class, 'store'])->name('users.enrollments.store');
+
+Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
+Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
