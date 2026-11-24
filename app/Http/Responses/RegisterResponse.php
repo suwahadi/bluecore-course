@@ -10,6 +10,6 @@ class RegisterResponse implements RegisterResponseContract
 
     public function toResponse($request)
     {
-        return $this->redirectAfterAuth($request);
+        return $this->redirectAfterAuth($request)->with('tracking_events', ['sign_up']);
     }
 }
