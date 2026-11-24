@@ -145,3 +145,13 @@ it('lets a field span both columns of a two-column form', function () {
         ->and((string) $this->blade('<x-password-input name="password" label="Kata sandi" :full="true" />'))->toContain('<div class="field field--full">')
         ->and((string) $this->blade('<x-field name="name" label="Nama" />'))->toContain('<div class="field">');
 });
+
+it('reads errors from a named error bag', function () {
+    $html = (string) $this->withViewErrors(['email' => 'Email sudah dipakai akun lain.'], 'updateProfileInformation')
+        ->blade('<x-field name="email" label="Email" bag="updateProfileInformation" />');
+    $defaultBag = (string) $this->withViewErrors(['email' => 'Email sudah dipakai akun lain.'], 'updateProfileInformation')
+        ->blade('<x-field name="email" label="Email" />');
+
+    expect($html)->toContain('aria-invalid="true"')->toContain('Email sudah dipakai akun lain.')
+        ->and($defaultBag)->not->toContain('aria-invalid');
+});

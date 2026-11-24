@@ -3,47 +3,45 @@
 namespace App\Actions\Fortify;
 
 use App\Models\User;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
     public function update(User $user, array $input): void
     {
-        Validator::make($input, [
-            'name' => ['required', 'string', 'max:255'],
+        $input['phone'] = PhoneNumber::clean($input['phone'] ?? null);
+        $input['email'] = Str::lower(trim((string) ($input['email'] ?? '')));
 
-            'email' => [
-                'required',
-                'string',
-                'email',
-                'max:255',
-                Rule::unique('users')->ignore($user->id),
-            ],
+        Validator::make($input, [
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'email' => ['required', 'string', 'email', 'max:150', Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => PhoneNumber::rules(),
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'name.min' => 'Nama minimal 2 karakter.',
+            'name.max' => 'Nama maksimal 100 karakter.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email belum benar, contoh nama@domain.com.',
+            'email.max' => 'Email maksimal 150 karakter.',
+            'email.unique' => 'Email sudah dipakai akun lain.',
+            ...PhoneNumber::messages(),
         ])->validateWithBag('updateProfileInformation');
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
-            $this->updateVerifiedUser($user, $input);
-        } else {
-            $user->forceFill([
-                'name' => $input['name'],
-                'email' => $input['email'],
-            ])->save();
-        }
-    }
+        $emailChanged = $input['email'] !== $user->email;
 
-    protected function updateVerifiedUser(User $user, array $input): void
-    {
         $user->forceFill([
-            'name' => $input['name'],
+            'name' => trim($input['name']),
             'email' => $input['email'],
-            'email_verified_at' => null,
+            'phone' => $input['phone'],
+            ...($emailChanged ? ['email_verified_at' => null] : []),
         ])->save();
 
-        $user->sendEmailVerificationNotification();
+        if ($emailChanged) {
+            $user->sendEmailVerificationNotification();
+        }
     }
 }

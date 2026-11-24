@@ -1,7 +1,7 @@
-@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'required' => false, 'id' => null, 'full' => false])
+@props(['name', 'label', 'type' => 'text', 'value' => null, 'help' => null, 'required' => false, 'id' => null, 'full' => false, 'bag' => 'default'])
 @php
     $fieldId = $id ?? $name;
-    $error = isset($errors) ? $errors->first($name) : null;
+    $error = isset($errors) ? $errors->getBag($bag)->first($name) : null;
     $describedBy = trim(($help ? $fieldId.'-help ' : '').($error ? $fieldId.'-error' : ''));
 @endphp
 <div class="{{ $full ? 'field field--full' : 'field' }}">
