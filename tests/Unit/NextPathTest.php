@@ -21,3 +21,8 @@ dataset('next paths', [
 it('accepts only local paths', function (?string $input, ?string $expected) {
     expect(NextPath::sanitize($input))->toBe($expected);
 })->with('next paths');
+
+it('rejects values that are not strings', function () {
+    expect(NextPath::sanitize(['/orders']))->toBeNull()
+        ->and(NextPath::sanitize(42))->toBeNull();
+});

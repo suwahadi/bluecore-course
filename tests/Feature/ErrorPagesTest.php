@@ -31,3 +31,15 @@ it('renders a standalone 500 page without touching the database', function () {
         ->assertSeeText('Terjadi kesalahan')
         ->assertDontSeeText('boom');
 });
+
+it('renders an Indonesian 429 page with a way back', function () {
+    foreach (range(1, 3) as $attempt) {
+        $this->post('/forgot-password', ['email' => 'siapa@contoh.id']);
+    }
+
+    $this->post('/forgot-password', ['email' => 'siapa@contoh.id'])
+        ->assertStatus(429)
+        ->assertSeeText('Terlalu banyak permintaan')
+        ->assertSeeText('Kembali ke beranda')
+        ->assertSeeText('BlueCore Course');
+});

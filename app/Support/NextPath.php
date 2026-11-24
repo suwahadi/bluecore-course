@@ -6,9 +6,9 @@ class NextPath
 {
     private const MAX_LENGTH = 2000;
 
-    public static function sanitize(?string $value): ?string
+    public static function sanitize(mixed $value): ?string
     {
-        if ($value === null || $value === '' || strlen($value) > self::MAX_LENGTH) {
+        if (! is_string($value) || $value === '' || strlen($value) > self::MAX_LENGTH) {
             return null;
         }
 

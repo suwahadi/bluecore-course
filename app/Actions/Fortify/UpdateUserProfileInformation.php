@@ -14,7 +14,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
     public function update(User $user, array $input): void
     {
         $input['phone'] = PhoneNumber::clean($input['phone'] ?? null);
-        $input['email'] = Str::lower(trim((string) ($input['email'] ?? '')));
+        $input['email'] = is_string($input['email'] ?? null) ? Str::lower(trim($input['email'])) : '';
 
         Validator::make($input, [
             'name' => ['required', 'string', 'min:2', 'max:100'],

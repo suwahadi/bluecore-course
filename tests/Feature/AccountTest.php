@@ -116,3 +116,9 @@ it('shows errors from each form under its own fields', function () {
         ->assertSeeText('Kata sandi saat ini salah.')
         ->assertDontSee('id="email-error"', false);
 });
+
+it('orders the account headings without skipping a level', function () {
+    $html = $this->actingAs(User::factory()->create())->get('/account')->getContent();
+
+    expect($html)->toContain('<h2 class="panel-title">Profil</h2>')->toContain('<h2 class="panel-title">Ganti kata sandi</h2>')->not->toContain('<h3>Profil</h3>');
+});

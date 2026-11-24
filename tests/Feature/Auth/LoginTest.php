@@ -77,3 +77,30 @@ it('logs out with POST and returns home', function () {
     $this->actingAs(User::factory()->create())->post('/logout')->assertRedirect('/');
     $this->assertGuest();
 });
+
+it('keeps remember me unticked after a failed login without it', function () {
+    User::factory()->create(['email' => 'budi@contoh.id']);
+
+    $this->from('/login')->post('/login', ['email' => 'budi@contoh.id', 'password' => 'salah-sekali']);
+
+    $this->get('/login')->assertDontSee('name="remember" value="1" checked', false);
+});
+
+it('keeps remember me ticked after a failed login with it', function () {
+    User::factory()->create(['email' => 'budi@contoh.id']);
+
+    $this->from('/login')->post('/login', ['email' => 'budi@contoh.id', 'password' => 'salah-sekali', 'remember' => '1']);
+
+    $this->get('/login')->assertSee('name="remember" value="1" checked', false);
+});
+
+it('ignores every outside next on login and registration', function (string $next) {
+    User::factory()->create(['email' => 'budi@contoh.id']);
+
+    $this->post('/login', ['email' => 'budi@contoh.id', 'password' => 'password', 'next' => $next])->assertRedirect('/');
+    $this->post('/logout');
+    $this->post('/register', [
+        'name' => 'Sari Lestari', 'phone' => '08123456789', 'email' => 'sari@contoh.id',
+        'password' => 'rahasia123', 'password_confirmation' => 'rahasia123', 'next' => $next,
+    ])->assertRedirect('/');
+})->with(['https://contoh.com', '//contoh.com', '/\contoh.com', 'javascript:alert(1)']);

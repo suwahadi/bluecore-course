@@ -102,3 +102,14 @@ it('drops an outside next from the form', function () {
 it('sends signed-in users away from the register page', function () {
     $this->actingAs(User::factory()->create())->get('/register')->assertRedirect();
 });
+
+it('survives array values where strings are expected', function () {
+    $this->get('/register?next[]=x')->assertOk();
+    $this->get('/login?next[]=x')->assertOk();
+
+    $this->post('/register', ['name' => 'Budi', 'phone' => ['x'], 'email' => ['x'], 'password' => 'rahasia123', 'password_confirmation' => 'rahasia123', 'next' => ['x']])
+        ->assertSessionHasErrors(['phone', 'email']);
+
+    User::factory()->create(['email' => 'ada@contoh.id']);
+    $this->post('/login', ['email' => 'ada@contoh.id', 'password' => 'password', 'next' => ['x']])->assertRedirect('/');
+});

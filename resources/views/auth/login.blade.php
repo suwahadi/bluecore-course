@@ -10,7 +10,7 @@
             <x-field name="email" label="Email" type="email" required autocomplete="username" />
             <x-password-input name="password" label="Kata sandi" autocomplete="current-password" required />
             <label class="field field--inline">
-                <input type="checkbox" name="remember" value="1" @checked(old('remember', true))>
+                <input type="checkbox" name="remember" value="1" @checked(session()->hasOldInput() ? old('remember') : true)>
                 <span>Ingat saya</span>
             </label>
             <div class="btn-row">

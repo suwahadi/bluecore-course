@@ -36,6 +36,14 @@
     top: 12px;
 }
 
+.panel-title {
+    font-family: var(--font);
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.25;
+    color: inherit;
+}
+
 [x-cloak] {
     display: none !important;
 }

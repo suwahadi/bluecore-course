@@ -74,3 +74,15 @@ it('sends an Indonesian, queued verification email from the site', function () {
 it('lets verified users skip the notice', function () {
     $this->actingAs(User::factory()->create())->get(route('verification.notice'))->assertRedirect();
 });
+
+it('sends an expired verification link back to the notice with a hint', function () {
+    $user = User::factory()->unverified()->create();
+    $expired = URL::temporarySignedRoute('verification.verify', now()->subMinute(), [
+        'id' => $user->id, 'hash' => sha1($user->email),
+    ]);
+
+    $this->actingAs($user)->get($expired)
+        ->assertRedirect(route('verification.notice'))
+        ->assertSessionHas('error', 'Tautan verifikasi sudah kedaluwarsa. Kirim ulang email verifikasi.');
+    expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
+});
