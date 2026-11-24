@@ -102,6 +102,16 @@ img.thumb {
     align-self: end;
 }
 
+.admin-summary {
+    margin: -6px 0 12px;
+}
+
+.danger-zone {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line-soft);
+}
+
 .inline-form {
     margin: 0;
 }

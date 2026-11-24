@@ -3,10 +3,13 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SegmentController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\UserExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', DashboardController::class)->name('dashboard');
@@ -33,3 +36,9 @@ Route::scopeBindings()->group(function () {
     Route::post('courses/{course}/materials/{material}/move', [MaterialController::class, 'move'])->name('courses.materials.move');
     Route::delete('courses/{course}/materials/{material}', [MaterialController::class, 'destroy'])->name('courses.materials.destroy');
 });
+
+Route::get('users/export', UserExportController::class)->middleware('throttle:5,1,users-export')->name('users.export');
+Route::get('users', [UserController::class, 'index'])->name('users.index');
+Route::put('users/{user}', [UserController::class, 'update'])->name('users.update');
+Route::delete('users/{user}/personal-data', [UserController::class, 'anonymize'])->name('users.anonymize');
+Route::post('users/{user}/enrollments', [EnrollmentController::class, 'store'])->name('users.enrollments.store');

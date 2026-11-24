@@ -11,4 +11,5 @@
             <button type="submit" class="btn btn--brand">{{ $submitLabel }}</button>
         </x-button-pair>
     </x-form>
+    {{ $after ?? '' }}
 </x-modal>

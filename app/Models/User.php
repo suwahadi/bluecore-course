@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\OrderStatus;
 use App\Enums\SignupSource;
 use App\Enums\UserRole;
 use App\Notifications\ResetPasswordNotification;
@@ -9,6 +10,7 @@ use App\Notifications\VerifyEmailNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -43,6 +45,30 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
     {
         $this->notify(new ResetPasswordNotification($token));
+    }
+
+    public function scopeFilteredForAdmin(Builder $query, array $filters): Builder
+    {
+        $term = is_string($filters['q'] ?? null) ? trim($filters['q']) : '';
+        $role = UserRole::tryFrom(is_string($filters['role'] ?? null) ? $filters['role'] : '');
+
+        return $query
+            ->when($term !== '', function (Builder $query) use ($term) {
+                $like = '%'.addcslashes($term, '%_\\').'%';
+                $query->where(fn (Builder $query) => $query->where('name', 'like', $like)->orWhere('email', 'like', $like));
+            })
+            ->when($role, fn (Builder $query) => $query->where('role', $role));
+    }
+
+    public function scopeWithAdminTotals(Builder $query): Builder
+    {
+        return $query->withCount('enrollments')
+            ->withSum(['orders as paid_total' => fn (Builder $query) => $query->where('status', OrderStatus::Paid)], 'amount');
+    }
+
+    public static function adminCount(): int
+    {
+        return static::query()->where('role', UserRole::Admin)->count();
     }
 
     public function isAdmin(): bool
