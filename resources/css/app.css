@@ -195,6 +195,10 @@ img.thumb {
     white-space: nowrap;
 }
 
+.contact-list {
+    margin-top: 16px;
+}
+
 .inline-form {
     margin: 0;
 }

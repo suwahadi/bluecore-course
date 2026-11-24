@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PageController;
 use App\Http\Middleware\EnsureScalarAuthInput;
+use App\Models\Page;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
 use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
@@ -17,6 +20,7 @@ use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 Route::get('/', HomeController::class)->name('home');
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
+Route::get('/contact', ContactController::class)->name('contact');
 
 Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
     Route::get('/login', [AuthenticatedSessionController::class, 'create'])->name('login');
@@ -43,5 +47,7 @@ Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
     Route::put('/user/profile-information', [ProfileInformationController::class, 'update'])->middleware('throttle:6,1,profile')->name('user-profile-information.update');
     Route::put('/user/password', [PasswordController::class, 'update'])->middleware('throttle:6,1,password')->name('user-password.update');
 });
+
+Route::get('/{page:slug}', [PageController::class, 'show'])->where('page', Page::slugRoutePattern())->name('page.show');
 
 Route::fallback(fn () => abort(404));

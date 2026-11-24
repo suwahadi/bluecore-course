@@ -71,6 +71,13 @@ class Page extends Model
         DB::afterCommit(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
     }
 
+    public static function slugRoutePattern(): string
+    {
+        $reserved = implode('|', array_map(fn (string $slug) => preg_quote($slug, '#'), self::RESERVED_SLUGS));
+
+        return '(?!(?:'.$reserved.')$)(?!livewire)[a-z0-9]+(?:-[a-z0-9]+)*';
+    }
+
     public static function systemPage(string $key): ?self
     {
         return static::query()->where('system_key', $key)->first();
