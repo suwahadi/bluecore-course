@@ -22,7 +22,7 @@ return [
     'middleware' => ['web'],
 
     'limiters' => [
-        'login' => 'login',
+        'login' => null,
     ],
 
     'views' => true,

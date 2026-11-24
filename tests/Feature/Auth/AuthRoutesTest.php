@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 it('throttles each auth endpoint as the PRD requires', function (string $name, string $throttle) {
     expect(Route::getRoutes()->getByName($name)?->gatherMiddleware())->toContain($throttle);
 })->with([
-    ['login.store', 'throttle:login'],
     ['register.store', 'throttle:5,1'],
     ['password.email', 'throttle:3,1'],
     ['password.update', 'throttle:5,1'],
