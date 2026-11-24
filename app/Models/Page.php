@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 #[Fillable(['title', 'slug', 'content', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
 class Page extends Model
@@ -19,7 +20,7 @@ class Page extends Model
 
     public const RESERVED_SLUGS = [
         'account', 'admin', 'api', 'assets', 'build', 'checkout', 'contact', 'course', 'courses',
-        'demo', 'email', 'forgot-password', 'free-video', 'learn', 'livewire', 'login', 'logout',
+        'demo', 'email', 'fonts', 'forgot-password', 'free-video', 'images', 'learn', 'livewire', 'login', 'logout',
         'my-courses', 'order', 'orders', 'payments', 'register', 'reset-password', 'storage', 'up',
         'user', 'verify-email',
     ];
@@ -32,8 +33,8 @@ class Page extends Model
 
     protected static function booted(): void
     {
-        static::saved(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
-        static::deleted(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
+        static::saved(fn () => static::forgetFooterAfterCommit());
+        static::deleted(fn () => static::forgetFooterAfterCommit());
     }
 
     protected function casts(): array
@@ -63,6 +64,11 @@ class Page extends Model
     public function scopeInFooter(Builder $query): Builder
     {
         return $query->where('show_in_footer', true);
+    }
+
+    private static function forgetFooterAfterCommit(): void
+    {
+        DB::afterCommit(fn () => Cache::forget(self::FOOTER_CACHE_KEY));
     }
 
     public static function systemPage(string $key): ?self
