@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\EnsureScalarAuthInput;
 use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
@@ -13,6 +14,7 @@ use Laravel\Fortify\Http\Controllers\ProfileInformationController;
 use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
+Route::get('/', HomeController::class)->name('home');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 
 Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
