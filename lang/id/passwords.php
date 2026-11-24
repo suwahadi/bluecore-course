@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 return [
-    'reset'     => 'Kata sandi Anda sudah direset!',
-    'sent'      => 'Kami sudah mengirim surel yang berisi tautan untuk mereset kata sandi Anda!',
-    'throttled' => 'Harap tunggu sebelum mencoba lagi.',
-    'token'     => 'Token pengaturan ulang kata sandi tidak sah.',
-    'user'      => 'Kami tidak dapat menemukan pengguna dengan alamat surel tersebut.',
+    'reset'     => 'Kata sandi berhasil diatur ulang. Silakan masuk.',
+    'sent'      => 'Jika email terdaftar, tautan reset sudah dikirim.',
+    'throttled' => 'Jika email terdaftar, tautan reset sudah dikirim.',
+    'token'     => 'Tautan atur ulang tidak valid atau sudah kedaluwarsa.',
+    'user'      => 'Tautan atur ulang tidak valid atau sudah kedaluwarsa.',
 ];

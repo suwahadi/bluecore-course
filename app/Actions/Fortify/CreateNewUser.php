@@ -12,6 +12,8 @@ use Laravel\Fortify\Contracts\CreatesNewUsers;
 
 class CreateNewUser implements CreatesNewUsers
 {
+    use PasswordValidationRules;
+
     public function create(array $input): User
     {
         $input['phone'] = PhoneNumber::clean($input['phone'] ?? null);
@@ -21,8 +23,7 @@ class CreateNewUser implements CreatesNewUsers
             'name' => ['required', 'string', 'min:2', 'max:100'],
             'phone' => PhoneNumber::rules(),
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8'],
-            'password_confirmation' => ['required', 'same:password'],
+            ...$this->passwordRules(),
         ], [
             'name.required' => 'Nama wajib diisi.',
             'name.min' => 'Nama minimal 2 karakter.',
@@ -31,10 +32,7 @@ class CreateNewUser implements CreatesNewUsers
             'email.email' => 'Format email belum benar, contoh nama@domain.com.',
             'email.max' => 'Email maksimal 150 karakter.',
             'email.unique' => 'Email sudah terdaftar. Masuk dengan email itu.',
-            'password.required' => 'Kata sandi wajib diisi.',
-            'password.min' => 'Kata sandi minimal 8 karakter.',
-            'password_confirmation.required' => 'Ulangi kata sandi belum sama dengan kata sandi di atas.',
-            'password_confirmation.same' => 'Ulangi kata sandi belum sama dengan kata sandi di atas.',
+            ...$this->passwordMessages(),
             ...PhoneNumber::messages(),
         ])->validate();
 

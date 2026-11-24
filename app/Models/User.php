@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\SignupSource;
 use App\Enums\UserRole;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -31,6 +32,11 @@ class User extends Authenticatable implements MustVerifyEmail
             'role' => UserRole::class,
             'signup_source' => SignupSource::class,
         ];
+    }
+
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new ResetPasswordNotification($token));
     }
 
     public function isAdmin(): bool

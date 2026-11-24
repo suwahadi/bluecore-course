@@ -2,13 +2,23 @@
 
 namespace App\Actions\Fortify;
 
-use Illuminate\Contracts\Validation\Rule;
-use Illuminate\Validation\Rules\Password;
-
 trait PasswordValidationRules
 {
     protected function passwordRules(): array
     {
-        return ['required', 'string', Password::default(), 'confirmed'];
+        return [
+            'password' => ['required', 'string', 'min:8'],
+            'password_confirmation' => ['required', 'same:password'],
+        ];
+    }
+
+    protected function passwordMessages(): array
+    {
+        return [
+            'password.required' => 'Kata sandi wajib diisi.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password_confirmation.required' => 'Ulangi kata sandi belum sama dengan kata sandi di atas.',
+            'password_confirmation.same' => 'Ulangi kata sandi belum sama dengan kata sandi di atas.',
+        ];
     }
 }

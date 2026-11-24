@@ -158,6 +158,12 @@ return [
     'uppercase'              => ':Attribute harus berupa huruf kapital.',
     'url'                    => 'Format :attribute tidak valid.',
     'uuid'                   => ':Attribute harus merupakan UUID yang valid.',
+    'custom'                 => [
+        'email' => [
+            'required' => 'Email wajib diisi.',
+            'email'    => 'Format email belum benar, contoh nama@domain.com.',
+        ],
+    ],
     'attributes'             => [
         'address'                  => 'alamat',
         'affiliate_url'            => 'URL afiliasi',
