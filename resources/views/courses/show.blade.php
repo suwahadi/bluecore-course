@@ -1,0 +1,82 @@
+@php
+    use App\Enums\CourseStatus;
+    use App\Support\Format;
+    $draft = $course->status !== CourseStatus::Published;
+    $checkoutPath = '/courses/'.$course->slug.'/checkout';
+    $thumbnailUrl = $course->thumbnail_path ? Storage::disk('public')->url($course->thumbnail_path) : null;
+@endphp
+<x-layouts.app :title="$course->title" :description="$course->short_description" :image="$thumbnailUrl" :noindex="$draft">
+    <section class="section">
+        <div class="wrap course-layout">
+            <div class="course-layout__head">
+                @if ($draft)
+                    <p class="note note--warn course-note">Kursus ini masih draf. Hanya admin yang bisa melihat halaman ini.</p>
+                @endif
+                <p class="muted">{{ $course->category?->name }}</p>
+                <h1>{{ $course->title }}</h1>
+                @if (filled($course->short_description))
+                    <p class="course-lead">{{ $course->short_description }}</p>
+                @endif
+                <x-course-meta :course="$course" :participants="true" variant="strip" class="course-facts" />
+            </div>
+
+            <aside class="course-layout__aside">
+                <div class="panel buybox sticky">
+                    <div class="buybox__media">
+                        @if ($thumbnailUrl)
+                            <img class="thumb" src="{{ $thumbnailUrl }}" alt="Thumbnail {{ $course->title }}" width="1200" height="675">
+                        @else
+                            <x-thumbnail-placeholder :title="$course->title" />
+                        @endif
+                    </div>
+                    <div class="buybox__body">
+                        <div class="price-block"><x-price :course="$course" /></div>
+                        <p class="muted small buybox__hint">Bayar sekali, akses selamanya.</p>
+                        <div class="buybox__cta">
+                            @if ($canLearn)
+                                <a class="btn btn--primary btn--block" href="{{ url('/learn/'.$course->slug) }}">Lanjutkan belajar</a>
+                            @elseif (! auth()->check())
+                                <a class="btn btn--primary btn--block" href="{{ url('/register?next='.urlencode($checkoutPath)) }}">Daftar untuk membeli</a>
+                                <p class="muted small buybox__hint">Sudah punya akun? <a href="{{ url('/login?next='.urlencode($checkoutPath)) }}">Masuk</a></p>
+                            @elseif ($openOrder)
+                                <a class="btn btn--primary btn--block" href="{{ url('/order/'.$openOrder->uuid) }}">Selesaikan pembayaran</a>
+                            @else
+                                <a class="btn btn--primary btn--block" href="{{ url($checkoutPath) }}">Beli sekarang</a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="course-layout__body">
+                <div class="panel">
+                    <h2 class="panel-title">Tentang kursus ini</h2>
+                    <div class="course-description">
+                        @foreach (Format::paragraphs($course->description) as $paragraph)
+                            <p>{{ $paragraph }}</p>
+                        @endforeach
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2 class="panel-title">Daftar video</h2>
+                    <ul class="list">
+                        @foreach ($course->segments as $segment)
+                            <li><span>{{ $loop->iteration }}. {{ $segment->title }}</span><span class="muted small nowrap">{{ Format::duration((int) $segment->duration_seconds) }}</span></li>
+                        @endforeach
+                    </ul>
+                </div>
+                @if ($course->materials->isNotEmpty())
+                    <div class="panel panel--pdf">
+                        <h2 class="panel-title">Materi PDF</h2>
+                        <ul class="list">
+                            @foreach ($course->materials as $material)
+                                <li><span class="file-name"><x-icon name="file" :size="20" /><span>{{ $material->title }}</span></span><span class="muted small nowrap">{{ Format::fileSize($material->file_size) }}</span></li>
+                            @endforeach
+                        </ul>
+                        <p class="muted small">{{ $canLearn ? 'Unduh dari halaman belajar.' : 'Bisa diunduh setelah punya akses.' }}</p>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </section>
+</x-layouts.app>

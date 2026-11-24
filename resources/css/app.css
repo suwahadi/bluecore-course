@@ -153,6 +153,48 @@ img.thumb {
     }
 }
 
+.course-note {
+    margin-bottom: 14px;
+}
+
+.course-layout__head h1 {
+    margin-top: 6px;
+}
+
+.course-lead {
+    max-width: 60ch;
+    margin-top: 12px;
+    font-size: 18px;
+    color: var(--ink-soft);
+}
+
+.course-facts {
+    margin-top: 16px;
+}
+
+.buybox__hint {
+    margin-top: 8px;
+}
+
+.buybox__cta {
+    margin-top: 16px;
+}
+
+.course-description {
+    display: grid;
+    gap: 12px;
+    max-width: 68ch;
+}
+
+.panel .list,
+.panel--pdf > .muted {
+    margin-top: 10px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
 .inline-form {
     margin: 0;
 }
