@@ -56,12 +56,17 @@ window.addEventListener('resize', () => {
 document.addEventListener('DOMContentLoaded', fitBrand);
 document.fonts?.ready.then(fitBrand);
 
+const slugMaxLength = 120;
+
 const slugify = (value) => value
+    .replace(/@/g, '-at-')
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/^-+|-+$/g, '')
+    .slice(0, slugMaxLength)
+    .replace(/-+$/g, '');
 
 document.addEventListener('alpine:init', () => {
     window.Alpine.data('slugField', (sourceName, fillAutomatically) => ({
@@ -119,7 +124,10 @@ document.addEventListener('submit', (event) => {
         button.dataset.idleLabel = button.innerHTML;
         button.disabled = true;
         button.setAttribute('aria-busy', 'true');
-        button.textContent = pendingLabel;
+
+        if (!button.classList.contains('btn-icon')) {
+            button.textContent = pendingLabel;
+        }
     });
 });
 

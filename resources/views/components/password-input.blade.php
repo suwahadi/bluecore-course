@@ -1,7 +1,8 @@
+@aware(['dialog' => null])
 @props(['name', 'label', 'help' => null, 'autocomplete' => 'current-password', 'required' => false, 'id' => null, 'full' => false, 'bag' => 'default'])
 @php
-    $fieldId = $id ?? $name;
-    $error = isset($errors) ? $errors->getBag($bag)->first($name) : null;
+    $fieldId = $id ?? ($dialog ? $dialog.'-' : '').$name;
+    $error = isset($errors) ? $errors->getBag($dialog ?? $bag)->first($name) : null;
     $describedBy = trim(($help ? $fieldId.'-help ' : '').($error ? $fieldId.'-error' : ''));
 @endphp
 <div class="{{ $full ? 'field field--full' : 'field' }}">

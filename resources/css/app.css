@@ -36,6 +36,10 @@
     top: 12px;
 }
 
+.inline-form {
+    margin: 0;
+}
+
 .admin-title {
     margin: 4px 0 16px;
 }

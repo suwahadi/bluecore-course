@@ -12,4 +12,9 @@ trait HasSortOrder
     {
         return $query->orderBy('sort_order')->orderBy($this->sortTieBreakerColumn());
     }
+
+    public function sortSiblings(): Builder
+    {
+        return static::query();
+    }
 }
