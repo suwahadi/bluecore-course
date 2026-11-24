@@ -13,6 +13,7 @@
     @livewireStyles
 </head>
 <body>
+    <a class="skip-link" href="#main">Langsung ke konten</a>
     <x-site-header />
     <main id="main" class="site-main" tabindex="-1">
         {{ $slot }}

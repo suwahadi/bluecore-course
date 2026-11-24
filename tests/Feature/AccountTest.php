@@ -35,7 +35,7 @@ it('updates the profile and shows the toast', function () {
 
     expect($user->fresh()->name)->toBe('Budi S.')->and($user->fresh()->phone)->toBe('+6281211112222')
         ->and($user->fresh()->hasVerifiedEmail())->toBeTrue();
-    $this->actingAs($user)->withSession(['status' => 'profile-information-updated'])->get('/account')->assertSeeText('Profil disimpan.');
+    $this->actingAs($user)->withSession(['status' => 'profile-information-updated'])->get('/account')->assertSee('Profil disimpan.', false);
 });
 
 it('clears verification and resends when the email changes', function () {
@@ -80,7 +80,7 @@ it('changes the password after checking the current one', function () {
     ])->assertRedirect()->assertSessionHas('status', 'password-updated');
 
     expect(Hash::check('kata-sandi-baru', $user->fresh()->password))->toBeTrue();
-    $this->actingAs($user)->withSession(['status' => 'password-updated'])->get('/account')->assertSeeText('Kata sandi diganti.');
+    $this->actingAs($user)->withSession(['status' => 'password-updated'])->get('/account')->assertSee('Kata sandi diganti.', false);
 });
 
 it('rejects a wrong or empty current password', function () {

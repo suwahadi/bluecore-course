@@ -97,3 +97,21 @@ it('builds the page title and meta tags', function () {
 it('adds noindex when asked', function () {
     $this->get('/_noindex-probe')->assertOk()->assertSee('<meta name="robots" content="noindex">', false);
 });
+
+it('starts the page with a skip link to the main content', function () {
+    $html = $this->get('/_layout-probe')->assertOk()->getContent();
+
+    expect($html)->toMatch('/<body>\s*<a class="skip-link" href="#main">Langsung ke konten<\/a>/');
+});
+
+it('injects toasts after load so screen readers announce them', function () {
+    $html = $this->withSession(['status' => 'Data berhasil disimpan.'])->get('/_layout-probe')->getContent();
+
+    expect($html)->toContain('Data berhasil disimpan.')
+        ->and($html)->not->toContain('<span>Data berhasil disimpan.</span>')
+        ->and($html)->toContain('x-text="message.text"');
+});
+
+it('returns focus to the account button when its menu closes with Escape', function () {
+    $this->actingAs(User::factory()->create())->get('/_layout-probe')->assertSee('x-ref="toggle"', false)->assertSee('$refs.toggle.focus()', false);
+});

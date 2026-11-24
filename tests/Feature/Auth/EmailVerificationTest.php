@@ -31,7 +31,7 @@ it('resends the verification email with a toast', function () {
     Notification::assertSentTo($user, VerifyEmailNotification::class);
 
     $this->actingAs($user)->withSession(['status' => 'verification-link-sent'])->get(route('verification.notice'))
-        ->assertSeeText('Tautan verifikasi baru sudah dikirim ke email Anda.');
+        ->assertSee('Tautan verifikasi baru sudah dikirim ke email Anda.', false);
 });
 
 it('verifies through the signed link and returns to the intended page', function () {

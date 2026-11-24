@@ -14,8 +14,8 @@
                 <a href="{{ url($link['path']) }}" @if ($link['current']) aria-current="page" @endif>{{ $link['label'] }}</a>
             @endforeach
             @if ($user)
-                <div class="account" x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false">
-                    <button type="button" class="account__toggle{{ $onAccountPage ? ' is-current' : '' }}" aria-controls="account-menu" aria-expanded="false" :aria-expanded="open.toString()" @click="open = ! open">
+                <div class="account" x-data="{ open: false }" @keydown.escape.window="if (open) { open = false; $refs.toggle.focus() }" @click.outside="open = false">
+                    <button type="button" class="account__toggle{{ $onAccountPage ? ' is-current' : '' }}" x-ref="toggle" aria-controls="account-menu" aria-expanded="false" :aria-expanded="open.toString()" @click="open = ! open">
                         <span class="account__avatar" aria-hidden="true">{{ $initials() }}</span>
                         <span class="account__name">{{ $user->name }}</span>
                         <x-icon name="chevron" :size="16" />

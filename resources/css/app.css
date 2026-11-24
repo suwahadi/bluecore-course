@@ -19,6 +19,23 @@
     --color-success-text: #15702B;
 }
 
+.skip-link {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 200;
+    padding: 10px 16px;
+    border-radius: 8px;
+    background: #FFFFFF;
+    color: #044C94;
+    font-weight: 600;
+    transition: top 150ms ease;
+}
+
+.skip-link:focus {
+    top: 12px;
+}
+
 [x-cloak] {
     display: none !important;
 }

@@ -32,7 +32,7 @@ it('keeps the signed-in header on a 404', function () {
 it('translates Fortify status keys in the toast', function () {
     $this->withSession(['status' => 'profile-information-updated'])
         ->get('/tidak-ada')
-        ->assertSeeText('Profil disimpan.');
+        ->assertSee('Profil disimpan.', false);
 });
 
 it('uses the Indonesian login messages', function () {
