@@ -1,6 +1,6 @@
 @props(['dialog', 'action', 'method' => 'DELETE', 'icon' => 'trash', 'label', 'title', 'message', 'confirmLabel' => 'Ya, hapus', 'disabled' => false])
 <div class="confirm-action">
-    <x-admin.icon-button :icon="$icon" :label="$label" :opens="$disabled ? null : $dialog" :disabled="$disabled" />
+    <x-admin.icon-button class="btn--danger" :icon="$icon" :label="$label" :opens="$disabled ? null : $dialog" :disabled="$disabled" />
     @unless ($disabled)
         <x-modal :name="$dialog" :title="$title">
             <p>{{ $message }}</p>
