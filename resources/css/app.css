@@ -36,6 +36,10 @@
     top: 12px;
 }
 
+.admin-title {
+    margin: 4px 0 16px;
+}
+
 .panel-title {
     font-family: var(--font);
     font-size: 18px;
