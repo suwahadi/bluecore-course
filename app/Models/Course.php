@@ -63,6 +63,15 @@ class Course extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function discountPercent(): int
+    {
+        if (! $this->compare_at_price || $this->compare_at_price <= $this->price) {
+            return 0;
+        }
+
+        return (int) round(100 - $this->price * 100 / $this->compare_at_price);
+    }
+
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', CourseStatus::Published);
