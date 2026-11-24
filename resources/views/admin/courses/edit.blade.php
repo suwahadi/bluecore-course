@@ -23,4 +23,5 @@
         </x-button-pair>
     </x-form>
     @include('admin.courses.segments')
+    @include('admin.courses.materials')
 </x-admin.layout>

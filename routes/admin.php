@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\MaterialController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SegmentController;
 use App\Http\Controllers\Admin\TestimonialController;
@@ -25,3 +26,10 @@ Route::post('pages/{page}/toggle', [PageController::class, 'toggle'])->name('pag
 Route::resource('courses', CourseController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
 Route::post('courses/{course}/publish', [CourseController::class, 'publish'])->name('courses.publish');
 Route::put('courses/{course}/segments', [SegmentController::class, 'update'])->name('courses.segments.update');
+
+Route::scopeBindings()->group(function () {
+    Route::post('courses/{course}/materials', [MaterialController::class, 'store'])->name('courses.materials.store');
+    Route::put('courses/{course}/materials/{material}', [MaterialController::class, 'update'])->name('courses.materials.update');
+    Route::post('courses/{course}/materials/{material}/move', [MaterialController::class, 'move'])->name('courses.materials.move');
+    Route::delete('courses/{course}/materials/{material}', [MaterialController::class, 'destroy'])->name('courses.materials.destroy');
+});
