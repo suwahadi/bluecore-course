@@ -22,4 +22,5 @@
             <button type="submit" class="btn btn--brand">Simpan kursus</button>
         </x-button-pair>
     </x-form>
+    @include('admin.courses.segments')
 </x-admin.layout>

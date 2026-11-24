@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\SegmentController;
 use App\Http\Controllers\Admin\TestimonialController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,3 +24,4 @@ Route::post('pages/{page}/toggle', [PageController::class, 'toggle'])->name('pag
 
 Route::resource('courses', CourseController::class)->only(['index', 'store', 'edit', 'update', 'destroy']);
 Route::post('courses/{course}/publish', [CourseController::class, 'publish'])->name('courses.publish');
+Route::put('courses/{course}/segments', [SegmentController::class, 'update'])->name('courses.segments.update');

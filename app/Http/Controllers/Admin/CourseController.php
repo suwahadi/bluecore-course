@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CourseRequest;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\CourseSegment;
 use App\Services\Courses\CourseService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -37,6 +38,7 @@ class CourseController extends Controller
         return view('admin.courses.edit', [
             'course' => $course->load(['segments', 'materials']),
             'categoryOptions' => $this->categoryOptions(),
+            'segmentRows' => $this->segmentRows($course),
         ]);
     }
 
@@ -71,6 +73,35 @@ class CourseController extends Controller
         }
 
         return redirect()->route('admin.courses.index')->with('status', 'Kursus dihapus.');
+    }
+
+    private function segmentRows(Course $course): array
+    {
+        $typed = old('segments');
+        $errors = session('errors')?->getBag('default');
+
+        $rows = is_array($typed)
+            ? array_values(array_filter($typed, 'is_array'))
+            : $course->segments->map(fn (CourseSegment $segment) => [
+                'id' => $segment->id,
+                'title' => $segment->title,
+                'url' => 'https://youtu.be/'.$segment->youtube_video_id,
+                'minutes' => $segment->duration_seconds === null ? '' : intdiv($segment->duration_seconds, 60),
+                'seconds' => $segment->duration_seconds === null ? '' : $segment->duration_seconds % 60,
+            ])->all();
+
+        return array_map(function (array $row, int $index) use ($errors) {
+            $fields = array_map(fn ($value) => is_scalar($value) ? $value : '', array_merge(
+                ['id' => null, 'title' => '', 'url' => '', 'minutes' => '', 'seconds' => ''],
+                array_intersect_key($row, array_flip(['id', 'title', 'url', 'minutes', 'seconds'])),
+            ));
+
+            return [...$fields, 'errors' => array_filter([
+                'title' => $errors?->first("segments.{$index}.title"),
+                'url' => $errors?->first("segments.{$index}.url") ?: $errors?->first("segments.{$index}.id"),
+                'duration' => $errors?->first("segments.{$index}.minutes") ?: $errors?->first("segments.{$index}.seconds"),
+            ])];
+        }, $rows, array_keys($rows));
     }
 
     private function categoryOptions(): array

@@ -69,6 +69,42 @@ const slugify = (value) => value
     .replace(/-+$/g, '');
 
 document.addEventListener('alpine:init', () => {
+    window.Alpine.data('segmentEditor', (initialRows) => ({
+        rows: initialRows.map((row, index) => ({ ...row, key: index })),
+        nextKey: initialRows.length,
+        pendingRemoval: null,
+
+        add() {
+            const row = { id: null, title: '', url: '', minutes: '', seconds: '', errors: {}, key: this.nextKey++ };
+
+            this.rows.push(row);
+            this.$nextTick(() => document.getElementById(`segment-${row.key}-title`)?.focus());
+        },
+
+        move(index, offset) {
+            const target = index + offset;
+
+            if (target < 0 || target >= this.rows.length) {
+                return;
+            }
+
+            [this.rows[index], this.rows[target]] = [this.rows[target], this.rows[index]];
+        },
+
+        askRemove(index) {
+            this.pendingRemoval = index;
+            this.$dispatch('open-modal', 'segment-remove');
+        },
+
+        confirmRemove() {
+            if (this.pendingRemoval !== null) {
+                this.rows.splice(this.pendingRemoval, 1);
+            }
+
+            this.pendingRemoval = null;
+        },
+    }));
+
     window.Alpine.data('slugField', (sourceName, fillAutomatically) => ({
         manual: !fillAutomatically,
 
