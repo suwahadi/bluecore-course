@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\EnsureUserIsAdmin;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -21,4 +22,16 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (AuthenticationException $exception, Request $request) {
+            if ($request->expectsJson()) {
+                return null;
+            }
+
+            if (! $request->isMethod('GET')) {
+                return redirect()->guest(route('login'));
+            }
+
+            return response()->view('auth.required', ['next' => $request->getRequestUri()], 401);
+        });
     })->create();
