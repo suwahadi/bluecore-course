@@ -128,6 +128,9 @@
                     </footer>
                 @endif
             </article>
+            @if (auth()->user()->isAdmin())
+                @include('orders.partials.admin-panel')
+            @endif
             @if ($payable)
                 <script src="{{ config('duitku.js_url') }}" defer></script>
             @endif

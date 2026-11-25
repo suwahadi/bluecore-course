@@ -67,6 +67,7 @@
                                 <div class="btn-row">
                                     <x-admin.icon-button icon="pencil" label="Edit pengguna" :opens="'user-'.$user->id" />
                                     <x-admin.icon-button icon="key" label="Beri akses kursus" :opens="'grant-'.$user->id" />
+                                    <x-admin.icon-button icon="receipt" label="Lihat pesanan" :href="route('admin.orders.index', ['q' => $user->email])" />
                                 </div>
                             </td>
                         </tr>

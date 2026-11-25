@@ -252,6 +252,32 @@ img.thumb {
     margin-top: 8px;
 }
 
+.admin-order-panel {
+    margin-top: 16px;
+}
+
+.admin-order-panel > .btn-row {
+    margin-top: 12px;
+}
+
+.admin-order-panel__title {
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+@media (min-width: 768px) {
+    .toolbar--orders {
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        align-items: end;
+    }
+
+    .toolbar--orders .toolbar__actions {
+        grid-column: 1 / -1;
+        max-width: 420px;
+    }
+}
+
 .inline-form {
     margin: 0;
 }

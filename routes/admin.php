@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\EnrollmentController;
 use App\Http\Controllers\Admin\MaterialController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PageController;
 use App\Http\Controllers\Admin\SegmentController;
 use App\Http\Controllers\Admin\SettingController;
@@ -46,3 +47,9 @@ Route::post('users/{user}/enrollments', [EnrollmentController::class, 'store'])-
 
 Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
 Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+
+Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+Route::post('orders/{order}/mark-paid', [OrderController::class, 'markPaid'])->name('orders.mark-paid');
+Route::post('orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+Route::post('orders/{order}/check-status', [OrderController::class, 'checkStatus'])->middleware('throttle:10,1,admin-order-status')->name('orders.check-status');
+Route::post('orders/{order}/refund', [OrderController::class, 'refund'])->name('orders.refund');

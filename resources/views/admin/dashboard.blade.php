@@ -60,7 +60,7 @@
             <div class="table-wrap">
                 <table class="table">
                     <thead>
-                        <tr><th>Nomor</th><th>Pembeli</th><th>Kursus</th><th class="num">Total</th><th>Status</th><th>Dibuat</th></tr>
+                        <tr><th>Nomor</th><th>Pembeli</th><th>Kursus</th><th class="num">Total</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr>
                     </thead>
                     <tbody>
                         @foreach ($pendingOrders as $order)
@@ -71,6 +71,7 @@
                                 <td class="num">{{ Format::rupiah($order->amount) }}</td>
                                 <td><x-status-badge :status="$order->status" /></td>
                                 <td>{{ Format::datetime($order->created_at) }}</td>
+                                <td><x-admin.icon-button icon="eye" label="Lihat pesanan" :href="route('order.show', $order)" /></td>
                             </tr>
                         @endforeach
                     </tbody>

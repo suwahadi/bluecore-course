@@ -58,6 +58,10 @@ class OrderController extends Controller
 
         $isOwner = $order->user_id === $request->user()->id;
 
+        if ($request->user()->isAdmin()) {
+            $order->load(['callbacks' => fn ($query) => $query->latest()->latest('id')]);
+        }
+
         if ($isOwner && $order->status === OrderStatus::Paid && $order->purchase_tracked_at === null) {
             $order->forceFill(['purchase_tracked_at' => now()])->save();
             Tracking::push('purchase', [
