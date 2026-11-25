@@ -14,10 +14,17 @@ trait BuildsSiteMail
             ->from((string) config('mail.from.address'), $siteName)
             ->subject($subject)
             ->greeting('Halo, '.$notifiable->name)
-            ->salutation("Salam,\n".$siteName);
+            ->salutation("Salam,  \n".$siteName);
 
         $replyTo = Settings::get('email');
 
         return $replyTo ? $message->replyTo($replyTo, $siteName) : $message;
+    }
+
+    protected function summary(MailMessage $message, array $rows): MailMessage
+    {
+        $message->viewData['summary'] = $rows;
+
+        return $message;
     }
 }

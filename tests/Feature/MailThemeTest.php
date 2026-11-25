@@ -1,0 +1,45 @@
+<?php
+
+use App\Http\Controllers\Dev\MailPreviewController;
+use App\Support\SiteLogo;
+use Illuminate\Mail\Markdown;
+
+function previewHtml(string $key): string
+{
+    return (string) MailPreviewController::previews()[$key]['message']()->render();
+}
+
+function previewText(string $key): string
+{
+    $message = MailPreviewController::previews()[$key]['message']();
+
+    return (string) app(Markdown::class)->renderText($message->markdown, $message->data());
+}
+
+it('dresses every email in the BlueCore brand', function (string $key) {
+    $html = previewHtml($key);
+
+    expect($html)
+        ->toMatch('/background-color:\s*#044C94/i')
+        ->toContain('src="'.SiteLogo::url().'"')
+        ->toContain('BlueCore Course')
+        ->toMatch('/background-color:\s*#C64B00/i')
+        ->toContain('support@bluecore.co.id')
+        ->toContain('https://wa.me/6281818182878')
+        ->toMatch('/Salam,<br\s*\/?>\s*BlueCore Course/')
+        ->not->toContain('laravel.com');
+})->with(['verify', 'reset', 'order-created', 'payment-succeeded', 'order-expired', 'access-granted', 'admin-order-paid']);
+
+it('lays out the order breakdown as a table with the total emphasised', function () {
+    $html = previewHtml('order-created');
+
+    expect($html)->toContain('class="summary"')
+        ->toMatch('/Harga kursus.*Rp 149\.000.*Biaya admin.*Rp 2\.500.*Total.*Rp 151\.500/s')
+        ->toMatch('/<strong[^>]*>Rp 151\.500<\/strong>/');
+    expect(previewText('order-created'))->toContain('Harga kursus: Rp 149.000')->toContain('Total: Rp 151.500')->not->toContain('<table');
+});
+
+it('shows the paid order and the admin details as tables', function () {
+    expect(previewHtml('payment-succeeded'))->toMatch('/class="summary".*Kursus.*Budidaya Lele dalam Galon.*Total dibayar.*Rp 151\.500/s');
+    expect(previewHtml('admin-order-paid'))->toMatch('/class="summary".*Pembeli.*Sari Lestari.*sari@contoh\.id.*Kursus.*Metode bayar.*ShopeePay.*Total.*Rp 151\.500/s');
+});

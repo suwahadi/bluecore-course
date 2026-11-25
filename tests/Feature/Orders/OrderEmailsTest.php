@@ -23,7 +23,9 @@ function mailOrder(array $attributes = []): Order
 
 function mailText($message): string
 {
-    return implode("\n", [...$message->introLines, ...$message->outroLines]);
+    $summary = array_map(fn (array $row) => $row[0].': '.$row[1], $message->viewData['summary'] ?? []);
+
+    return implode("\n", [...$message->introLines, ...$summary, ...$message->outroLines]);
 }
 
 it('tells the buyer the order was created with the full breakdown', function () {
