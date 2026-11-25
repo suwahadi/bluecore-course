@@ -10,8 +10,8 @@ use App\Models\Course;
 use App\Models\User;
 use App\Services\Users\UserAnonymizer;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class UserController extends Controller

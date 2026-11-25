@@ -162,3 +162,12 @@ it('scrolls back to the top of the catalog when the page changes', function () {
         ->assertSeeHtml('wire:click="nextPage(\'page\')" x-on:click="$wire.$el.scrollIntoView({ block: \'start\' })"')
         ->assertSeeHtml('wire:click="previousPage(\'page\')" x-on:click="$wire.$el.scrollIntoView({ block: \'start\' })"');
 });
+
+it('keeps a numeric search or category from the address', function () {
+    Category::factory()->create(['name' => 'Angka', 'slug' => '2026']);
+
+    Livewire::withQueryParams(['q' => 2026, 'cat' => 2026])
+        ->test(CourseCatalog::class)
+        ->assertSet('q', '2026')
+        ->assertSet('category', '2026');
+});

@@ -32,9 +32,9 @@ class CourseCatalog extends Component
 
     public function mount(): void
     {
-        $this->q = is_string($this->q) ? mb_substr($this->q, 0, self::TERM_LIMIT) : '';
+        $this->q = is_scalar($this->q) ? mb_substr((string) $this->q, 0, self::TERM_LIMIT) : '';
         $this->sort = is_string($this->sort) && array_key_exists($this->sort, self::SORTS) ? $this->sort : 'newest';
-        $this->category = is_string($this->category) && Category::query()->active()->where('slug', $this->category)->exists() ? $this->category : '';
+        $this->category = is_scalar($this->category) && Category::query()->active()->where('slug', (string) $this->category)->exists() ? (string) $this->category : '';
     }
 
     public function updated(string $property): void

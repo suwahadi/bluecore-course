@@ -12,4 +12,11 @@ class SiteLogo
 
         return $logo ? Storage::disk('public')->url($logo) : asset('images/logo.webp');
     }
+
+    public static function emailUrl(): string
+    {
+        $logo = Settings::get('logo');
+
+        return $logo ? Storage::disk('public')->url($logo) : asset('images/logo-email.png');
+    }
 }

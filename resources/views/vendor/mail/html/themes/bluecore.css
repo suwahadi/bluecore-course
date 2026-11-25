@@ -136,7 +136,7 @@ img {
     padding: 10px 0;
 }
 
-.summary-label {
+.summary td.summary-label {
     color: #4B5B6B;
     padding-right: 16px;
 }
