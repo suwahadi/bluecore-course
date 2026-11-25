@@ -47,9 +47,9 @@ class CourseQuery
             ->when($category, fn (Builder $query) => $query->where('category_id', $category->id));
 
         return match ($sort) {
-            'cheapest' => $query->orderBy('price')->latest('published_at'),
-            'priciest' => $query->orderByDesc('price')->latest('published_at'),
-            'popular' => $query->withCount('enrollments')->orderByDesc('enrollments_count')->latest('published_at'),
+            'cheapest' => $query->orderBy('price')->latest('published_at')->latest('id'),
+            'priciest' => $query->orderByDesc('price')->latest('published_at')->latest('id'),
+            'popular' => $query->withCount('enrollments')->orderByDesc('enrollments_count')->latest('published_at')->latest('id'),
             default => $query->latest('published_at')->latest('id'),
         };
     }

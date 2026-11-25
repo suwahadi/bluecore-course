@@ -64,3 +64,11 @@ it('computes the discount percent from the compare price', function () {
         ->and((new Course(['price' => 125000, 'compare_at_price' => null]))->discountPercent())->toBe(0)
         ->and((new Course(['price' => 125000, 'compare_at_price' => 100000]))->discountPercent())->toBe(0);
 });
+
+it('breaks sort ties by id', function (string $sort) {
+    $ids = Course::factory()->published()->count(13)->create(['price' => 100000, 'published_at' => now()->subDay()])->pluck('id');
+
+    $pages = collect([1, 2])->flatMap(fn (int $page) => app(CourseQuery::class)->catalog('', null, $sort)->paginate(12, page: $page)->pluck('id'));
+
+    expect($pages->all())->toBe($ids->sortDesc()->values()->all());
+})->with(['cheapest', 'priciest', 'popular']);
