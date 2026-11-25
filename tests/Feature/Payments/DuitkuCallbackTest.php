@@ -222,8 +222,8 @@ it('keeps signatures out of the payload and the log', function () {
         expect($callback->payload)->not->toHaveKey('signature')
             ->and(json_encode($callback->payload))->not->toContain($payload['signature']);
     }
-    foreach (['info', 'warning', 'error'] as $level) {
-        Log::shouldNotHaveReceived($level, fn ($message, $context = []) => str_contains(json_encode($context), $payload['signature']) || str_contains(json_encode($context), 'kunci-rahasia'));
+    foreach (['info', 'warning', 'error', 'log'] as $level) {
+        Log::shouldNotHaveReceived($level, fn (...$arguments) => str_contains(json_encode($arguments), $payload['signature']) || str_contains(json_encode($arguments), 'kunci-rahasia'));
     }
 });
 
@@ -231,4 +231,21 @@ it('accepts the callback without a CSRF token', function () {
     duitkuStatus('00');
 
     $this->withMiddleware()->post('/payments/duitku/callback', callbackPayload())->assertOk();
+});
+
+it('keeps the payment method from a callback that arrives after the popup already paid the order', function () {
+    $this->order->forceFill(['status' => OrderStatus::Paid, 'paid_at' => now(), 'duitku_payment_code' => null])->save();
+
+    sendCallback(callbackPayload())->assertOk();
+
+    expect($this->order->fresh()->duitku_payment_code)->toBe('SP')
+        ->and(PaymentCallback::query()->sole()->status)->toBe(PaymentCallbackStatus::Ignored);
+});
+
+it('never overwrites a payment method that is already known', function () {
+    $this->order->forceFill(['status' => OrderStatus::Paid, 'paid_at' => now(), 'duitku_payment_code' => 'OV'])->save();
+
+    sendCallback(callbackPayload())->assertOk();
+
+    expect($this->order->fresh()->duitku_payment_code)->toBe('OV');
 });

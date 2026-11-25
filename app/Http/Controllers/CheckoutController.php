@@ -3,20 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Enums\CourseStatus;
+use App\Enums\OrderStatus;
 use App\Models\Course;
+use App\Models\Order;
+use App\Models\User;
 use App\Notifications\OrderCreatedNotification;
 use App\Services\Orders\OrderService;
 use App\Services\Payments\DuitkuClient;
 use App\Services\Payments\DuitkuException;
 use App\Support\Settings;
 use App\Support\Tracking;
+use Illuminate\Contracts\Cache\LockTimeoutException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
+    private const INVOICE_LOCK_SECONDS = 60;
+
+    private const INVOICE_WAIT_SECONDS = 50;
+
     public function __construct(private OrderService $orders, private DuitkuClient $duitku)
     {
     }
@@ -65,19 +74,43 @@ class CheckoutController extends Controller
 
         if ($order->duitku_reference === null) {
             try {
-                $invoice = $this->duitku->createInvoice($order);
-            } catch (DuitkuException $exception) {
-                $this->orders->fail($order);
-                Log::warning('Duitku invoice failed', ['order_number' => $order->order_number, 'reason' => $exception->getMessage()]);
-
-                return redirect()->route('checkout.show', $course)->with('error', 'Gagal membuat tagihan pembayaran. Coba lagi.');
+                $invoiced = Cache::lock('order-invoice:'.$order->id, self::INVOICE_LOCK_SECONDS)
+                    ->block(self::INVOICE_WAIT_SECONDS, fn () => $this->issueInvoice($order->refresh(), $user));
+            } catch (LockTimeoutException) {
+                return redirect()->to(url('/order/'.$order->uuid));
             }
 
-            $order->forceFill(['duitku_reference' => $invoice['reference'], 'payment_url' => $invoice['payment_url']])->save();
-            $user->notify(new OrderCreatedNotification($order));
+            if (! $invoiced) {
+                return redirect()->route('checkout.show', $course)->with('error', 'Gagal membuat tagihan pembayaran. Coba lagi.');
+            }
         }
 
         return redirect()->to(url('/order/'.$order->uuid.'?pay=1'));
+    }
+
+    private function issueInvoice(Order $order, User $user): bool
+    {
+        if ($order->duitku_reference !== null) {
+            return true;
+        }
+
+        if ($order->status !== OrderStatus::Pending) {
+            return false;
+        }
+
+        try {
+            $invoice = $this->duitku->createInvoice($order);
+        } catch (DuitkuException $exception) {
+            $this->orders->fail($order);
+            Log::warning('Duitku invoice failed', ['order_number' => $order->order_number, 'reason' => $exception->getMessage()]);
+
+            return false;
+        }
+
+        $order->forceFill(['duitku_reference' => $invoice['reference'], 'payment_url' => $invoice['payment_url']])->save();
+        $user->notify(new OrderCreatedNotification($order));
+
+        return true;
     }
 
     private function deadlineText(int $minutes): string

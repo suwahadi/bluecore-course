@@ -123,17 +123,26 @@ it('records a refund and closes only the access this order gave', function () {
     Log::shouldHaveReceived('info')->withArgs(fn ($message, $context) => $message === 'Admin recorded refund' && $context['order_number'] === $order->order_number);
 });
 
-it('lets owners and admins view, and cancel only pending orders', function () {
+it('lets only owners and admins view an order', function () {
     $order = Order::factory()->for($this->user)->for($this->course)->create();
     $stranger = User::factory()->create();
     $admin = User::factory()->admin()->create();
 
     expect($this->user->can('view', $order))->toBeTrue()
         ->and($admin->can('view', $order))->toBeTrue()
-        ->and($stranger->can('view', $order))->toBeFalse()
-        ->and($this->user->can('cancel', $order))->toBeTrue()
-        ->and($stranger->can('cancel', $order))->toBeFalse();
+        ->and($stranger->can('view', $order))->toBeFalse();
+});
 
-    $order->update(['status' => OrderStatus::Paid]);
-    expect($this->user->can('cancel', $order->fresh()))->toBeFalse();
+it('moves access to another paid order of the same course instead of closing it on refund', function () {
+    $admin = User::factory()->admin()->create();
+    $first = Order::factory()->for($this->user)->for($this->course)->create();
+    $second = Order::factory()->for($this->user)->for($this->course)->create();
+    $this->service->markPaid($second, 'SP', 'DS2');
+    $this->service->markPaid($first, 'SP', 'DS1');
+
+    expect(Enrollment::query()->sole()->order_id)->toBe($second->id);
+
+    $this->service->refund($second->fresh(), $admin, 'Bayar dua kali');
+
+    expect(Enrollment::query()->sole()->order_id)->toBe($first->id);
 });

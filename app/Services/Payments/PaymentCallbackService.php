@@ -72,6 +72,12 @@ class PaymentCallbackService
     private function processSuccess(PaymentCallback $callback, Order $order): void
     {
         if (in_array($order->status, [OrderStatus::Paid, OrderStatus::Refunded], true)) {
+            $paymentCode = $callback->payload['paymentCode'] ?? null;
+
+            if ($order->duitku_payment_code === null && filled($paymentCode)) {
+                $order->forceFill(['duitku_payment_code' => $paymentCode])->save();
+            }
+
             $this->finish($callback, PaymentCallbackStatus::Ignored);
 
             return;

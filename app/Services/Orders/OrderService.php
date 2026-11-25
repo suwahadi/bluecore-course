@@ -134,7 +134,13 @@ class OrderService
                 'refund_note' => $note,
             ])->save();
 
-            Enrollment::query()->where('order_id', $locked->id)->delete();
+            $otherPaidOrderId = Order::query()
+                ->where(['user_id' => $locked->user_id, 'course_id' => $locked->course_id, 'status' => OrderStatus::Paid])
+                ->whereKeyNot($locked->id)
+                ->oldest('paid_at')
+                ->value('id');
+            $enrollments = Enrollment::query()->where('order_id', $locked->id);
+            $otherPaidOrderId === null ? $enrollments->delete() : $enrollments->update(['order_id' => $otherPaidOrderId]);
             Log::info('Admin recorded refund', ['order_number' => $locked->order_number, 'admin_id' => $admin->id]);
 
             return true;

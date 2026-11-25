@@ -106,9 +106,11 @@ class OrderController extends Controller
 
     public function cancel(Request $request, Order $order): RedirectResponse
     {
-        abort_unless($request->user()->can('cancel', $order), 403);
+        $this->authorizeView($order);
 
-        $this->orders->cancel($order);
+        if (! $this->orders->cancel($order)) {
+            return back()->with('error', 'Pesanan '.$order->order_number.' sudah tidak menunggu pembayaran.');
+        }
 
         return back()->with('status', 'Pesanan '.$order->order_number.' dibatalkan.');
     }

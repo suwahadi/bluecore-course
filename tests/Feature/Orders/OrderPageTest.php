@@ -198,7 +198,7 @@ it('prints as an invoice with the site identity', function () {
         ->assertSeeInOrder(['print-head', 'BlueCore Course', 'Bogor', 'support@bluecore.co.id']);
 });
 
-it('lets the owner cancel a pending order but not a paid one', function () {
+it('lets the owner cancel a pending order, and explains why a paid one cannot be cancelled', function () {
     statusReply('01');
     $order = ownerOrder();
 
@@ -207,7 +207,11 @@ it('lets the owner cancel a pending order but not a paid one', function () {
     expect($order->fresh()->status)->toBe(OrderStatus::Cancelled);
 
     $paid = ownerOrder(['status' => OrderStatus::Paid, 'paid_at' => now()]);
-    $this->post('/order/'.$paid->uuid.'/cancel')->assertForbidden();
+    $this->from('/order/'.$paid->uuid)->post('/order/'.$paid->uuid.'/cancel')
+        ->assertRedirect('/order/'.$paid->uuid)
+        ->assertSessionHas('error', 'Pesanan '.$paid->order_number.' sudah tidak menunggu pembayaran.')
+        ->assertSessionMissing('status');
+    expect($paid->fresh()->status)->toBe(OrderStatus::Paid);
     $this->actingAs(User::factory()->create())->post('/order/'.ownerOrder()->uuid.'/cancel')->assertForbidden();
 });
 

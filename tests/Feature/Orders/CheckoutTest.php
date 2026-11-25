@@ -7,8 +7,11 @@ use App\Models\Order;
 use App\Models\User;
 use App\Notifications\OrderCreatedNotification;
 use App\Support\Settings;
+use App\Services\Orders\OrderService;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Sleep;
 
 beforeEach(function () {
     Notification::fake();
@@ -117,4 +120,34 @@ it('keeps no tracking events when tracking is off', function () {
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout');
 
     expect(session('tracking_events'))->toBeNull();
+});
+
+it('waits for a parallel checkout to finish its invoice instead of creating a second one', function () {
+    Sleep::fake();
+    Http::fake();
+    $order = app(OrderService::class)->createOrder($this->user, $this->course);
+    $lock = Cache::lock('order-invoice:'.$order->id, 30);
+    $lock->get();
+    Sleep::whenFakingSleep(function () use ($order, $lock) {
+        $order->forceFill(['duitku_reference' => 'DSFIRST', 'payment_url' => 'https://app-sandbox.duitku.com/pay/DSFIRST'])->save();
+        $lock->release();
+    });
+
+    $this->actingAs($this->user)->post('/courses/lele-galon/checkout')->assertRedirect(url('/order/'.$order->uuid.'?pay=1'));
+
+    Http::assertNothingSent();
+    expect($order->fresh())->status->toBe(OrderStatus::Pending)->duitku_reference->toBe('DSFIRST');
+    Notification::assertNothingSent();
+});
+
+it('sends the buyer to the order page when a parallel invoice takes too long', function () {
+    Sleep::fake(syncWithCarbon: true);
+    Http::fake();
+    $order = app(OrderService::class)->createOrder($this->user, $this->course);
+    Cache::lock('order-invoice:'.$order->id, 600)->get();
+
+    $this->actingAs($this->user)->post('/courses/lele-galon/checkout')->assertRedirect(url('/order/'.$order->uuid));
+
+    Http::assertNothingSent();
+    expect($order->fresh()->status)->toBe(OrderStatus::Pending);
 });

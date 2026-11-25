@@ -31,5 +31,8 @@ it('schedules expiry every ten minutes and the queue worker every minute', funct
     expect($expire?->expression)->toBe('*/10 * * * *')
         ->and($worker?->expression)->toBe('* * * * *')
         ->and($worker->command)->toContain('--stop-when-empty')->toContain('--max-time=50')
-        ->and($worker->withoutOverlapping)->toBeTrue();
+        ->and($worker->withoutOverlapping)->toBeTrue()
+        ->and($worker->expiresAt)->toBe(5)
+        ->and($expire->withoutOverlapping)->toBeTrue()
+        ->and($expire->expiresAt)->toBe(10);
 });
