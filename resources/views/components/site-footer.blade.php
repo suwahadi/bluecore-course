@@ -7,7 +7,7 @@
             @endif
         </div>
         <div>
-            <h4>Tautan</h4>
+            <h2 class="site-footer__title">Tautan</h2>
             <ul>
                 <li><a href="{{ url('/courses') }}">Semua kursus</a></li>
                 @foreach ($pages as $page)
@@ -18,7 +18,7 @@
         </div>
         @if ($contacts)
             <div>
-                <h4>Hubungi kami</h4>
+                <h2 class="site-footer__title">Hubungi kami</h2>
                 <ul class="site-footer__contact">
                     @foreach ($contacts as $contact)
                         <li>
@@ -34,7 +34,7 @@
         @endif
         @if ($markets)
             <div>
-                <h4>Marketplace</h4>
+                <h2 class="site-footer__title">Marketplace</h2>
                 <ul class="site-footer__markets">
                     @foreach ($markets as $market)
                         <li>

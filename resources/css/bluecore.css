@@ -936,7 +936,7 @@ a.kpi--primary:hover .kpi__ornament { opacity: 0.14; }
 .site-footer__inner { display: grid; gap: 24px; padding: 52px var(--gutter); max-width: var(--max); margin: 0 auto; }
 @media (min-width: 768px) { .site-footer__inner { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1024px) { .site-footer__inner { grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.8fr) minmax(0, 1.1fr) minmax(0, 0.8fr); } }
-.site-footer h4 { font-size: 14px; margin-bottom: 8px; color: var(--on-blue); }
+.site-footer__title { margin: 0 0 8px; font-family: var(--font); font-size: 14px; font-weight: 600; line-height: 1.25; letter-spacing: normal; color: var(--on-blue); }
 .site-footer strong { color: var(--on-blue); }
 .site-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 14px; font-weight: 400; }
 .site-footer a { color: var(--on-blue-soft); text-decoration: none; font-weight: 400; }

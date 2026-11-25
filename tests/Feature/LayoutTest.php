@@ -115,3 +115,21 @@ it('injects toasts after load so screen readers announce them', function () {
 it('returns focus to the account button when its menu closes with Escape', function () {
     $this->actingAs(User::factory()->create())->get('/_layout-probe')->assertSee('x-ref="toggle"', false)->assertSee('$refs.toggle.focus()', false);
 });
+
+it('shows the WhatsApp number in the WhatsApp row, not the phone number', function () {
+    Settings::set(['whatsapp' => '6281211112222', 'phone' => '0215550000']);
+
+    $this->get('/')->assertSee('href="https://wa.me/6281211112222"', false)->assertSeeText('081211112222')->assertDontSeeText('0215550000');
+});
+
+it('shows social handles without query strings or fragments', function () {
+    Settings::set(['instagram_url' => 'https://www.instagram.com/bluecore.official/?igsh=abc123#bio']);
+
+    $this->get('/')->assertSeeText('@bluecore.official')->assertDontSeeText('igsh');
+});
+
+it('keeps the footer headings in order after the page heading', function () {
+    $html = $this->get('/')->getContent();
+
+    expect($html)->toContain('<h2 class="site-footer__title">Tautan</h2>')->not->toContain('<h4');
+});

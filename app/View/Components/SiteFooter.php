@@ -65,7 +65,7 @@ class SiteFooter extends Component
             $rows[] = [
                 'icon' => 'whatsapp',
                 'label' => 'WhatsApp',
-                'text' => Settings::get('phone') ?: '0'.substr($whatsapp, 2),
+                'text' => '0'.substr($whatsapp, 2),
                 'url' => 'https://wa.me/'.$whatsapp,
             ];
         }
@@ -87,7 +87,7 @@ class SiteFooter extends Component
 
     private function handle(string $url): string
     {
-        $segment = basename(rtrim($url, '/'));
+        $segment = basename(rtrim((string) (parse_url($url, PHP_URL_PATH) ?: $url), '/'));
 
         return str_starts_with($segment, '@') ? $segment : '@'.$segment;
     }

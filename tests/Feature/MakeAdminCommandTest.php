@@ -43,3 +43,22 @@ it('rejects an invalid email', function () {
         ->expectsOutput('Format email belum benar.')
         ->assertFailed();
 });
+
+it('asks again when the name is empty', function () {
+    $this->artisan('app:make-admin', ['email' => 'admin@contoh.id'])
+        ->expectsQuestion('Nama', ' ')
+        ->expectsOutput('Nama wajib diisi.')
+        ->expectsQuestion('Nama', 'Admin Utama')
+        ->expectsQuestion('Kata sandi', 'rahasia123')
+        ->assertSuccessful();
+
+    expect(App\Models\User::firstWhere('email', 'admin@contoh.id')->name)->toBe('Admin Utama');
+});
+
+it('refuses to create a new admin without an interactive terminal', function () {
+    $this->artisan('app:make-admin', ['email' => 'admin@contoh.id', '--no-interaction' => true])
+        ->expectsOutput('Admin baru dibuat lewat terminal interaktif agar nama dan kata sandi bisa diisi.')
+        ->assertFailed();
+
+    expect(App\Models\User::query()->where('email', 'admin@contoh.id')->exists())->toBeFalse();
+});

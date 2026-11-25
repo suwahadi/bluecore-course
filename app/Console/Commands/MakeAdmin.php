@@ -5,9 +5,11 @@ namespace App\Console\Commands;
 use App\Enums\SignupSource;
 use App\Enums\UserRole;
 use App\Models\User;
+use App\Support\PersonName;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Validator;
 
 #[Signature('app:make-admin {email}')]
 #[Description('Jadikan akun sebagai admin, atau buat admin baru')]
@@ -38,8 +40,14 @@ class MakeAdmin extends Command
             return self::SUCCESS;
         }
 
+        if (! $this->input->isInteractive()) {
+            $this->error('Admin baru dibuat lewat terminal interaktif agar nama dan kata sandi bisa diisi.');
+
+            return self::FAILURE;
+        }
+
         $user = new User([
-            'name' => $this->ask('Nama'),
+            'name' => $this->askName(),
             'email' => $email,
             'password' => $this->askPassword(),
             'signup_source' => SignupSource::Direct,
@@ -53,6 +61,20 @@ class MakeAdmin extends Command
         $this->info("Admin {$email} dibuat.");
 
         return self::SUCCESS;
+    }
+
+    private function askName(): string
+    {
+        while (true) {
+            $name = trim((string) $this->ask('Nama'));
+            $validator = Validator::make(['name' => $name], ['name' => PersonName::rules()], PersonName::messages());
+
+            if ($validator->passes()) {
+                return $name;
+            }
+
+            $this->error($validator->errors()->first('name'));
+        }
     }
 
     private function askPassword(): string
