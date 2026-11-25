@@ -278,6 +278,79 @@ img.thumb {
     }
 }
 
+.learn h1 {
+    margin-top: 22px;
+    font-size: 24px;
+}
+
+.learn__layout {
+    margin-top: 8px;
+}
+
+.learn__nav,
+.learn__note {
+    margin-top: 14px;
+}
+
+.learn__resume {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+    margin-top: 8px;
+    color: var(--ink-soft);
+}
+
+.learn__duration {
+    margin-top: 8px;
+}
+
+.learn__list {
+    margin-top: 14px;
+}
+
+.learn__list a {
+    row-gap: 6px;
+}
+
+.seg-list .seg-mark[data-playing="true"] {
+    border-color: var(--udang-brand);
+    color: var(--udang-brand);
+}
+
+.seg-progress {
+    grid-column: 2 / -1;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 2px;
+    background: var(--line-soft);
+}
+
+.seg-progress span {
+    display: block;
+    height: 100%;
+    background: var(--laut);
+}
+
+.learn__materials {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin-top: 18px;
+}
+
+.learn__materials h2 {
+    font-size: 16px;
+}
+
+.learn__materials .list {
+    margin-top: 6px;
+}
+
+.learn__materials .list li {
+    align-items: center;
+}
+
 .inline-form {
     margin: 0;
 }

@@ -30,6 +30,17 @@ class Format
         return $rest === 0 ? $hours.' jam' : $hours.' jam '.$rest.' menit';
     }
 
+    public static function clock(int $seconds): string
+    {
+        $seconds = max($seconds, 0);
+        $hours = intdiv($seconds, 3600);
+        $minutes = intdiv($seconds % 3600, 60);
+
+        return $hours > 0
+            ? sprintf('%d:%02d:%02d', $hours, $minutes, $seconds % 60)
+            : sprintf('%d:%02d', $minutes, $seconds % 60);
+    }
+
     public static function paragraphs(?string $text): array
     {
         return array_values(array_filter(

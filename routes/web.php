@@ -5,9 +5,11 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LearnController;
 use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\ProgressController;
 use App\Http\Controllers\Payments\DuitkuCallbackController;
 use App\Http\Controllers\Payments\DuitkuReturnController;
 use App\Http\Controllers\RobotsController;
@@ -52,6 +54,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/courses/{course:slug}/checkout', [CheckoutController::class, 'show'])->middleware('throttle:20,1,checkout-show')->name('checkout.show');
     Route::post('/courses/{course:slug}/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1,checkout')->name('checkout.store');
     Route::get('/courses/{course:slug}/materials/{material}', MaterialDownloadController::class)->scopeBindings()->name('materials.download');
+    Route::get('/learn/{course:slug}', [LearnController::class, 'index'])->name('learn.index');
+    Route::get('/learn/{course:slug}/{segment}', [LearnController::class, 'show'])->scopeBindings()->name('learn.show');
+    Route::post('/learn/segments/{segment}/complete', [ProgressController::class, 'store'])->middleware('throttle:60,1,learn-complete')->name('learn.complete');
+    Route::post('/learn/segments/{segment}/position', [ProgressController::class, 'position'])->middleware('throttle:30,1,learn-position')->name('learn.position');
 });
 
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
