@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 it('renders an Indonesian 404 page inside the site layout', function () {
@@ -42,4 +43,16 @@ it('renders an Indonesian 429 page with a way back', function () {
         ->assertSeeText('Terlalu banyak permintaan')
         ->assertSeeText('Kembali ke beranda')
         ->assertSeeText('BlueCore Course');
+});
+
+it('renders a standalone Indonesian maintenance page', function () {
+    Route::middleware('web')->get('/_maintenance', fn () => abort(503));
+    DB::enableQueryLog();
+
+    $html = $this->get('/_maintenance')->assertStatus(503)->getContent();
+
+    expect($html)->toContain('Sedang pemeliharaan')
+        ->toContain('<html lang="id">')
+        ->not->toContain('/build/assets')
+        ->and(DB::getQueryLog())->toBe([]);
 });
