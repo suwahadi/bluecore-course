@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FreeVideoController;
@@ -40,6 +41,11 @@ Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
 
     Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])->name('password.reset');
     Route::post('/reset-password', [NewPasswordController::class, 'store'])->middleware('throttle:5,1,reset-password')->name('password.update');
+});
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/courses/{course:slug}/checkout', [CheckoutController::class, 'show'])->middleware('throttle:20,1,checkout-show')->name('checkout.show');
+    Route::post('/courses/{course:slug}/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1,checkout')->name('checkout.store');
 });
 
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
