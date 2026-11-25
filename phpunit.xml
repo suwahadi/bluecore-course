@@ -32,5 +32,9 @@
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <env name="DUITKU_MERCHANT_CODE" value=""/>
+        <env name="DUITKU_API_KEY" value=""/>
+        <env name="DUITKU_ENV" value="sandbox"/>
+        <env name="DUITKU_EXPIRY_MINUTES" value="1440"/>
     </php>
 </phpunit>
