@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Payments\DuitkuCallbackController;
+use App\Http\Controllers\Payments\DuitkuReturnController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\EnsureScalarAuthInput;
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    Route::get('/payments/duitku/return', DuitkuReturnController::class)->name('payments.duitku.return');
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::get('/order/{order}/status', [OrderController::class, 'status'])->middleware('throttle:60,1,order-status')->name('order.status');
