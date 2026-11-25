@@ -351,6 +351,19 @@ img.thumb {
     align-items: center;
 }
 
+.my-course__progress {
+    margin: 4px 0 0;
+}
+
+.my-course__progress .badge {
+    margin-left: 6px;
+}
+
+.my-course__cta {
+    align-self: flex-start;
+    margin-top: 6px;
+}
+
 .inline-form {
     margin: 0;
 }
