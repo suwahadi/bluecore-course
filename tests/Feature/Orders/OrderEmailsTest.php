@@ -78,3 +78,14 @@ it('queues every order email after the commit', function (string $class) {
     expect($notification)->toBeInstanceOf(ShouldQueue::class)
         ->and($notification->afterCommit)->toBeTrue();
 })->with([OrderCreatedNotification::class, PaymentSucceededNotification::class, OrderExpiredNotification::class, AdminOrderPaidNotification::class]);
+
+it('shows a buyer name as plain text in the admin email, never as a link', function () {
+    $order = mailOrder(['status' => OrderStatus::Paid, 'paid_at' => now()]);
+    $order->user->forceFill(['name' => '[Konfirmasi pembayaran](https://jahat.test) **segera**'])->save();
+
+    $html = (string) (new AdminOrderPaidNotification($order->fresh()))->toMail(User::factory()->admin()->create())->render();
+
+    expect($html)->not->toContain('href="https://jahat.test"')
+        ->not->toContain('<strong>segera</strong>')
+        ->toContain('Konfirmasi pembayaran');
+});

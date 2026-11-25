@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Notifications\Concerns\BuildsSiteMail;
 use App\Services\Payments\DuitkuClient;
 use App\Support\Format;
+use App\Support\MailText;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -32,7 +33,7 @@ class AdminOrderPaidNotification extends Notification implements ShouldQueue
 
         return $this->siteMail($notifiable, 'Pesanan lunas')
             ->line("Pesanan {$order->order_number} sudah lunas lewat Duitku.")
-            ->line("Pembeli: {$order->user->name} ({$order->user->email})")
+            ->line('Pembeli: '.MailText::plain($order->user->name).' ('.MailText::plain($order->user->email).')')
             ->line("Kursus: {$order->course->title}")
             ->line('Total: '.Format::rupiah($order->amount))
             ->line("Metode bayar: {$method}")
