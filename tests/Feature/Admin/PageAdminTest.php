@@ -66,6 +66,7 @@ it('shows the PRD messages inside the dialog that failed', function (array $inpu
     'short title' => [['title' => 'A'], 'title', 'Judul wajib diisi, minimal 2 karakter.'],
     'system slug' => [['slug' => 'Admin'], 'slug', 'Slug ini dipakai sistem. Pilih slug lain.'],
     'fonts folder slug' => [['slug' => 'fonts'], 'slug', 'Slug ini dipakai sistem. Pilih slug lain.'],
+    'livewire prefix slug' => [['slug' => 'livewire-panduan'], 'slug', 'Slug ini dipakai sistem. Pilih slug lain.'],
     'slug taken' => [['slug' => 'profil'], 'slug', 'Slug sudah dipakai.'],
     'zero order' => [['sort_order' => 0], 'sort_order', 'Urutan harus angka bulat mulai dari 1.'],
 ]);
@@ -135,4 +136,11 @@ it('keeps the footer cache when the save rolls back', function () {
     }
 
     expect(Illuminate\Support\Facades\Cache::get(Page::FOOTER_CACHE_KEY))->toBe('cached');
+});
+
+it('accepts a slug that only contains livewire later on', function () {
+    $this->actingAs($this->admin)->from('/admin/pages')->post('/admin/pages', validPage(['slug' => 'panduan-livewire']))
+        ->assertSessionHas('status', 'Halaman dibuat.');
+
+    $this->get('/panduan-livewire')->assertOk();
 });

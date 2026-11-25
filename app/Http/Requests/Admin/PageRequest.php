@@ -22,7 +22,7 @@ class PageRequest extends DialogRequest
     {
         return [
             'title' => ['required', 'string', 'min:2', 'max:120'],
-            'slug' => [...Slug::rules('pages', $this->route('page')?->id), Rule::notIn(Page::RESERVED_SLUGS)],
+            'slug' => [...Slug::rules('pages', $this->route('page')?->id), Rule::notIn(Page::RESERVED_SLUGS), 'not_regex:/^livewire/'],
             'content' => ['nullable', 'string', 'max:60000'],
             'is_published' => ['required', 'boolean'],
             'sort_order' => ['required', 'integer', 'min:1'],
@@ -38,6 +38,7 @@ class PageRequest extends DialogRequest
             'title.min' => 'Judul wajib diisi, minimal 2 karakter.',
             'title.max' => 'Judul maksimal 120 karakter.',
             'slug.not_in' => 'Slug ini dipakai sistem. Pilih slug lain.',
+            'slug.not_regex' => 'Slug ini dipakai sistem. Pilih slug lain.',
             'content.string' => 'Isi halaman harus berupa teks.',
             'content.max' => 'Isi halaman maksimal 60.000 karakter.',
             'is_published.required' => 'Pilih status halaman.',
