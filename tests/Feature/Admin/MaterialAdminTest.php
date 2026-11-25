@@ -132,3 +132,13 @@ it('lists the materials with title, original name and size', function () {
         ->assertSee('aria-label="Ganti file"', false)
         ->assertSeeText('Tambah materi');
 });
+
+it('removes the stored PDF when saving the material fails', function () {
+    CourseMaterial::creating(fn () => throw new RuntimeException('database down'));
+    $this->withoutExceptionHandling();
+
+    expect(fn () => $this->actingAs($this->admin)->post(materialUrl(), ['_modal' => 'material-new', 'title' => 'Panduan galon', 'file' => materialPdf()]))
+        ->toThrow(RuntimeException::class, 'database down');
+
+    expect(Storage::disk('local')->allFiles())->toBe([]);
+});

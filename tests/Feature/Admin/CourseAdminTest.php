@@ -196,3 +196,17 @@ it('refuses to delete a course that has orders and keeps its files', function ()
     expect($course->fresh())->not->toBeNull();
     Storage::disk('public')->assertExists('courses/sampul.webp');
 });
+
+it('accepts a WebP thumbnail and stores it as WebP', function () {
+    $image = imagecreatetruecolor(1600, 900);
+    $path = tempnam(sys_get_temp_dir(), 'thumb');
+    imagewebp($image, $path);
+    $upload = new Illuminate\Http\UploadedFile($path, 'foto.webp', 'image/webp', null, true);
+
+    $this->actingAs($this->admin)->from('/admin/courses')->post('/admin/courses', validCourse(['thumbnail' => $upload]))
+        ->assertSessionHasNoErrors();
+
+    $course = Course::firstWhere('slug', 'budidaya-lele-galon');
+    expect($course->thumbnail_path)->toMatch('#^courses/[a-z0-9]{14}\.webp$#');
+    Storage::disk('public')->assertExists($course->thumbnail_path);
+});

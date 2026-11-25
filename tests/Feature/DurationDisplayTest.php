@@ -24,3 +24,10 @@ it('keeps showing durations that are known', function () {
     $this->actingAs($this->user)->get('/courses/tanpa-durasi')->assertSeeText('5 menit')->assertDontSeeText('0 menit');
     $this->get('/learn/tanpa-durasi/'.$this->segments[0]->id)->assertSeeText('Durasi 5 menit.');
 });
+
+it('never shows 0 menit on the checkout and the order page', function () {
+    $order = App\Models\Order::factory()->for($this->user)->for($this->course)->create();
+
+    $this->actingAs(User::factory()->create())->get('/courses/tanpa-durasi/checkout')->assertOk()->assertDontSeeText('0 menit');
+    $this->actingAs($this->user)->get('/order/'.$order->uuid)->assertOk()->assertDontSeeText('0 menit');
+});

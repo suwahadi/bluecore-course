@@ -70,3 +70,11 @@ it('allows five exports a minute', function () {
 
     $this->get('/admin/users/export')->assertStatus(429);
 });
+
+it('neutralizes every cell start a spreadsheet treats as a formula', function (string $name) {
+    User::factory()->create(['name' => $name, 'email' => 'satu@contoh.id']);
+
+    $row = collect(array_slice(exportRows(), 1))->firstWhere(1, 'satu@contoh.id');
+
+    expect($row[0])->toBe("'".$name);
+})->with(['=1+1', '+1', '-2+3', '@SUM(1)', "\t=1", "\r=1"]);
