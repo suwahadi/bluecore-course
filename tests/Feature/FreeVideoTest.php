@@ -26,7 +26,10 @@ it('plays the video for signed-in users, verified or not', function () {
 
     $this->actingAs(User::factory()->unverified()->create())->get('/free-video')
         ->assertOk()
-        ->assertSee('src="https://www.youtube-nocookie.com/embed/M7lc1UVf-VE?rel=0&amp;modestbranding=1"', false)
+        ->assertSee('data-player data-video-id="M7lc1UVf-VE"', false)
+        ->assertDontSee('<iframe', false)
+        ->assertDontSee('data-position-url', false)
+        ->assertDontSee('data-complete-url', false)
         ->assertSee('<h1>Cara menyiapkan galon</h1>', false)
         ->assertSee('<p>Paragraf &lt;b&gt;satu&lt;/b&gt;.</p>', false)
         ->assertSee('<p>Paragraf dua.</p>', false)
@@ -55,7 +58,9 @@ it('locks the page for guests without sending the video', function () {
         ->toContain('form-grid form-grid--2')
         ->not->toContain('youtube-nocookie')
         ->not->toContain('M7lc1UVf-VE')
-        ->not->toContain('videoId');
+        ->not->toContain('videoId')
+        ->not->toContain('data-player')
+        ->not->toContain('data-video-id');
 });
 
 it('brings new users back to the open video and records the source', function () {
@@ -65,7 +70,7 @@ it('brings new users back to the open video and records the source', function ()
     ])->assertRedirect('/free-video');
 
     expect(User::firstWhere('email', 'sari@contoh.id')->signup_source)->toBe(SignupSource::FreeVideo);
-    $this->get('/free-video')->assertSee('youtube-nocookie.com/embed/M7lc1UVf-VE', false);
+    $this->get('/free-video')->assertSee('data-video-id="M7lc1UVf-VE"', false);
 });
 
 it('reopens the login tab with its error and still hides the video', function () {

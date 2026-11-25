@@ -1,3 +1,5 @@
+import './player';
+
 const fitBrand = () => {
     const text = document.querySelector('.brand__text');
     const name = text?.querySelector('.brand__name');

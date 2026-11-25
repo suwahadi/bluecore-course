@@ -2,7 +2,7 @@
     <div class="wrap free-video">
         @if ($videoId)
             <div class="player player--embed">
-                <iframe src="https://www.youtube-nocookie.com/embed/{{ $videoId }}?rel=0&amp;modestbranding=1" title="{{ $title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <div data-player data-video-id="{{ $videoId }}"></div>
             </div>
         @else
             <div class="player" role="img" aria-label="Pratinjau video">
