@@ -146,3 +146,9 @@ it('loads the home page with a fixed number of queries', function () {
 
     expect(count(DB::getQueryLog()))->toBe($few);
 });
+
+it('hides Nonton gratis when the saved free video link is not a YouTube video', function () {
+    App\Support\Settings::set(['lead_magnet_youtube_url' => 'https://contoh.id/bukan-video']);
+
+    $this->get('/')->assertOk()->assertDontSeeText('Nonton gratis');
+});

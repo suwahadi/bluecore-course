@@ -23,7 +23,7 @@ class CategoryRequest extends DialogRequest
         $category = $this->route('category');
 
         return [
-            'name' => ['required', 'string', 'min:2', 'max:60', $this->uniqueNameIgnoringCase($category)],
+            'name' => ['bail', 'required', 'string', 'min:2', 'max:60', $this->uniqueNameIgnoringCase($category)],
             'slug' => Slug::rules('categories', $category?->id),
             'sort_order' => ['required', 'integer', 'min:1'],
             'is_active' => ['required', 'boolean'],

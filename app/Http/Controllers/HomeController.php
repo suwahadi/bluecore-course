@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Testimonial;
 use App\Services\Courses\CourseQuery;
 use App\Support\Settings;
+use App\Support\YouTubeUrl;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -23,7 +24,7 @@ class HomeController extends Controller
             'owned' => $courses->ownedProgress($request->user(), $latest),
             'topics' => Category::query()->active()->whereHas('courses', fn ($query) => $query->published())->ordered()->get(['id', 'name', 'slug']),
             'testimonials' => Testimonial::query()->visible()->ordered()->get(),
-            'freeVideo' => filled(Settings::get('lead_magnet_youtube_url')),
+            'freeVideo' => YouTubeUrl::parse(Settings::get('lead_magnet_youtube_url')) !== null,
         ]);
     }
 }

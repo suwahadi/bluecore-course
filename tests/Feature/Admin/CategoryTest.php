@@ -131,3 +131,9 @@ it('pages the list by 20 with Indonesian pager labels', function () {
         ->assertSeeText('Berikutnya')
         ->assertDontSeeText('Kategori 20');
 });
+
+it('answers a name sent as a list with a validation error instead of a crash', function () {
+    $this->actingAs($this->admin)->from('/admin/categories')->post('/admin/categories', [
+        '_modal' => 'category-new', 'name' => ['Lele'], 'slug' => 'lele', 'sort_order' => 1, 'is_active' => '1',
+    ])->assertRedirect('/admin/categories')->assertSessionHasErrorsIn('category-new', ['name' => 'Nama kategori wajib diisi, minimal 2 karakter.']);
+});

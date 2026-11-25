@@ -137,3 +137,20 @@ it('marks courses the visitor owns', function () {
 
     $this->actingAs($enrollment->user)->get('/courses')->assertSeeText('Dimiliki');
 });
+
+it('writes normalised filters back to the address', function () {
+    Livewire::withQueryParams(['sort' => 'acak', 'cat' => 'tidak-ada', 'q' => str_repeat('a', 150)])
+        ->test(CourseCatalog::class)
+        ->assertSet('sort', 'newest')
+        ->assertSet('category', '')
+        ->assertSet('q', str_repeat('a', 100));
+});
+
+it('ignores filters sent as lists', function () {
+    Livewire::withQueryParams(['sort' => ['x'], 'cat' => ['y'], 'q' => ['z']])
+        ->test(CourseCatalog::class)
+        ->assertOk()
+        ->assertSet('sort', 'newest')
+        ->assertSet('category', '')
+        ->assertSet('q', '');
+});

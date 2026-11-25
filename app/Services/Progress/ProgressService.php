@@ -33,7 +33,7 @@ class ProgressService
         $position = min(max($position, 0), $duration);
         $keys = ['user_id' => $user->id, 'course_segment_id' => $segment->id];
 
-        SegmentProgress::query()->insertOrIgnore([...$keys, 'created_at' => now(), 'updated_at' => now()]);
+        SegmentProgress::query()->fillAndInsertOrIgnore([$keys]);
 
         DB::transaction(function () use ($keys, $position, $duration) {
             $progress = SegmentProgress::query()->where($keys)->lockForUpdate()->sole();

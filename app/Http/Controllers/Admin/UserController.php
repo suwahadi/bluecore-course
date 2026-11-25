@@ -10,6 +10,7 @@ use App\Models\Course;
 use App\Models\User;
 use App\Services\Users\UserAnonymizer;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -33,21 +34,30 @@ class UserController extends Controller
     {
         $data = $request->validated();
         $role = $user->is($request->user()) ? $user->role : UserRole::from($data['role']);
-
-        if ($user->isAdmin() && $role !== UserRole::Admin && User::adminCount() <= 1) {
-            return back()->withInput()->withErrors(['role' => 'Minimal harus ada satu admin.'], 'user-'.$user->id);
-        }
-
         $emailChanged = $data['email'] !== $user->email;
 
-        $user->forceFill([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'phone' => $data['phone'],
-            'role' => $role,
-            ...($emailChanged ? ['email_verified_at' => null] : []),
-            ...(filled($data['password'] ?? null) ? ['password' => $data['password']] : []),
-        ])->save();
+        $saved = DB::transaction(function () use ($user, $role, $data, $emailChanged) {
+            if ($user->isAdmin() && $role !== UserRole::Admin && $this->lockedAdminCount() <= 1) {
+                return false;
+            }
+
+            $user->forceFill([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'phone' => $data['phone'],
+                'role' => $role,
+                ...($emailChanged ? ['email_verified_at' => null] : []),
+                ...(filled($data['password'] ?? null) ? ['password' => $data['password']] : []),
+            ])->save();
+
+            return true;
+        });
+
+        if (! $saved) {
+            return back()
+                ->withInput($request->except(['password', 'password_confirmation']))
+                ->withErrors(['role' => 'Minimal harus ada satu admin.'], 'user-'.$user->id);
+        }
 
         if ($emailChanged) {
             $user->sendEmailVerificationNotification();
@@ -62,12 +72,25 @@ class UserController extends Controller
             return back()->with('error', 'Data pribadi akun sendiri tidak bisa dihapus.');
         }
 
-        if ($user->isAdmin() && User::adminCount() <= 1) {
+        $erased = DB::transaction(function () use ($user, $request, $anonymizer) {
+            if ($user->isAdmin() && $this->lockedAdminCount() <= 1) {
+                return false;
+            }
+
+            $anonymizer->anonymize($user, $request->user());
+
+            return true;
+        });
+
+        if (! $erased) {
             return back()->with('error', 'Minimal harus ada satu admin.');
         }
 
-        $anonymizer->anonymize($user, $request->user());
-
         return back()->with('status', 'Data pribadi pengguna dihapus.');
+    }
+
+    private function lockedAdminCount(): int
+    {
+        return User::query()->where('role', UserRole::Admin)->lockForUpdate()->count();
     }
 }

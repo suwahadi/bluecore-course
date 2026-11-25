@@ -17,6 +17,8 @@ class CourseCatalog extends Component
 
     public const PER_PAGE = 12;
 
+    private const TERM_LIMIT = 100;
+
     public const SORTS = ['newest' => 'Terbaru', 'cheapest' => 'Termurah', 'priciest' => 'Termahal', 'popular' => 'Terpopuler'];
 
     #[Url(except: '')]
@@ -27,6 +29,13 @@ class CourseCatalog extends Component
 
     #[Url(except: 'newest')]
     public $sort = 'newest';
+
+    public function mount(): void
+    {
+        $this->q = is_string($this->q) ? mb_substr($this->q, 0, self::TERM_LIMIT) : '';
+        $this->sort = is_string($this->sort) && array_key_exists($this->sort, self::SORTS) ? $this->sort : 'newest';
+        $this->category = is_string($this->category) && Category::query()->active()->where('slug', $this->category)->exists() ? $this->category : '';
+    }
 
     public function updated(string $property): void
     {
@@ -49,7 +58,7 @@ class CourseCatalog extends Component
     public function render(CourseQuery $courses): View
     {
         $categories = Category::query()->active()->ordered()->get(['id', 'name', 'slug']);
-        $term = is_string($this->q) ? mb_substr(trim($this->q), 0, 100) : '';
+        $term = is_string($this->q) ? mb_substr(trim($this->q), 0, self::TERM_LIMIT) : '';
         $category = is_string($this->category) ? $categories->firstWhere('slug', $this->category) : null;
         $sort = is_string($this->sort) && array_key_exists($this->sort, self::SORTS) ? $this->sort : 'newest';
 

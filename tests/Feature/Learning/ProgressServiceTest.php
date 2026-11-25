@@ -166,3 +166,12 @@ it('creates the progress row outside the locking transaction', function () {
     expect($insertsInsideLock)->toBe([])
         ->and(progressRow())->last_position_seconds->toBe(400)->percent->toBe(40);
 });
+
+it('stamps a new progress row with one moment', function () {
+    $this->service->recordPosition($this->user, $this->segment, 100, 1000);
+
+    $row = progressRow();
+
+    expect($row->created_at)->not->toBeNull()
+        ->and($row->created_at->equalTo($row->updated_at))->toBeTrue();
+});

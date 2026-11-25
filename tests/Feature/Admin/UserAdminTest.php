@@ -279,3 +279,25 @@ it('never leaves the site without an admin', function () {
 
     expect(User::query()->where('role', UserRole::Admin)->pluck('id')->all())->toBe([$this->admin->id]);
 });
+
+it('refuses to demote the last admin when the acting admin was demoted meanwhile, without keeping the password', function () {
+    $other = User::factory()->admin()->create();
+    User::query()->whereKey($this->admin->id)->update(['role' => UserRole::User->value]);
+
+    editUser($other, ['role' => 'user', 'password' => 'rahasiabaru1', 'password_confirmation' => 'rahasiabaru1'])
+        ->assertSessionHasErrorsIn("user-{$other->id}", ['role' => 'Minimal harus ada satu admin.'])
+        ->assertSessionMissing('_old_input.password')
+        ->assertSessionMissing('_old_input.password_confirmation');
+
+    expect($other->fresh()->role)->toBe(UserRole::Admin);
+});
+
+it('refuses to erase the last admin when the acting admin was demoted meanwhile', function () {
+    $other = User::factory()->admin()->create(['email' => 'admin2@contoh.id']);
+    User::query()->whereKey($this->admin->id)->update(['role' => UserRole::User->value]);
+
+    $this->actingAs($this->admin)->from('/admin/users')->delete("/admin/users/{$other->id}/personal-data")
+        ->assertSessionHas('error', 'Minimal harus ada satu admin.');
+
+    expect($other->fresh()->email)->toBe('admin2@contoh.id');
+});
