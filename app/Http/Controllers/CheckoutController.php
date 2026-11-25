@@ -37,7 +37,7 @@ class CheckoutController extends Controller
         $user = $request->user();
 
         if ($user->can('learn', $course)) {
-            return redirect()->to(url('/learn/'.$course->slug));
+            return redirect()->route('learn.index', $course);
         }
 
         if ($open = $this->orders->openOrder($user, $course)) {
@@ -69,7 +69,7 @@ class CheckoutController extends Controller
         $order = $this->orders->createOrder($user, $course);
 
         if ($order === null) {
-            return redirect()->to(url('/learn/'.$course->slug));
+            return redirect()->route('learn.index', $course);
         }
 
         if ($order->duitku_reference === null) {

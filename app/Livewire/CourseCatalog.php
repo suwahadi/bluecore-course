@@ -66,7 +66,7 @@ class CourseCatalog extends Component
             'selectedCategory' => $category?->slug ?? '',
             'selectedSort' => $sort,
             'totalPublished' => Course::query()->published()->count(),
-            'ownedIds' => $courses->ownedIds(Auth::user()),
+            'owned' => $courses->ownedProgress(Auth::user(), $results->items()),
         ]);
     }
 }

@@ -34,7 +34,13 @@
                         <p class="muted small buybox__hint">Bayar sekali, akses selamanya.</p>
                         <div class="buybox__cta">
                             @if ($canLearn)
-                                <a class="btn btn--primary btn--block" href="{{ url('/learn/'.$course->slug) }}">Lanjutkan belajar</a>
+                                <a class="btn btn--primary btn--block" href="{{ route('learn.index', $course) }}">Lanjutkan belajar</a>
+                                @if ($progress)
+                                    <div class="buybox__progress">
+                                        <div class="progress-line"><span>Progres</span><span class="num">{{ $progress->done() }} dari {{ $progress->total() }} video</span></div>
+                                        <x-segment-bar :progress="$progress" :thin="true" />
+                                    </div>
+                                @endif
                             @elseif (! auth()->check())
                                 <a class="btn btn--primary btn--block" href="{{ url('/register?next='.urlencode($checkoutPath)) }}">Daftar untuk membeli</a>
                                 <p class="muted small buybox__hint">Sudah punya akun? <a href="{{ url('/login?next='.urlencode($checkoutPath)) }}">Masuk</a></p>

@@ -15,10 +15,12 @@ class HomeController extends Controller
 
     public function __invoke(Request $request, CourseQuery $courses): View
     {
+        $latest = $courses->latest(self::LATEST_LIMIT);
+
         return view('home', [
             'featured' => $courses->featured(),
-            'latest' => $courses->latest(self::LATEST_LIMIT),
-            'ownedIds' => $courses->ownedIds($request->user()),
+            'latest' => $latest,
+            'owned' => $courses->ownedProgress($request->user(), $latest),
             'topics' => Category::query()->active()->whereHas('courses', fn ($query) => $query->published())->ordered()->get(['id', 'name', 'slug']),
             'testimonials' => Testimonial::query()->visible()->ordered()->get(),
             'freeVideo' => filled(Settings::get('lead_magnet_youtube_url')),

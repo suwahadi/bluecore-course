@@ -38,7 +38,7 @@
             @else
                 <div class="course-grid course-grid--four">
                     @foreach ($latest as $course)
-                        <x-course-card :course="$course" :owned="in_array($course->id, $ownedIds, true)" />
+                        <x-course-card :course="$course" :owned="isset($owned[$course->id])" :progress="$owned[$course->id] ?? null" />
                     @endforeach
                 </div>
             @endif

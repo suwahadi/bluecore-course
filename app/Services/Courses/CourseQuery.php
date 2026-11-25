@@ -6,12 +6,17 @@ use App\Models\Category;
 use App\Models\Course;
 use App\Models\Enrollment;
 use App\Models\User;
+use App\Services\Progress\ProgressService;
 use App\Support\Settings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 
 class CourseQuery
 {
+    public function __construct(private ProgressService $progress)
+    {
+    }
+
     public function cards(): Builder
     {
         return Course::query()
@@ -52,5 +57,16 @@ class CourseQuery
     public function ownedIds(?User $user): array
     {
         return $user ? Enrollment::query()->where('user_id', $user->id)->pluck('course_id')->all() : [];
+    }
+
+    public function ownedProgress(?User $user, iterable $courses): array
+    {
+        if ($user === null) {
+            return [];
+        }
+
+        $shown = collect($courses)->pluck('id')->all();
+
+        return $this->progress->summaries($user, array_values(array_intersect($shown, $this->ownedIds($user))));
     }
 }

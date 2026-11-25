@@ -36,7 +36,7 @@
     @else
         <div class="course-grid">
             @foreach ($results as $course)
-                <x-course-card :course="$course" :owned="in_array($course->id, $ownedIds, true)" wire:key="course-{{ $course->id }}" />
+                <x-course-card :course="$course" :owned="isset($owned[$course->id])" :progress="$owned[$course->id] ?? null" wire:key="course-{{ $course->id }}" />
             @endforeach
         </div>
         {{ $results->links() }}

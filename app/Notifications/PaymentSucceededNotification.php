@@ -32,7 +32,7 @@ class PaymentSucceededNotification extends Notification implements ShouldQueue
             ->line("Pembayaran pesanan {$order->order_number} sudah kami terima.")
             ->line("Kursus: {$order->course->title}")
             ->line('Total dibayar: '.Format::rupiah($order->amount))
-            ->action('Mulai belajar', url('/learn/'.$order->course->slug))
+            ->action('Mulai belajar', route('learn.index', $order->course))
             ->line('Akses kursus berlaku selamanya.');
     }
 }

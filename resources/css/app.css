@@ -364,6 +364,10 @@ img.thumb {
     margin-top: 6px;
 }
 
+.buybox__progress {
+    margin-top: 14px;
+}
+
 .inline-form {
     margin: 0;
 }

@@ -117,7 +117,7 @@
                             </div>
                         @elseif ($status === OrderStatus::Paid)
                             <div class="btn-row">
-                                <a class="btn btn--primary" href="{{ url('/learn/'.$course->slug) }}">Mulai belajar</a>
+                                <a class="btn btn--primary" href="{{ route('learn.index', $course) }}">Mulai belajar</a>
                                 <button type="button" class="btn" x-data x-on:click="window.print()">Cetak invoice</button>
                             </div>
                         @else

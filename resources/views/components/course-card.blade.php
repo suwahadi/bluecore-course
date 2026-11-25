@@ -1,4 +1,4 @@
-@props(['course', 'owned' => false])
+@props(['course', 'owned' => false, 'progress' => null])
 @php
     $percent = $owned ? 0 : $course->discountPercent();
 @endphp
@@ -13,13 +13,16 @@
             <span class="badge course-card__tag" title="Hemat {{ $percent }}%">−{{ $percent }}%</span>
         @endif
     </span>
-    <span class="course-card__body">
+    <div class="course-card__body">
         <span class="course-card__cat">{{ $course->category?->name }}</span>
         <span class="course-card__title">{{ $course->title }}</span>
         <span class="course-card__meta">
             <span><x-icon name="video" :size="16" />{{ $course->segments_count }} video</span>
             <span><x-icon name="clock" :size="16" />{{ \App\Support\Format::duration((int) $course->segments_sum_duration_seconds) }}</span>
         </span>
+        @if ($owned && $progress)
+            <x-segment-bar :progress="$progress" :thin="true" />
+        @endif
         <span class="course-card__price">
             @if ($owned)
                 <span class="badge badge--brand">Dimiliki</span>
@@ -27,5 +30,5 @@
                 <x-price :course="$course" :badge="false" />
             @endif
         </span>
-    </span>
+    </div>
 </a>

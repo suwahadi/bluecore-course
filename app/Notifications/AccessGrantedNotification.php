@@ -26,7 +26,7 @@ class AccessGrantedNotification extends Notification implements ShouldQueue
     {
         return $this->siteMail($notifiable, 'Akses kursus diberikan')
             ->line("Anda sekarang punya akses ke kursus {$this->course->title}.")
-            ->action('Mulai belajar', url('/learn/'.$this->course->slug))
+            ->action('Mulai belajar', route('learn.index', $this->course))
             ->line('Akses ini berlaku selamanya selama akun Anda aktif.');
     }
 }

@@ -22,13 +22,14 @@ class FreeVideoController extends Controller
         }
 
         $user = $request->user();
+        $moreCourses = $courses->latest(self::MORE_COURSES);
 
         return view('free-video.show', [
             'title' => Settings::get('lead_magnet_title') ?: 'Video gratis',
             'paragraphs' => Format::paragraphs(Settings::get('lead_magnet_description')),
             'videoId' => $user ? $videoId : null,
-            'courses' => $courses->latest(self::MORE_COURSES),
-            'ownedIds' => $courses->ownedIds($user),
+            'courses' => $moreCourses,
+            'owned' => $courses->ownedProgress($user, $moreCourses),
             'activeForm' => old('_form') === 'login' ? 'login' : 'register',
         ]);
     }
