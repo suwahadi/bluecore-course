@@ -164,12 +164,25 @@ it('ignores a failed-payment callback after the order is paid', function () {
         ->and(PaymentCallback::query()->sole()->status)->toBe(PaymentCallbackStatus::Ignored);
 });
 
-it('marks a pending order failed on a failed-payment callback', function () {
+it('marks a pending order failed only when Duitku confirms the failure', function () {
+    duitkuStatus('02');
+
     sendCallback(callbackPayload(['resultCode' => '01']))->assertOk();
 
     expect($this->order->fresh()->status)->toBe(OrderStatus::Failed)
         ->and(PaymentCallback::query()->sole()->status)->toBe(PaymentCallbackStatus::Processed);
 });
+
+it('does not trust an unsigned failure code that Duitku does not confirm', function (string $code, OrderStatus $expected) {
+    duitkuStatus($code);
+
+    sendCallback(callbackPayload(['resultCode' => '01']))->assertOk();
+
+    expect($this->order->fresh()->status)->toBe($expected);
+})->with([
+    'still pending at Duitku' => ['01', OrderStatus::Pending],
+    'actually paid at Duitku' => ['00', OrderStatus::Paid],
+]);
 
 it('still pays an expired or cancelled order when money arrives', function (OrderStatus $status) {
     $this->order->update(['status' => $status]);

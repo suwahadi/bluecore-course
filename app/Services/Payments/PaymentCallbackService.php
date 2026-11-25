@@ -41,7 +41,7 @@ class PaymentCallbackService
 
         match ($callback->result_code) {
             '00' => $this->processSuccess($callback, $order),
-            '01' => $this->finish($callback, $this->orders->fail($order) ? PaymentCallbackStatus::Processed : PaymentCallbackStatus::Ignored),
+            '01' => $this->processFailure($callback, $order),
             default => $this->finish($callback, PaymentCallbackStatus::Ignored, 'info', 'Duitku callback with an unhandled result code'),
         };
     }
@@ -98,6 +98,32 @@ class PaymentCallbackService
         $paid = $this->orders->markPaid($order, $callback->payload['paymentCode'] ?? null, $callback->duitku_reference);
 
         $this->finish($callback, $paid ? PaymentCallbackStatus::Processed : PaymentCallbackStatus::Ignored);
+    }
+
+    private function processFailure(PaymentCallback $callback, Order $order): void
+    {
+        if ($order->status !== OrderStatus::Pending) {
+            $this->finish($callback, PaymentCallbackStatus::Ignored);
+
+            return;
+        }
+
+        $status = $this->duitku->transactionStatus($order->order_number);
+
+        if ($status['status_code'] === '00') {
+            $paid = $this->applyConfirmedPayment($order, $status, $callback->payload['paymentCode'] ?? null);
+            $this->finish($callback, $paid ? PaymentCallbackStatus::Processed : PaymentCallbackStatus::Ignored);
+
+            return;
+        }
+
+        if ($status['status_code'] === '02') {
+            $this->finish($callback, $this->orders->fail($order) ? PaymentCallbackStatus::Processed : PaymentCallbackStatus::Ignored);
+
+            return;
+        }
+
+        $this->finish($callback, PaymentCallbackStatus::Ignored, 'warning', 'Duitku did not confirm the failure callback');
     }
 
     private function finish(PaymentCallback $callback, PaymentCallbackStatus $status, string $level = 'info', string $message = 'Duitku callback processed'): void
