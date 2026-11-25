@@ -7,6 +7,7 @@ use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\Payments\DuitkuCallbackController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Middleware\EnsureScalarAuthInput;
@@ -28,6 +29,7 @@ Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('c
 Route::get('/contact', ContactController::class)->name('contact');
 Route::get('/free-video', FreeVideoController::class)->name('free-video');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
+Route::post('/payments/duitku/callback', DuitkuCallbackController::class)->middleware('throttle:60,1,duitku-callback')->name('payments.duitku.callback');
 Route::get('/robots.txt', RobotsController::class)->name('robots');
 
 Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
