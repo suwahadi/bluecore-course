@@ -67,7 +67,7 @@
                     <h2 class="panel-title">Daftar video</h2>
                     <ul class="list">
                         @foreach ($course->segments as $segment)
-                            <li><span>{{ $loop->iteration }}. {{ $segment->title }}</span><span class="muted small nowrap">{{ Format::duration((int) $segment->duration_seconds) }}</span></li>
+                            <li><span>{{ $loop->iteration }}. {{ $segment->title }}</span><span class="muted small nowrap">{{ $segment->duration_seconds ? Format::duration($segment->duration_seconds) : '' }}</span></li>
                         @endforeach
                     </ul>
                 </div>

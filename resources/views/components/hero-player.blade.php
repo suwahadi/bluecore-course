@@ -14,7 +14,7 @@
                 <x-thumbnail-placeholder :title="$course->title" />
             @endif
             <span class="hero-player__tag">Paket unggulan</span>
-            <span class="hero-player__caption"><strong>1. {{ $first->title }}</strong><span>{{ Format::duration((int) $first->duration_seconds) }}</span></span>
+            <span class="hero-player__caption"><strong>1. {{ $first->title }}</strong><span>{{ $first->duration_seconds ? Format::duration($first->duration_seconds) : '' }}</span></span>
         </a>
         <div class="hero-player__body">
             <div class="hero-player__head">
@@ -32,7 +32,7 @@
             @if ($queue->isNotEmpty())
                 <ol class="hero-player__queue">
                     @foreach ($queue as $segment)
-                        <li><span>{{ $loop->iteration + 1 }}. {{ $segment->title }}</span><span>{{ Format::duration((int) $segment->duration_seconds) }}</span></li>
+                        <li><span>{{ $loop->iteration + 1 }}. {{ $segment->title }}</span><span>{{ $segment->duration_seconds ? Format::duration($segment->duration_seconds) : '' }}</span></li>
                     @endforeach
                 </ol>
             @endif

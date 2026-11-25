@@ -18,7 +18,9 @@
         <span class="course-card__title">{{ $course->title }}</span>
         <span class="course-card__meta">
             <span><x-icon name="video" :size="16" />{{ $course->segments_count }} video</span>
-            <span><x-icon name="clock" :size="16" />{{ \App\Support\Format::duration((int) $course->segments_sum_duration_seconds) }}</span>
+            @if ((int) $course->segments_sum_duration_seconds > 0)
+                <span><x-icon name="clock" :size="16" />{{ \App\Support\Format::duration((int) $course->segments_sum_duration_seconds) }}</span>
+            @endif
         </span>
         @if ($owned && $progress)
             <x-segment-bar :progress="$progress" :thin="true" />

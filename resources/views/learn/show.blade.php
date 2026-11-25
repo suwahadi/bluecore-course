@@ -65,7 +65,7 @@
                                             @endif
                                         </span>
                                         <span>{{ $loop->iteration }}. {{ $item->title }}<span class="sr-only">{{ $done ? ', selesai' : ($playing ? ', sedang diputar' : '') }}</span></span>
-                                        <span class="seg-dur num">{{ Format::duration((int) $item->duration_seconds) }}</span>
+                                        <span class="seg-dur num">{{ $item->duration_seconds ? Format::duration($item->duration_seconds) : '' }}</span>
                                         <span class="seg-progress" aria-hidden="true"><span style="width: {{ $percent }}%"></span></span>
                                     </a>
                                 </li>

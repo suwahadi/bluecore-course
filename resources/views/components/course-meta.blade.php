@@ -1,9 +1,10 @@
 @props(['course', 'participants' => false, 'variant' => null])
 @php
-    $items = [
-        ['video', $course->segments_count.' video'],
-        ['clock', \App\Support\Format::duration((int) $course->segments_sum_duration_seconds)],
-    ];
+    $items = [['video', $course->segments_count.' video']];
+
+    if ((int) $course->segments_sum_duration_seconds > 0) {
+        $items[] = ['clock', \App\Support\Format::duration((int) $course->segments_sum_duration_seconds)];
+    }
 
     if ((int) ($course->materials_count ?? 0) > 0) {
         $items[] = ['file', $course->materials_count.' materi PDF'];
