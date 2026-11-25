@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
     Route::get('/order/{order}/status', [OrderController::class, 'status'])->middleware('throttle:60,1,order-status')->name('order.status');
     Route::post('/order/{order}/refresh', [OrderController::class, 'refresh'])->middleware('throttle:10,1,order-action')->name('order.refresh');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Http\Requests\OrderDateFilterRequest;
 use App\Models\Order;
 use App\Services\Orders\OrderService;
 use App\Services\Payments\DuitkuClient;
@@ -23,8 +24,25 @@ class OrderController extends Controller
 
     public const REFRESH_SECONDS = 5;
 
+    public const PER_PAGE = 20;
+
     public function __construct(private OrderService $orders, private DuitkuClient $duitku, private PaymentCallbackService $payments)
     {
+    }
+
+    public function index(OrderDateFilterRequest $request): View
+    {
+        $from = $request->from();
+        $to = $request->to();
+        $mine = Order::query()->where('user_id', $request->user()->id);
+
+        return view('orders.index', [
+            'orders' => (clone $mine)->createdBetween($from, $to)->with('course:id,title')->latest()->latest('id')->paginate(self::PER_PAGE)->withQueryString(),
+            'hasOrders' => (clone $mine)->exists(),
+            'filtered' => $from !== null || $to !== null,
+            'from' => $from,
+            'to' => $to,
+        ]);
     }
 
     public function show(Request $request, Order $order): View
