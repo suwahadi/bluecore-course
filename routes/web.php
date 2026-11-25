@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\Payments\DuitkuCallbackController;
@@ -50,6 +51,7 @@ Route::middleware(['guest', EnsureScalarAuthInput::class])->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/courses/{course:slug}/checkout', [CheckoutController::class, 'show'])->middleware('throttle:20,1,checkout-show')->name('checkout.show');
     Route::post('/courses/{course:slug}/checkout', [CheckoutController::class, 'store'])->middleware('throttle:10,1,checkout')->name('checkout.store');
+    Route::get('/courses/{course:slug}/materials/{material}', MaterialDownloadController::class)->scopeBindings()->name('materials.download');
 });
 
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
