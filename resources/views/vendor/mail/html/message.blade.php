@@ -1,7 +1,6 @@
 @php
     use App\Support\Settings;
     $siteName = (string) Settings::get('site_name');
-    $address = Settings::get('address');
     $supportEmail = Settings::get('email');
     $whatsapp = Settings::get('whatsapp');
     $contacts = array_values(array_filter([
@@ -28,7 +27,7 @@
 
 <x-slot:footer>
 <x-mail::footer>
-<p><strong>{{ $siteName }}</strong>@if (filled($address))<br>{{ $address }}@endif</p>
+<p><strong>{{ $siteName }}</strong></p>
 <p>Ada pertanyaan? Balas email ini{!! $contacts ? ' atau hubungi kami lewat '.implode(' dan ', $contacts) : '' !!}.</p>
 </x-mail::footer>
 </x-slot:footer>

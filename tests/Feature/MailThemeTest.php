@@ -27,7 +27,8 @@ it('dresses every email in the BlueCore brand', function (string $key) {
         ->toContain('support@bluecore.co.id')
         ->toContain('https://wa.me/6281818182878')
         ->toMatch('/Salam,<br\s*\/?>\s*BlueCore Course/')
-        ->not->toContain('laravel.com');
+        ->not->toContain('laravel.com')
+        ->not->toContain('Bogor');
 })->with(['verify', 'reset', 'order-created', 'payment-succeeded', 'order-expired', 'access-granted', 'admin-order-paid']);
 
 it('lays out the order breakdown as a table with the total emphasised', function () {
