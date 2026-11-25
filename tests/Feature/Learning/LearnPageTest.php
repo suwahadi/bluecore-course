@@ -95,7 +95,7 @@ it('renders the player, navigation, sidebar and materials', function () {
         ->toContain('data-video-id="abcdefghij2"')
         ->toContain('data-position-url="'.route('learn.position', $second).'"')
         ->toContain('data-complete-url="'.route('learn.complete', $second).'"')
-        ->toContain('<h1>Video 2</h1>')
+        ->toContain('<h1 id="video-title" tabindex="-1">Video 2</h1>')
         ->toContain('href="'.route('learn.show', [$this->course, $this->segments[0]]).'">Sebelumnya</a>')
         ->toContain('href="'.route('learn.show', [$this->course, $this->segments[2]]).'">Berikutnya</a>')
         ->toContain('action="'.route('learn.complete', $second).'"')

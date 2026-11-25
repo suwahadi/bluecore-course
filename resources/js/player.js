@@ -11,7 +11,7 @@ const loadApi = () => {
         return Promise.resolve(window.YT);
     }
 
-    apiReady ??= new Promise((resolve) => {
+    apiReady ??= new Promise((resolve, reject) => {
         const previousCallback = window.onYouTubeIframeAPIReady;
 
         window.onYouTubeIframeAPIReady = () => {
@@ -22,6 +22,11 @@ const loadApi = () => {
         const script = document.createElement('script');
         script.src = apiUrl;
         script.async = true;
+        script.onerror = () => {
+            apiReady = null;
+            script.remove();
+            reject(new Error('YouTube IFrame API tidak termuat.'));
+        };
         document.head.append(script);
     });
 
@@ -29,6 +34,17 @@ const loadApi = () => {
 };
 
 const csrfToken = () => document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+
+const plainFrame = (videoId, start) => {
+    const frame = document.createElement('iframe');
+    const params = new URLSearchParams({ rel: '0', modestbranding: '1', playsinline: '1', start: String(start) });
+    frame.src = `${playerHost}/embed/${encodeURIComponent(videoId)}?${params}`;
+    frame.title = 'Pemutar video';
+    frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+    frame.allowFullscreen = true;
+
+    return frame;
+};
 
 const initPlayer = async (element) => {
     const { videoId, positionUrl, completeUrl } = element.dataset;
@@ -113,6 +129,7 @@ const initPlayer = async (element) => {
     document.querySelector('[data-restart]')?.addEventListener('click', (event) => {
         startAt = 0;
         player?.seekTo?.(0, true);
+        document.getElementById('video-title')?.focus();
         event.currentTarget.closest('[data-resume]')?.remove();
     });
 
@@ -124,7 +141,15 @@ const initPlayer = async (element) => {
 
     window.addEventListener('pagehide', () => report(true));
 
-    const YT = await loadApi();
+    let YT;
+
+    try {
+        YT = await loadApi();
+    } catch {
+        element.replaceWith(plainFrame(videoId, startAt));
+
+        return;
+    }
 
     player = new YT.Player(element, {
         host: playerHost,
