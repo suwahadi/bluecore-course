@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Notifications\Concerns\BuildsSiteMail;
+use App\Support\Settings;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,9 +18,9 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
         $minutes = config('auth.verification.expire', 60);
 
         return $this->siteMail($notifiable, 'Verifikasi email Anda', greetByName: false)
-            ->line('Terima kasih sudah mendaftar. Klik tombol di bawah untuk memastikan email ini milik Anda.')
+            ->line('Klik tombol di bawah untuk memastikan email ini milik Anda.')
             ->action('Verifikasi email', $this->verificationUrl($notifiable))
             ->line("Tautan ini berlaku {$minutes} menit.")
-            ->line('Jika Anda tidak membuat akun, abaikan email ini.');
+            ->line('Jika Anda tidak mendaftar atau tidak mengganti email di '.Settings::get('site_name').', abaikan email ini.');
     }
 }

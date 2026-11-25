@@ -39,7 +39,7 @@ class SegmentsRequest extends FormRequest
             'segments.*.title.max' => 'Judul video maksimal 150 karakter.',
             'segments.*.url.required' => 'Tautan YouTube belum benar.',
             'segments.*.url.string' => 'Tautan YouTube belum benar.',
-            'segments.*.url.max' => 'Tautan YouTube belum benar.',
+            'segments.*.url.max' => 'Tautan YouTube maksimal 255 karakter.',
             'segments.*.minutes.*' => 'Menit harus angka bulat.',
             'segments.*.seconds.*' => 'Detik harus angka 0 sampai 59.',
         ];

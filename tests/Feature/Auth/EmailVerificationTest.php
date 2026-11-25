@@ -71,6 +71,16 @@ it('sends an Indonesian, queued verification email from the site', function () {
         ->and($mail->actionUrl)->toContain('/email/verify/'.$user->id.'/');
 });
 
+it('words the verification email so it fits a new account and an email change', function () {
+    $mail = (new VerifyEmailNotification)->toMail(User::factory()->unverified()->create());
+    $text = implode(' ', [...$mail->introLines, ...$mail->outroLines]);
+
+    expect($text)->toContain('Klik tombol di bawah untuk memastikan email ini milik Anda.')
+        ->toContain('Jika Anda tidak mendaftar atau tidak mengganti email di BlueCore Course, abaikan email ini.')
+        ->not->toContain('Terima kasih sudah mendaftar')
+        ->not->toContain('Jika Anda tidak membuat akun');
+});
+
 it('lets verified users skip the notice', function () {
     $this->actingAs(User::factory()->create())->get(route('verification.notice'))->assertRedirect();
 });

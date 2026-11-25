@@ -75,6 +75,7 @@ it('shows inline errors and saves nothing when one row is wrong', function (arra
 })->with([
     'bad link' => [['title' => 'Dua', 'url' => 'https://vimeo.com/123'], 'segments.1.url', 'Tautan YouTube belum benar.'],
     'empty link' => [['title' => 'Dua', 'url' => ''], 'segments.1.url', 'Tautan YouTube belum benar.'],
+    'link too long' => [['title' => 'Dua', 'url' => 'https://youtu.be/bbbbbbbbbbb?t='.str_repeat('1', 250)], 'segments.1.url', 'Tautan YouTube maksimal 255 karakter.'],
     'empty title' => [['title' => '', 'url' => 'https://youtu.be/bbbbbbbbbbb'], 'segments.1.title', 'Judul video wajib diisi.'],
     'seconds over 59' => [['title' => 'Dua', 'url' => 'https://youtu.be/bbbbbbbbbbb', 'seconds' => '75'], 'segments.1.seconds', 'Detik harus angka 0 sampai 59.'],
     'minutes not a number' => [['title' => 'Dua', 'url' => 'https://youtu.be/bbbbbbbbbbb', 'minutes' => 'tiga'], 'segments.1.minutes', 'Menit harus angka bulat.'],
