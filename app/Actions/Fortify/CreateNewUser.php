@@ -5,6 +5,7 @@ namespace App\Actions\Fortify;
 use App\Enums\SignupSource;
 use App\Models\User;
 use App\Support\NextPath;
+use App\Support\PersonName;
 use App\Support\PhoneNumber;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -20,14 +21,12 @@ class CreateNewUser implements CreatesNewUsers
         $input['email'] = is_string($input['email'] ?? null) ? Str::lower(trim($input['email'])) : '';
 
         Validator::make($input, [
-            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'name' => PersonName::rules(),
             'phone' => PhoneNumber::rules(),
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
             ...$this->passwordRules(),
         ], [
-            'name.required' => 'Nama wajib diisi.',
-            'name.min' => 'Nama minimal 2 karakter.',
-            'name.max' => 'Nama maksimal 100 karakter.',
+            ...PersonName::messages(),
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email belum benar, contoh nama@domain.com.',
             'email.max' => 'Email maksimal 150 karakter.',

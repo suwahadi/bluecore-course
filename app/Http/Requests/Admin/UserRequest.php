@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Actions\Fortify\PasswordValidationRules;
 use App\Enums\UserRole;
+use App\Support\PersonName;
 use App\Support\PhoneNumber;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -26,7 +27,7 @@ class UserRequest extends DialogRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'name' => PersonName::rules(),
             'email' => ['required', 'string', 'email', 'max:150', Rule::unique('users', 'email')->ignore($this->route('user'))],
             'phone' => PhoneNumber::rules(false),
             'role' => ['required', Rule::enum(UserRole::class)],
@@ -38,10 +39,7 @@ class UserRequest extends DialogRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Nama wajib diisi.',
-            'name.string' => 'Nama wajib diisi.',
-            'name.min' => 'Nama minimal 2 karakter.',
-            'name.max' => 'Nama maksimal 100 karakter.',
+            ...PersonName::messages(),
             'email.required' => 'Email wajib diisi.',
             'email.string' => 'Email wajib diisi.',
             'email.email' => 'Format email belum benar, contoh nama@domain.com.',
