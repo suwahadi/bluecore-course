@@ -1,4 +1,4 @@
 @props(['rows'])
 @foreach ($rows as $row)
-{{ $row[0] }}: {{ $row[1] }}
+{{ \Illuminate\Support\Str::squish((string) $row[0]) }}: {{ \Illuminate\Support\Str::squish((string) $row[1]) }}
 @endforeach

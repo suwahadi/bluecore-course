@@ -91,3 +91,14 @@ it('shows a buyer name as plain text in the admin email, never as a link', funct
         ->not->toContain('<strong>segera</strong>')
         ->toContain('Konfirmasi pembayaran');
 });
+
+it('keeps a buyer name with line breaks from turning into a link in the admin email', function () {
+    $order = mailOrder(['status' => OrderStatus::Paid, 'paid_at' => now()]);
+    $order->user->forceFill(['name' => "Sari\n\n[Konfirmasi pembayaran](https://jahat.test)\n\n**segera**"])->save();
+
+    $html = (string) (new AdminOrderPaidNotification($order->fresh()))->toMail(User::factory()->admin()->create())->render();
+
+    expect($html)->not->toContain('href="https://jahat.test"')
+        ->not->toContain('<strong>segera</strong>')
+        ->toContain('Konfirmasi pembayaran');
+});
