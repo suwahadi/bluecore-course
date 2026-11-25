@@ -150,3 +150,19 @@ it('touches last access only when it is older than five minutes', function () {
     $this->service->touch(User::factory()->create(), $course);
     expect(Enrollment::query()->count())->toBe(1);
 });
+
+it('creates the progress row outside the locking transaction', function () {
+    $queries = [];
+    $outerLevel = DB::transactionLevel();
+    DB::listen(function ($query) use (&$queries) {
+        $queries[] = [strtolower(strtok($query->sql, ' ')), DB::transactionLevel()];
+    });
+
+    $this->service->recordPosition($this->user, $this->segment, 300, 1000);
+    $this->service->recordPosition($this->user, $this->segment, 400, 1000);
+
+    $insertsInsideLock = array_filter($queries, fn (array $query) => $query[0] === 'insert' && $query[1] > $outerLevel);
+
+    expect($insertsInsideLock)->toBe([])
+        ->and(progressRow())->last_position_seconds->toBe(400)->percent->toBe(40);
+});

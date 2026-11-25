@@ -33,8 +33,9 @@ class ProgressService
         $position = min(max($position, 0), $duration);
         $keys = ['user_id' => $user->id, 'course_segment_id' => $segment->id];
 
+        SegmentProgress::query()->insertOrIgnore([...$keys, 'created_at' => now(), 'updated_at' => now()]);
+
         DB::transaction(function () use ($keys, $position, $duration) {
-            SegmentProgress::query()->createOrFirst($keys);
             $progress = SegmentProgress::query()->where($keys)->lockForUpdate()->sole();
             $percent = min(100, max($progress->percent, intdiv($position * 100, $duration)));
 
