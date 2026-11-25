@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Services\Orders\OrderService;
 use App\Services\Payments\DuitkuClient;
 use App\Services\Payments\DuitkuException;
+use App\Services\Payments\DuitkuTransactionNotFound;
 use App\Services\Payments\PaymentCallbackService;
 use App\Support\Tracking;
 use Illuminate\Http\JsonResponse;
@@ -128,6 +129,8 @@ class OrderController extends Controller
 
         try {
             $status = $this->duitku->transactionStatus($order->order_number);
+        } catch (DuitkuTransactionNotFound) {
+            return;
         } catch (DuitkuException $exception) {
             Log::warning('Duitku status check failed', ['order_number' => $order->order_number, 'reason' => $exception->getMessage()]);
 

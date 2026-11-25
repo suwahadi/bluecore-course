@@ -126,3 +126,22 @@ it('refuses to call Duitku before the merchant code and API key are set', functi
     expect(fn () => app(DuitkuClient::class)->createInvoice(invoiceOrder()))->toThrow(DuitkuException::class, 'Duitku belum dikonfigurasi.');
     Http::assertNothingSent();
 })->with(['merchant_code', 'api_key']);
+
+it('tells a transaction Duitku has not recorded yet apart from other refusals', function () {
+    Http::fake(['api-sandbox.duitku.com/*' => Http::sequence()
+        ->push('"Transaction not found"', 400)
+        ->push('"Wrong Signature"', 401)]);
+    $client = app(DuitkuClient::class);
+
+    expect(fn () => $client->transactionStatus('ABCDEFGHIJK'))->toThrow(App\Services\Payments\DuitkuTransactionNotFound::class);
+
+    try {
+        $client->transactionStatus('ABCDEFGHIJK');
+        $refusal = null;
+    } catch (DuitkuException $exception) {
+        $refusal = $exception;
+    }
+
+    expect($refusal)->toBeInstanceOf(DuitkuException::class)
+        ->not->toBeInstanceOf(App\Services\Payments\DuitkuTransactionNotFound::class);
+});

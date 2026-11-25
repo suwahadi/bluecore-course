@@ -222,3 +222,24 @@ it('shows the cancel confirmation text', function () {
     $this->actingAs($this->owner)->get('/order/'.$order->uuid)
         ->assertSeeText('Pesanan '.$order->order_number.' akan dibatalkan. Jika Anda tetap membayar lewat tautan lama, pembayaran tetap diproses.');
 });
+
+it('stays quiet while Duitku has no transaction yet because no payment method was picked', function () {
+    Http::fake(['*/api/merchant/transactionStatus' => Http::response('"Transaction not found"', 400)]);
+    Illuminate\Support\Facades\Log::spy();
+    $order = ownerOrder();
+
+    $this->actingAs($this->owner)->get('/order/'.$order->uuid)->assertOk()->assertSeeText('Menunggu pembayaran');
+
+    Illuminate\Support\Facades\Log::shouldNotHaveReceived('warning');
+    expect($order->fresh()->status)->toBe(OrderStatus::Pending);
+});
+
+it('still logs a status check that Duitku refuses for another reason', function () {
+    Http::fake(['*/api/merchant/transactionStatus' => Http::response('"Wrong Signature"', 401)]);
+    Illuminate\Support\Facades\Log::spy();
+    $order = ownerOrder();
+
+    $this->actingAs($this->owner)->get('/order/'.$order->uuid)->assertOk();
+
+    Illuminate\Support\Facades\Log::shouldHaveReceived('warning')->with('Duitku status check failed', Mockery::any())->once();
+});

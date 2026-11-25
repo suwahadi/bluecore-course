@@ -11,6 +11,7 @@ use App\Models\Order;
 use App\Services\Orders\OrderService;
 use App\Services\Payments\DuitkuClient;
 use App\Services\Payments\DuitkuException;
+use App\Services\Payments\DuitkuTransactionNotFound;
 use App\Services\Payments\PaymentCallbackService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -83,6 +84,8 @@ class OrderController extends Controller
     {
         try {
             $status = $this->duitku->transactionStatus($order->order_number);
+        } catch (DuitkuTransactionNotFound) {
+            return back()->with('status', 'Duitku: pesanan '.$order->order_number.' masih menunggu pembayaran.');
         } catch (DuitkuException) {
             return back()->with('error', 'Gagal menghubungi Duitku. Coba lagi.');
         }

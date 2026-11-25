@@ -194,3 +194,11 @@ it('leaves an unpaid order unchanged when a refund is refused', function () {
 
     expect($order->fresh())->status->toBe(OrderStatus::Pending)->refunded_at->toBeNull();
 });
+
+it('reports an order still waiting when Duitku has no transaction for it yet', function () {
+    Http::fake(['*/api/merchant/transactionStatus' => Http::response('"Transaction not found"', 400)]);
+    $order = adminOrder();
+
+    $this->actingAs($this->admin)->from('/admin/orders')->post('/admin/orders/'.$order->uuid.'/check-status')
+        ->assertSessionHas('status', 'Duitku: pesanan '.$order->order_number.' masih menunggu pembayaran.');
+});

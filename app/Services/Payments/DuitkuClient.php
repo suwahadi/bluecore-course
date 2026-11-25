@@ -101,6 +101,10 @@ class DuitkuClient
 
         $data = $response->json();
 
+        if ($response->status() === 400 && $data === 'Transaction not found') {
+            throw new DuitkuTransactionNotFound('Duitku belum mencatat transaksi ini.');
+        }
+
         if ($response->failed() || ! is_array($data)) {
             throw new DuitkuException('Duitku menolak permintaan (HTTP '.$response->status().').');
         }
