@@ -83,6 +83,10 @@ class DuitkuClient
 
     private function post(string $path, array $body, array $headers = []): array
     {
+        if (blank(config('duitku.merchant_code')) || blank(config('duitku.api_key'))) {
+            throw new DuitkuException('Duitku belum dikonfigurasi.');
+        }
+
         try {
             $response = Http::baseUrl((string) config('duitku.base_url'))
                 ->timeout((int) config('duitku.timeout'))

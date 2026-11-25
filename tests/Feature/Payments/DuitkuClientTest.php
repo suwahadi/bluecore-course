@@ -117,3 +117,12 @@ it('names payment methods and keeps unknown codes as they are', function () {
         ->and($client->paymentName('ZZ'))->toBe('ZZ')
         ->and($client->paymentName(null))->toBeNull();
 });
+
+it('refuses to call Duitku before the merchant code and API key are set', function (string $missing) {
+    config(["duitku.{$missing}" => null]);
+    Http::fake();
+
+    expect(fn () => app(DuitkuClient::class)->transactionStatus('ABCDEFGHIJK'))->toThrow(DuitkuException::class, 'Duitku belum dikonfigurasi.');
+    expect(fn () => app(DuitkuClient::class)->createInvoice(invoiceOrder()))->toThrow(DuitkuException::class, 'Duitku belum dikonfigurasi.');
+    Http::assertNothingSent();
+})->with(['merchant_code', 'api_key']);
