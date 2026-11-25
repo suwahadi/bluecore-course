@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\RobotsController;
 use App\Http\Controllers\SitemapController;
@@ -51,6 +52,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', EnsureScalarAuthInput::class])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+    Route::get('/order/{order}', [OrderController::class, 'show'])->name('order.show');
+    Route::get('/order/{order}/status', [OrderController::class, 'status'])->middleware('throttle:60,1,order-status')->name('order.status');
+    Route::post('/order/{order}/refresh', [OrderController::class, 'refresh'])->middleware('throttle:10,1,order-action')->name('order.refresh');
+    Route::post('/order/{order}/cancel', [OrderController::class, 'cancel'])->middleware('throttle:10,1,order-action')->name('order.cancel');
     Route::get('/email/verify', EmailVerificationPromptController::class)->name('verification.notice');
     Route::get('/email/verify/{id}/{hash}', VerifyEmailController::class)->middleware(['signed', 'throttle:6,1,verify-email'])->name('verification.verify');
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])->middleware('throttle:6,1,verification-send')->name('verification.send');

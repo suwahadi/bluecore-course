@@ -4,7 +4,7 @@
         session('error') ? ['tone' => 'bad', 'text' => session('error')] : null,
     ]));
 @endphp
-<div class="toast-root" role="status" aria-live="polite" x-data="{ messages: [] }" x-init="setTimeout(() => { messages = {{ \Illuminate\Support\Js::from($messages) }}; setTimeout(() => messages = [], 4000) }, 150)">
+<div class="toast-root" role="status" aria-live="polite" x-data="{ messages: [] }" x-on:toast.window="messages = [$event.detail]; setTimeout(() => messages = [], 4000)" x-init="setTimeout(() => { messages = {{ \Illuminate\Support\Js::from($messages) }}; setTimeout(() => messages = [], 4000) }, 150)">
     <template x-for="message in messages" :key="message.text">
         <div class="toast" x-bind:class="message.tone === 'ok' ? 'toast--ok' : 'toast--bad'" x-transition.opacity>
             <span class="toast__icon">

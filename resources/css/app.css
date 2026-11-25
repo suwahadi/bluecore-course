@@ -248,6 +248,10 @@ img.thumb {
     margin-top: 10px;
 }
 
+.order-pay__message {
+    margin-top: 8px;
+}
+
 .inline-form {
     margin: 0;
 }

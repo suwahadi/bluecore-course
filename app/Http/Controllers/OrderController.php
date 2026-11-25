@@ -1,0 +1,115 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Enums\OrderStatus;
+use App\Models\Order;
+use App\Services\Orders\OrderService;
+use App\Services\Payments\DuitkuClient;
+use App\Services\Payments\DuitkuException;
+use App\Services\Payments\PaymentCallbackService;
+use App\Support\Tracking;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
+
+class OrderController extends Controller
+{
+    public const PAGE_CHECK_SECONDS = 30;
+
+    public const REFRESH_SECONDS = 5;
+
+    public function __construct(private OrderService $orders, private DuitkuClient $duitku, private PaymentCallbackService $payments)
+    {
+    }
+
+    public function show(Request $request, Order $order): View
+    {
+        $this->authorizeView($order);
+
+        if ($order->status === OrderStatus::Pending) {
+            $this->syncWithDuitku($order, 'order-page-check:'.$order->id, self::PAGE_CHECK_SECONDS);
+        }
+
+        $order->load(['user:id,name', 'course.category', 'confirmedBy:id,name'])
+            ->course->loadCount(['segments', 'materials'])->loadSum('segments', 'duration_seconds');
+
+        $isOwner = $order->user_id === $request->user()->id;
+
+        if ($isOwner && $order->status === OrderStatus::Paid && $order->purchase_tracked_at === null) {
+            $order->forceFill(['purchase_tracked_at' => now()])->save();
+            Tracking::push('purchase', [
+                'transaction_id' => $order->order_number,
+                'currency' => 'IDR',
+                'value' => $order->amount,
+                'items' => [['item_id' => (string) $order->course_id, 'item_name' => $order->course->title]],
+            ]);
+        }
+
+        return view('orders.show', [
+            'order' => $order,
+            'isOwner' => $isOwner,
+            'paymentName' => $this->duitku->paymentName($order->duitku_payment_code),
+            'autoOpen' => $request->boolean('pay'),
+        ]);
+    }
+
+    public function status(Order $order): JsonResponse
+    {
+        $this->authorizeView($order);
+
+        return response()->json(['status' => $order->status->value]);
+    }
+
+    public function refresh(Request $request, Order $order): JsonResponse|RedirectResponse
+    {
+        $this->authorizeView($order);
+
+        if ($order->status === OrderStatus::Pending) {
+            $this->syncWithDuitku($order, 'order-refresh:'.$order->id, self::REFRESH_SECONDS);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json(['status' => $order->status->value]);
+        }
+
+        return back()->with('status', $order->status === OrderStatus::Paid
+            ? 'Pembayaran diterima. Akses kursus sudah terbuka.'
+            : 'Pembayaran belum diterima. Coba lagi beberapa saat lagi.');
+    }
+
+    public function cancel(Request $request, Order $order): RedirectResponse
+    {
+        abort_unless($request->user()->can('cancel', $order), 403);
+
+        $this->orders->cancel($order);
+
+        return back()->with('status', 'Pesanan '.$order->order_number.' dibatalkan.');
+    }
+
+    private function authorizeView(Order $order): void
+    {
+        abort_unless(Gate::allows('view', $order), 403, 'Pesanan ini milik akun lain.');
+    }
+
+    private function syncWithDuitku(Order $order, string $lockKey, int $seconds): void
+    {
+        if (! Cache::lock($lockKey, $seconds)->get()) {
+            return;
+        }
+
+        try {
+            $status = $this->duitku->transactionStatus($order->order_number);
+        } catch (DuitkuException $exception) {
+            Log::warning('Duitku status check failed', ['order_number' => $order->order_number, 'reason' => $exception->getMessage()]);
+
+            return;
+        }
+
+        $this->payments->applyConfirmedPayment($order, $status, null);
+    }
+}

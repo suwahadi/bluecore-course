@@ -5,5 +5,8 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    ->beforeEach(fn () => $this->withoutVite())
+    ->beforeEach(function () {
+        $this->withoutVite();
+        Illuminate\Support\Facades\Http::preventStrayRequests();
+    })
     ->in('Feature');

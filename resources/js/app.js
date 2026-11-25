@@ -57,6 +57,8 @@ document.addEventListener('DOMContentLoaded', fitBrand);
 document.fonts?.ready.then(fitBrand);
 
 const slugMaxLength = 120;
+const orderCheckIntervalMs = 3000;
+const orderCheckLimitMs = 60000;
 
 const slugify = (value) => value
     .replace(/@/g, '-at-')
@@ -69,6 +71,64 @@ const slugify = (value) => value
     .replace(/-+$/g, '');
 
 document.addEventListener('alpine:init', () => {
+    window.Alpine.data('orderPayment', (config) => ({
+        message: '',
+
+        init() {
+            if (config.autoOpen === 'true') {
+                const url = new URL(window.location.href);
+                url.searchParams.delete('pay');
+                window.history.replaceState(null, '', url);
+                this.pay();
+            }
+        },
+
+        pay() {
+            if (!window.checkout || typeof window.checkout.process !== 'function') {
+                window.location.href = config.paymentUrl;
+
+                return;
+            }
+
+            window.checkout.process(config.reference, {
+                defaultLanguage: 'id',
+                successEvent: () => this.confirm(),
+                pendingEvent: () => this.confirm(),
+                errorEvent: () => window.dispatchEvent(new CustomEvent('toast', { detail: { tone: 'bad', text: 'Pembayaran belum berhasil. Coba lagi.' } })),
+                closeEvent: () => {},
+            });
+        },
+
+        async confirm() {
+            const token = document.querySelector('meta[name="csrf-token"]')?.content ?? '';
+            const startedAt = Date.now();
+            this.message = 'Memeriksa pembayaran...';
+
+            await fetch(config.refreshUrl, { method: 'POST', headers: { 'X-CSRF-TOKEN': token, Accept: 'application/json' } }).catch(() => null);
+
+            const poll = async () => {
+                const response = await fetch(config.statusUrl, { headers: { Accept: 'application/json' } }).catch(() => null);
+                const data = response?.ok ? await response.json() : null;
+
+                if (data && data.status !== 'pending') {
+                    window.location.reload();
+
+                    return;
+                }
+
+                if (Date.now() - startedAt >= orderCheckLimitMs) {
+                    this.message = 'Pembayaran sedang dikonfirmasi. Muat ulang halaman ini beberapa saat lagi.';
+
+                    return;
+                }
+
+                setTimeout(poll, orderCheckIntervalMs);
+            };
+
+            poll();
+        },
+    }));
+
     window.Alpine.data('segmentEditor', (initialRows) => ({
         rows: initialRows.map((row, index) => ({ ...row, key: index })),
         nextKey: initialRows.length,
