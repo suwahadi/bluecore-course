@@ -259,3 +259,23 @@ it('clears password reset tokens that still hold the old email', function () {
 
     expect(DB::table('password_reset_tokens')->where('email', 'sari@contoh.id')->count())->toBe(0);
 });
+
+it('keeps an anonymized user from signing in', function () {
+    $user = User::factory()->create(['email' => 'sari@contoh.id', 'password' => Hash::make('rahasia123')]);
+    $this->actingAs($this->admin)->delete("/admin/users/{$user->id}/personal-data");
+    auth()->logout();
+
+    $this->post('/login', ['email' => 'sari@contoh.id', 'password' => 'rahasia123'])
+        ->assertSessionHasErrors(['email' => 'Email atau kata sandi salah.']);
+    $this->assertGuest();
+});
+
+it('never leaves the site without an admin', function () {
+    $other = User::factory()->admin()->create();
+
+    editUser($other, ['role' => 'user']);
+    editUser($this->admin->fresh(), ['role' => 'user']);
+    $this->actingAs($this->admin)->from('/admin/users')->delete("/admin/users/{$this->admin->id}/personal-data");
+
+    expect(User::query()->where('role', UserRole::Admin)->pluck('id')->all())->toBe([$this->admin->id]);
+});

@@ -168,3 +168,29 @@ it('links the dashboard and the user list to orders', function () {
     $this->actingAs($this->admin)->get('/admin')->assertSee('href="'.route('order.show', $order).'"', false);
     $this->get('/admin/users')->assertSee('href="'.route('admin.orders.index', ['q' => 'sari@contoh.id']).'"', false);
 });
+
+it('includes the whole to day and nothing before from', function () {
+    $lastMinute = adminOrder(['created_at' => Carbon::parse('2026-11-10 23:59', 'Asia/Jakarta')]);
+    $firstMinute = adminOrder(['created_at' => Carbon::parse('2026-11-09 00:00', 'Asia/Jakarta')]);
+    $dayBefore = adminOrder(['created_at' => Carbon::parse('2026-11-08 23:59', 'Asia/Jakarta')]);
+
+    $this->actingAs($this->admin)->get('/admin/orders?from=2026-11-09&to=2026-11-10')
+        ->assertSeeText($lastMinute->order_number)
+        ->assertSeeText($firstMinute->order_number)
+        ->assertDontSeeText($dayBefore->order_number);
+});
+
+it('rejects a to date before the from date', function () {
+    $this->actingAs($this->admin)->followingRedirects()->get('/admin/orders?from=2026-11-10&to=2026-11-09')
+        ->assertOk()
+        ->assertSeeText('Tanggal akhir harus sama dengan atau setelah tanggal awal.');
+});
+
+it('leaves an unpaid order unchanged when a refund is refused', function () {
+    $order = adminOrder();
+
+    $this->actingAs($this->admin)->from('/admin/orders')->post('/admin/orders/'.$order->uuid.'/refund', ['_modal' => 'refund-'.$order->id, 'refund_note' => 'x'])
+        ->assertSessionHas('error');
+
+    expect($order->fresh())->status->toBe(OrderStatus::Pending)->refunded_at->toBeNull();
+});

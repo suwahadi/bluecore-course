@@ -86,3 +86,13 @@ it('only renumbers materials of the same course', function () {
         ->and($first->fresh()->sort_order)->toBe(2)
         ->and($untouched->fresh()->sort_order)->toBe(7);
 });
+
+it('moves an item down even when every sort order is equal', function () {
+    foreach (['Alfa', 'Bravo', 'Charlie'] as $name) {
+        Category::factory()->create(['name' => $name, 'sort_order' => 1]);
+    }
+
+    app(SortOrderService::class)->move(Category::firstWhere('name', 'Alfa'), 'down');
+
+    expect(categoryOrder())->toBe(['Bravo:1', 'Alfa:2', 'Charlie:3']);
+});

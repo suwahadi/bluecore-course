@@ -2,6 +2,8 @@
 
 use App\Models\Course;
 use App\Models\User;
+use Illuminate\Database\Eloquent\MassAssignmentException;
+use Illuminate\Database\Eloquent\MissingAttributeException;
 use Illuminate\Database\LazyLoadingViolationException;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Validation\Rules\Password;
@@ -24,4 +26,11 @@ it('requires passwords of at least 8 characters by default', function () {
     $validator = validator(['password' => 'pendek'], ['password' => Password::defaults()]);
 
     expect($validator->fails())->toBeTrue();
+});
+
+it('runs every test in strict mode', function () {
+    $course = Course::factory()->create();
+
+    expect(fn () => Course::query()->select('id')->find($course->id)->title)->toThrow(MissingAttributeException::class)
+        ->and(fn () => (new Course)->fill(['not_a_column' => 'x']))->toThrow(MassAssignmentException::class);
 });

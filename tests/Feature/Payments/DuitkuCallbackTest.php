@@ -6,6 +6,8 @@ use App\Jobs\ProcessPaymentCallback;
 use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\PaymentCallback;
+use App\Models\User;
+use App\Notifications\AdminOrderPaidNotification;
 use App\Notifications\PaymentSucceededNotification;
 use App\Services\Payments\DuitkuException;
 use App\Services\Payments\PaymentCallbackService;
@@ -248,4 +250,13 @@ it('never overwrites a payment method that is already known', function () {
     sendCallback(callbackPayload())->assertOk();
 
     expect($this->order->fresh()->duitku_payment_code)->toBe('OV');
+});
+
+it('emails the admins when a callback pays an order', function () {
+    $admin = User::factory()->admin()->create();
+    duitkuStatus('00');
+
+    sendCallback(callbackPayload())->assertOk();
+
+    Notification::assertSentTo($admin, AdminOrderPaidNotification::class);
 });

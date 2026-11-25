@@ -113,3 +113,9 @@ it('survives array values where strings are expected', function () {
     User::factory()->create(['email' => 'ada@contoh.id']);
     $this->post('/login', ['email' => 'ada@contoh.id', 'password' => 'password', 'next' => ['x']])->assertRedirect('/');
 });
+
+it('accepts 628 numbers on sign up', function () {
+    $this->post('/register', registrationInput(['phone' => '628123456789']))->assertSessionHasNoErrors();
+
+    expect(User::firstWhere('email', 'budi@contoh.id')->phone)->toBe('628123456789');
+});
