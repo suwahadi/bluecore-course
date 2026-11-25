@@ -15,6 +15,6 @@ it('renders every email the app sends from its real notification', function () {
     foreach ($previews as $preview) {
         $html = (string) $preview['message']()->render();
 
-        expect($html)->toContain('<html')->toContain('Halo, ');
+        expect($html)->toContain('<html')->toContain('Halo,');
     }
 });

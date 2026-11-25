@@ -16,7 +16,7 @@ class ResetPasswordNotification extends ResetPassword implements ShouldQueue
     {
         $minutes = config('auth.passwords.'.config('auth.defaults.passwords').'.expire');
 
-        return $this->siteMail($notifiable, 'Atur ulang kata sandi')
+        return $this->siteMail($notifiable, 'Atur ulang kata sandi', greetByName: false)
             ->line('Kami menerima permintaan untuk mengatur ulang kata sandi akun Anda.')
             ->action('Atur ulang kata sandi', $this->resetUrl($notifiable))
             ->line("Tautan ini berlaku {$minutes} menit.")

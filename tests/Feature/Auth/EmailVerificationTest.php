@@ -65,7 +65,7 @@ it('sends an Indonesian, queued verification email from the site', function () {
     expect($notification)->toBeInstanceOf(ShouldQueue::class)
         ->and($mail->subject)->toBe('Verifikasi email Anda')
         ->and($mail->actionText)->toBe('Verifikasi email')
-        ->and($mail->greeting)->toBe('Halo, Budi Santoso')
+        ->and($mail->greeting)->toBe('Halo,')
         ->and($mail->from[1])->toBe('BlueCore Course')
         ->and($mail->replyTo[0][0])->toBe('support@bluecore.co.id')
         ->and($mail->actionUrl)->toContain('/email/verify/'.$user->id.'/');

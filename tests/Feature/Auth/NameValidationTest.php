@@ -9,6 +9,11 @@ dataset('hidden characters', [
     'null byte' => ["Sari\0Lestari"],
     'right-to-left override' => ["Sari \u{202E}iratseL"],
     'zero-width space' => ["Sari\u{200B}Lestari"],
+    'line separator' => ["Sari\u{2028}Lestari"],
+    'paragraph separator' => ["Sari\u{2029}Lestari"],
+    'byte order mark' => ["Sari\u{FEFF}Lestari"],
+    'word joiner' => ["Sari\u{2060}Lestari"],
+    'soft hyphen' => ["Sari\u{00AD}Lestari"],
 ]);
 
 it('refuses hidden characters in the name on sign up', function (string $name) {

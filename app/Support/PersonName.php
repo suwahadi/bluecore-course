@@ -4,7 +4,7 @@ namespace App\Support;
 
 class PersonName
 {
-    private const HIDDEN_CHARACTERS = '/[\p{Cc}\x{200B}-\x{200F}\x{202A}-\x{202E}\x{2066}-\x{2069}]/u';
+    private const HIDDEN_CHARACTERS = '/[\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u';
 
     public static function rules(): array
     {
