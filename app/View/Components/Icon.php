@@ -9,6 +9,7 @@ class Icon extends Component
 {
     public const STROKE = [
         'play' => '<path d="M8.5 5.5v13l10-6.5z"/>',
+        'pause' => '<path d="M9 6.5v11M15 6.5v11"/>',
         'clock' => '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
         'infinity' => '<path d="M12 12c-1.9-2.5-3.4-4.2-5.4-4.2a4.2 4.2 0 1 0 0 8.4c2 0 3.5-1.7 5.4-4.2s3.4-4.2 5.4-4.2a4.2 4.2 0 1 1 0 8.4c-2 0-3.5-1.7-5.4-4.2z"/>',
         'video' => '<circle cx="12" cy="12" r="8.5"/><path d="M10.4 8.8v6.4l5.1-3.2z"/>',

@@ -167,6 +167,16 @@ document.addEventListener('alpine:init', () => {
         },
     }));
 
+    window.Alpine.data('centeredTabs', () => ({
+        init() {
+            const current = this.$el.querySelector('[aria-current]');
+
+            if (current) {
+                this.$el.scrollLeft += current.getBoundingClientRect().left - this.$el.getBoundingClientRect().left - (this.$el.clientWidth - current.offsetWidth) / 2;
+            }
+        },
+    }));
+
     window.Alpine.data('slugField', (sourceName, fillAutomatically) => ({
         manual: !fillAutomatically,
 
@@ -256,7 +266,9 @@ const initCarousel = (root) => {
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let index = 0;
     let hovering = false;
+    let paused = false;
     let timer = null;
+    const toggle = section.querySelector('[data-carousel-toggle]');
     let startX = null;
 
     const step = () => track.children[0].getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 0);
@@ -293,7 +305,7 @@ const initCarousel = (root) => {
         }
 
         timer = setInterval(() => {
-            if (!hovering && !section.contains(document.activeElement) && !document.hidden) {
+            if (!paused && !hovering && !section.contains(document.activeElement) && !document.hidden) {
                 move(1);
             }
         }, autoplayDelay);
@@ -305,6 +317,17 @@ const initCarousel = (root) => {
             place(false);
         }
     });
+
+    if (toggle) {
+        toggle.hidden = reducedMotion;
+        toggle.addEventListener('click', () => {
+            paused = !paused;
+            toggle.setAttribute('aria-pressed', String(paused));
+            toggle.title = paused ? 'Putar' : 'Jeda';
+            toggle.querySelector('[data-icon-pause]').hidden = paused;
+            toggle.querySelector('[data-icon-play]').hidden = !paused;
+        });
+    }
 
     root.addEventListener('mouseenter', () => { hovering = true; });
     root.addEventListener('mouseleave', () => { hovering = false; });

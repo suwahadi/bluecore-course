@@ -152,3 +152,15 @@ it('hides Nonton gratis when the saved free video link is not a YouTube video', 
 
     $this->get('/')->assertOk()->assertDontSeeText('Nonton gratis');
 });
+
+it('offers a pause button for the testimonial slider', function () {
+    App\Models\Testimonial::factory()->count(4)->create();
+
+    $this->get('/')->assertSee('data-carousel-toggle aria-pressed="false" aria-label="Jeda testimoni"', false);
+});
+
+it('has no pause button when the testimonials fit without a slider', function () {
+    App\Models\Testimonial::factory()->count(3)->create();
+
+    $this->get('/')->assertDontSee('data-carousel-toggle', false);
+});

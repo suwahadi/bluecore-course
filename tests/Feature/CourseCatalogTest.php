@@ -154,3 +154,11 @@ it('ignores filters sent as lists', function () {
         ->assertSet('category', '')
         ->assertSet('q', '');
 });
+
+it('scrolls back to the top of the catalog when the page changes', function () {
+    Course::factory()->published()->count(13)->create();
+
+    Livewire::test(CourseCatalog::class)
+        ->assertSeeHtml('wire:click="nextPage(\'page\')" x-on:click="$wire.$el.scrollIntoView({ block: \'start\' })"')
+        ->assertSeeHtml('wire:click="previousPage(\'page\')" x-on:click="$wire.$el.scrollIntoView({ block: \'start\' })"');
+});

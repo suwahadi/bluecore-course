@@ -10,6 +10,7 @@
                 @if ($slider)
                     <div class="carousel-nav">
                         <button type="button" class="btn btn-icon" data-carousel-prev aria-label="Testimoni sebelumnya" title="Sebelumnya"><x-icon name="back" /></button>
+                        <button type="button" class="btn btn-icon" data-carousel-toggle aria-pressed="false" aria-label="Jeda testimoni" title="Jeda"><span data-icon-pause><x-icon name="pause" /></span><span data-icon-play hidden><x-icon name="play" /></span></button>
                         <button type="button" class="btn btn-icon" data-carousel-next aria-label="Testimoni berikutnya" title="Berikutnya"><x-icon name="forward" /></button>
                     </div>
                 @endif
