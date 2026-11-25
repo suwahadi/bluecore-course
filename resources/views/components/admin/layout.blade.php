@@ -16,7 +16,7 @@
         <div class="wrap">
             <p class="muted small">Panel admin</p>
             <h1 class="admin-title">{{ $title }}</h1>
-            <nav class="admin-tabs" aria-label="Menu admin">
+            <nav class="admin-tabs" aria-label="Menu admin" x-data x-init="$el.querySelector('[aria-current]')?.scrollIntoView({ block: 'nearest', inline: 'center' })">
                 @foreach ($tabs as [$route, $pattern, $label, $icon])
                     @if (Route::has($route))
                         <a href="{{ route($route) }}" @if (request()->routeIs($pattern)) aria-current="page" @endif><x-icon :name="$icon" /><span>{{ $label }}</span></a>

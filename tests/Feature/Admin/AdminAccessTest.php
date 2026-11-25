@@ -28,3 +28,8 @@ it('shows every admin tab, orders included', function () {
 
     expect($html)->toContain('aria-label="Menu admin"')->toContain('<span>Pesanan</span>');
 });
+
+it('scrolls the active admin tab into view on narrow screens', function () {
+    $this->actingAs(User::factory()->admin()->create())->get('/admin/settings')
+        ->assertSee('<nav class="admin-tabs" aria-label="Menu admin" x-data x-init="$el.querySelector(\'[aria-current]\')?.scrollIntoView({ block: \'nearest\', inline: \'center\' })">', false);
+});

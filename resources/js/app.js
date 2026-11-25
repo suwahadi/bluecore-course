@@ -293,7 +293,7 @@ const initCarousel = (root) => {
         }
 
         timer = setInterval(() => {
-            if (!hovering && !root.contains(document.activeElement) && !document.hidden) {
+            if (!hovering && !section.contains(document.activeElement) && !document.hidden) {
                 move(1);
             }
         }, autoplayDelay);
