@@ -9,6 +9,7 @@ use App\Models\Enrollment;
 use App\Models\Order;
 use App\Models\User;
 use App\Notifications\AdminOrderPaidNotification;
+use App\Notifications\OrderExpiredNotification;
 use App\Notifications\PaymentSucceededNotification;
 use App\Services\Enrollments\EnrollmentService;
 use App\Support\Settings;
@@ -108,7 +109,13 @@ class OrderService
 
     public function expire(Order $order): bool
     {
-        return $this->leavePending($order, OrderStatus::Expired, fn (Order $locked) => $locked->expires_at !== null && $locked->expires_at->isPast());
+        $expired = $this->leavePending($order, OrderStatus::Expired, fn (Order $locked) => $locked->expires_at !== null && $locked->expires_at->isPast());
+
+        if ($expired) {
+            $order->user->notify(new OrderExpiredNotification($order));
+        }
+
+        return $expired;
     }
 
     public function refund(Order $order, User $admin, string $note): bool

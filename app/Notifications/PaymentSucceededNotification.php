@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use App\Notifications\Concerns\BuildsSiteMail;
+use App\Support\Format;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -25,6 +26,13 @@ class PaymentSucceededNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return $this->siteMail($notifiable, 'Pembayaran berhasil');
+        $order = $this->order->loadMissing('course:id,title,slug');
+
+        return $this->siteMail($notifiable, 'Pembayaran berhasil')
+            ->line("Pembayaran pesanan {$order->order_number} sudah kami terima.")
+            ->line("Kursus: {$order->course->title}")
+            ->line('Total dibayar: '.Format::rupiah($order->amount))
+            ->action('Mulai belajar', url('/learn/'.$order->course->slug))
+            ->line('Akses kursus berlaku selamanya.');
     }
 }

@@ -4,6 +4,8 @@ namespace App\Notifications;
 
 use App\Models\Order;
 use App\Notifications\Concerns\BuildsSiteMail;
+use App\Services\Payments\DuitkuClient;
+use App\Support\Format;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -25,6 +27,15 @@ class AdminOrderPaidNotification extends Notification implements ShouldQueue
 
     public function toMail(object $notifiable): MailMessage
     {
-        return $this->siteMail($notifiable, 'Pesanan lunas');
+        $order = $this->order->loadMissing(['course:id,title,slug', 'user:id,name,email']);
+        $method = app(DuitkuClient::class)->paymentName($order->duitku_payment_code) ?? '-';
+
+        return $this->siteMail($notifiable, 'Pesanan lunas')
+            ->line("Pesanan {$order->order_number} sudah lunas lewat Duitku.")
+            ->line("Pembeli: {$order->user->name} ({$order->user->email})")
+            ->line("Kursus: {$order->course->title}")
+            ->line('Total: '.Format::rupiah($order->amount))
+            ->line("Metode bayar: {$method}")
+            ->action('Lihat pesanan', route('order.show', $order));
     }
 }
