@@ -15,7 +15,7 @@
                     @foreach ($order->callbacks as $callback)
                         <tr>
                             <td>{{ \App\Support\Format::datetime($callback->created_at) }}</td>
-                            <td class="num">{{ $callback->result_code }}</td>
+                            <td>{{ $callback->result_code }}</td>
                             <td>{{ $callback->status->label() }}</td>
                         </tr>
                     @endforeach
