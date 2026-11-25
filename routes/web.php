@@ -3,6 +3,7 @@
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\Dev\MailPreviewController;
 use App\Http\Controllers\FreeVideoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LearnController;
@@ -29,6 +30,14 @@ use Laravel\Fortify\Http\Controllers\RegisteredUserController;
 use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 Route::get('/', HomeController::class)->name('home');
+
+if (app()->isLocal()) {
+    Route::middleware(['auth', 'admin'])->prefix('_dev/mail')->name('dev.mail.')->group(function () {
+        Route::get('/', [MailPreviewController::class, 'index'])->name('index');
+        Route::get('/{template}', [MailPreviewController::class, 'show'])->name('show');
+    });
+}
+
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
 Route::get('/contact', ContactController::class)->name('contact');
