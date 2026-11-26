@@ -25,7 +25,7 @@ it('dresses every email in the BlueCore brand', function (string $key) {
         ->toContain('BlueCore Course')
         ->toMatch('/background-color:\s*#C64B00/i')
         ->toContain('support@bluecore.co.id')
-        ->toContain('https://wa.me/6281818182878')
+        ->toContain('https://wa.me/6281818182878?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.'))
         ->toMatch('/Salam,<br\s*\/?>\s*BlueCore Course/')
         ->not->toContain('laravel.com')
         ->not->toContain('Bogor');

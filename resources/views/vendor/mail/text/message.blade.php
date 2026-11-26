@@ -28,7 +28,7 @@
 Email: {{ $supportEmail }}
 @endif
 @if (filled($whatsapp))
-WhatsApp: 0{{ substr($whatsapp, 2) }}
+WhatsApp: {{ \App\Support\WhatsApp::display($whatsapp) }}
 @endif
 </x-mail::footer>
 </x-slot:footer>

@@ -79,7 +79,7 @@ it('shows only the marketplace stores that have links', function () {
 it('links contact details from settings', function () {
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSee('https://wa.me/6281818182878', false)
+        ->assertSee('https://wa.me/6281818182878?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.'), false)
         ->assertSee('mailto:support@bluecore.co.id', false)
         ->assertSeeText('@bluecore.official');
 });
@@ -119,7 +119,7 @@ it('returns focus to the account button when its menu closes with Escape', funct
 it('shows the WhatsApp number in the WhatsApp row, not the phone number', function () {
     Settings::set(['whatsapp' => '6281211112222', 'phone' => '0215550000']);
 
-    $this->get('/')->assertSee('href="https://wa.me/6281211112222"', false)->assertSeeText('081211112222')->assertDontSeeText('0215550000');
+    $this->get('/')->assertSee('href="https://wa.me/6281211112222?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.').'"', false)->assertSeeText('081211112222')->assertDontSeeText('0215550000');
 });
 
 it('shows social handles without query strings or fragments', function () {
@@ -153,4 +153,14 @@ it('drops the social column when no social links are set', function () {
     Settings::set(['instagram_url' => null, 'youtube_url' => null, 'tiktok_url' => null]);
 
     $this->get('/')->assertOk()->assertDontSeeText('Sosial Media')->assertSeeText('Hubungi kami');
+});
+
+it('ships a real favicon and an apple touch icon', function () {
+    $this->get('/_layout-probe')
+        ->assertOk()
+        ->assertSee('<link rel="icon" href="'.asset('favicon.ico').'" sizes="any">', false)
+        ->assertSee('<link rel="apple-touch-icon" href="'.asset('apple-touch-icon.png').'">', false);
+
+    expect(filesize(public_path('favicon.ico')))->toBeGreaterThan(0)
+        ->and(getimagesize(public_path('apple-touch-icon.png'))[0])->toBe(180);
 });

@@ -1,11 +1,12 @@
 @php
     use App\Support\Settings;
+    use App\Support\WhatsApp;
     $siteName = (string) Settings::get('site_name');
     $supportEmail = Settings::get('email');
     $whatsapp = Settings::get('whatsapp');
     $contacts = array_values(array_filter([
         filled($supportEmail) ? 'email <a href="mailto:'.e($supportEmail).'">'.e($supportEmail).'</a>' : null,
-        filled($whatsapp) ? 'WhatsApp <a href="https://wa.me/'.e($whatsapp).'">0'.e(substr($whatsapp, 2)).'</a>' : null,
+        filled($whatsapp) ? 'WhatsApp <a href="'.e(WhatsApp::url($whatsapp)).'">'.e(WhatsApp::display($whatsapp)).'</a>' : null,
     ]));
 @endphp
 <x-mail::layout>
