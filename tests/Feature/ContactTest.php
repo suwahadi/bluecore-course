@@ -52,7 +52,8 @@ it('offers a message form that goes to WhatsApp', function () {
         ->assertSee('action="'.route('contact.send').'"', false)
         ->assertSee('name="name"', false)
         ->assertSee('name="message"', false)
-        ->assertSeeText('Kirim Sekarang');
+        ->assertSeeText('Kirim Sekarang')
+        ->assertDontSeeText('Pesan Anda terbuka di WhatsApp');
 });
 
 it('fills in the name of a signed-in visitor', function () {

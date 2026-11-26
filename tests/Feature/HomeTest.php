@@ -42,24 +42,15 @@ it('hides Nonton gratis without a free video and sends Lihat kursus to the catal
         ->assertSeeText('Belum ada kursus yang terbit. Kursus baru muncul di sini begitu admin menerbitkannya.');
 });
 
-it('lists only active topics that have published courses', function () {
-    $lele = Category::factory()->create(['name' => 'Lele', 'slug' => 'lele', 'sort_order' => 2]);
-    $nila = Category::factory()->create(['name' => 'Nila', 'slug' => 'nila', 'sort_order' => 1]);
-    $hias = Category::factory()->create(['name' => 'Ikan Hias', 'slug' => 'ikan-hias', 'is_active' => false]);
-    $gurame = Category::factory()->create(['name' => 'Gurame', 'slug' => 'gurame']);
+it('keeps the hero free of topic badges', function () {
+    $lele = Category::factory()->create(['name' => 'Lele', 'slug' => 'lele']);
     Course::factory()->published()->for($lele)->create();
-    Course::factory()->published()->for($nila)->create();
-    Course::factory()->published()->for($hias)->create();
-    Course::factory()->for($gurame)->create();
 
-    $html = $this->get('/')->getContent();
-    preg_match('#<nav class="hero__topics".*?</nav>#s', $html, $topics);
-
-    expect($topics[0] ?? '')->toContain('Topik:')
-        ->and(strpos($topics[0], 'Nila'))->toBeLessThan(strpos($topics[0], 'Lele'))
-        ->and($topics[0])->toContain('href="'.url('/courses?cat=lele').'"')
-        ->not->toContain('Ikan Hias')
-        ->not->toContain('Gurame');
+    $this->get('/')
+        ->assertOk()
+        ->assertDontSee('hero__topics', false)
+        ->assertDontSeeText('Topik:')
+        ->assertDontSee('href="'.url('/courses?cat=lele').'"', false);
 });
 
 it('shows the featured course card without a playable video', function () {

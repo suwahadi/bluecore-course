@@ -12,14 +12,6 @@
                     @endif
                     <a class="btn {{ $freeVideo ? 'btn--soft' : 'btn--primary' }}" href="{{ $featured ? route('courses.show', $featured) : url('/courses') }}">Lihat kursus</a>
                 </div>
-                @if ($topics->isNotEmpty())
-                    <nav class="hero__topics" aria-label="Topik kursus">
-                        <span>Topik:</span>
-                        @foreach ($topics as $topic)
-                            <a href="{{ url('/courses?cat='.$topic->slug) }}">{{ $topic->name }}</a>
-                        @endforeach
-                    </nav>
-                @endif
             </div>
             @if ($featured)
                 <x-hero-player :course="$featured" />

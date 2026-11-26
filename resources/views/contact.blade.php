@@ -41,7 +41,6 @@
                 @if ($canMessage)
                     <div class="panel contact-form">
                         <h2 class="panel-title">Kirim pesan</h2>
-                        <p class="muted small">Pesan Anda terbuka di WhatsApp, tinggal tekan kirim.</p>
                         <x-form :action="route('contact.send')" class="contact-form__fields">
                             <x-field name="name" label="Nama" :value="auth()->user()?->name" required maxlength="100" autocomplete="name" />
                             <x-field name="message" label="Pesan" type="textarea" required maxlength="1000" rows="5" placeholder="Tulis pertanyaan Anda" />
