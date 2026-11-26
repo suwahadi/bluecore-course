@@ -28,7 +28,7 @@ class PaymentSucceededNotification extends Notification implements ShouldQueue
     {
         $order = $this->order->loadMissing('course:id,title,slug');
 
-        $message = $this->siteMail($notifiable, 'Pembayaran berhasil')
+        $message = $this->siteMail($notifiable, 'Pembayaran berhasil: '.$order->order_number)
             ->line("Pembayaran pesanan {$order->order_number} sudah kami terima.")
             ->action('Mulai belajar', route('learn.index', $order->course))
             ->line('Akses kursus berlaku selamanya.');

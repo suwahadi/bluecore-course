@@ -27,7 +27,7 @@ class OrderExpiredNotification extends Notification implements ShouldQueue
     {
         $order = $this->order->loadMissing('course:id,title,slug');
 
-        return $this->siteMail($notifiable, 'Pesanan kedaluwarsa')
+        return $this->siteMail($notifiable, 'Pesanan kedaluwarsa: '.$order->order_number)
             ->line("Pesanan {$order->order_number} untuk kursus {$order->course->title} tidak dibayar sampai batas waktu, jadi sudah kedaluwarsa.")
             ->line('Jika masih ingin belajar, buat pesanan baru lewat tombol di bawah.')
             ->action('Beli lagi', route('checkout.show', $order->course));

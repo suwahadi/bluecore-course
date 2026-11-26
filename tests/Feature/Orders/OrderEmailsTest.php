@@ -32,7 +32,7 @@ it('tells the buyer the order was created with the full breakdown', function () 
     $order = mailOrder();
     $mail = (new OrderCreatedNotification($order))->toMail($order->user);
 
-    expect($mail->subject)->toBe('Pesanan dibuat')
+    expect($mail->subject)->toBe('Pesanan dibuat: '.$order->order_number)
         ->and(mailText($mail))->toContain($order->order_number)
         ->toContain('Lele Galon')
         ->toContain('Rp 150.000')
@@ -47,7 +47,7 @@ it('tells the buyer the payment succeeded', function () {
     $order = mailOrder(['status' => OrderStatus::Paid, 'paid_at' => now()]);
     $mail = (new PaymentSucceededNotification($order))->toMail($order->user);
 
-    expect($mail->subject)->toBe('Pembayaran berhasil')
+    expect($mail->subject)->toBe('Pembayaran berhasil: '.$order->order_number)
         ->and(mailText($mail))->toContain($order->order_number)->toContain('Lele Galon')->toContain('Rp 152.500')
         ->and($mail->actionText)->toBe('Mulai belajar')
         ->and($mail->actionUrl)->toBe(url('/learn/lele-galon'));
@@ -57,7 +57,7 @@ it('tells the buyer the order expired with a way to buy again', function () {
     $order = mailOrder(['status' => OrderStatus::Expired]);
     $mail = (new OrderExpiredNotification($order))->toMail($order->user);
 
-    expect($mail->subject)->toBe('Pesanan kedaluwarsa')
+    expect($mail->subject)->toBe('Pesanan kedaluwarsa: '.$order->order_number)
         ->and(mailText($mail))->toContain($order->order_number)->toContain('Lele Galon')
         ->and($mail->actionText)->toBe('Beli lagi')
         ->and($mail->actionUrl)->toBe(route('checkout.show', $order->course));
@@ -68,7 +68,7 @@ it('tells admins about a paid order with buyer, course, total and method', funct
     $admin = User::factory()->admin()->create();
     $mail = (new AdminOrderPaidNotification($order))->toMail($admin);
 
-    expect($mail->subject)->toBe('Pesanan lunas')
+    expect($mail->subject)->toBe('Pesanan lunas: '.$order->order_number)
         ->and(mailText($mail))->toContain($order->order_number)->toContain('Sari Lestari')->toContain('Lele Galon')->toContain('Rp 152.500')->toContain('ShopeePay')
         ->and($mail->actionText)->toBe('Lihat pesanan')
         ->and($mail->actionUrl)->toBe(route('order.show', $order));

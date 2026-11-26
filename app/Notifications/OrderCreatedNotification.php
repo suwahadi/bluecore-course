@@ -28,7 +28,7 @@ class OrderCreatedNotification extends Notification implements ShouldQueue
     {
         $order = $this->order->loadMissing('course:id,title,slug');
 
-        $message = $this->siteMail($notifiable, 'Pesanan dibuat')
+        $message = $this->siteMail($notifiable, 'Pesanan dibuat: '.$order->order_number)
             ->line("Pesanan {$order->order_number} untuk kursus {$order->course->title} sudah dibuat.")
             ->line('Bayar sebelum '.Format::datetime($order->expires_at).'. Akses kursus terbuka otomatis setelah pembayaran diterima.')
             ->action('Bayar sekarang', route('order.show', $order));

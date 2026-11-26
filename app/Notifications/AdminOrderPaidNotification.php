@@ -30,7 +30,7 @@ class AdminOrderPaidNotification extends Notification implements ShouldQueue
         $order = $this->order->loadMissing(['course:id,title,slug', 'user:id,name,email']);
         $method = app(DuitkuClient::class)->paymentName($order->duitku_payment_code) ?? '-';
 
-        $message = $this->siteMail($notifiable, 'Pesanan lunas')
+        $message = $this->siteMail($notifiable, 'Pesanan lunas: '.$order->order_number)
             ->line("Pesanan {$order->order_number} sudah lunas lewat Duitku.")
             ->action('Lihat pesanan', route('order.show', $order));
 
