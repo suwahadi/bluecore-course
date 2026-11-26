@@ -18,6 +18,7 @@ class ExpirePendingOrders extends Command
         $expired = 0;
 
         Order::query()
+            ->with('user')
             ->where('status', OrderStatus::Pending)
             ->where('expires_at', '<', now())
             ->chunkById(100, function ($batch) use ($orders, &$expired) {

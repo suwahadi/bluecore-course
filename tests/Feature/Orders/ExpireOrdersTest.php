@@ -36,3 +36,15 @@ it('schedules expiry every ten minutes and the queue worker every minute', funct
         ->and($expire->withoutOverlapping)->toBeTrue()
         ->and($expire->expiresAt)->toBe(10);
 });
+
+it('expires several late orders in one run and emails every buyer', function () {
+    Notification::fake();
+    $late = Order::factory()->count(3)->create(['expires_at' => now()->subMinute()]);
+
+    $this->artisan('orders:expire')->assertSuccessful();
+
+    foreach ($late as $order) {
+        expect($order->fresh()->status)->toBe(OrderStatus::Expired);
+        Notification::assertSentToTimes($order->user, OrderExpiredNotification::class, 1);
+    }
+});
