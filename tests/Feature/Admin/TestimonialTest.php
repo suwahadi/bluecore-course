@@ -30,7 +30,8 @@ it('lists testimonials in order with a shortened quote and status', function () 
         ->assertSee('aria-label="Ubah testimoni"', false)
         ->assertSee('aria-label="Tampilkan testimoni"', false)
         ->assertSee('placeholder="Kota atau kursus yang dibeli"', false)
-        ->assertSeeText('Maksimal 400 karakter. Tulis sesuai ucapan pembeli.');
+        ->assertSeeText('Tulis sesuai ucapan pembeli.')
+        ->assertDontSeeText('Maksimal 400 karakter.');
 
     preg_match_all('#<td class="testimonial-cell">(.*?)</td>#s', $response->getContent(), $cells);
     expect($cells[1])->toContain(Str::limit(str_repeat('Lele tumbuh sehat. ', 10), 80));

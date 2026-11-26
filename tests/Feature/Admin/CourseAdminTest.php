@@ -113,7 +113,7 @@ it('shows the edit page with the current values', function () {
         ->assertOk()
         ->assertSee('value="Lele Galon"', false)
         ->assertSee('value="99000"', false)
-        ->assertSeeText('Harus lebih besar dari harga.')
+        ->assertDontSeeText('Harus lebih besar dari harga.')
         ->assertSeeText('Simpan kursus');
 });
 

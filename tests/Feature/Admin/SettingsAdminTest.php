@@ -39,7 +39,7 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeInOrder(['Identitas', 'Kontak', 'Sosial', 'Marketplace', 'Pembayaran', 'Beranda', 'Video gratis', 'Pelacakan'])
         ->assertSeeText('Slogan (di bawah nama situs pada logo dan judul beranda)')
         ->assertSeeText('Deskripsi singkat (beranda, footer, meta)')
-        ->assertSeeText('Format internasional tanpa tanda plus, contoh 628123456789.')
+        ->assertDontSeeText('Format internasional tanpa tanda plus, contoh 628123456789.')
         ->assertSeeText('Tautan toko untuk ikon Marketplace di footer. Kosongkan jika belum punya toko di marketplace tersebut.')
         ->assertSeeText('Biaya admin per pesanan (rupiah)')
         ->assertSeeText('Ditambahkan ke setiap pesanan kursus berbayar.')

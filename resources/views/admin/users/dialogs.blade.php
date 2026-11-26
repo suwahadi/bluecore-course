@@ -47,6 +47,6 @@
     <x-admin.dialog-form :dialog="'grant-'.$user->id" :action="route('admin.users.enrollments.store', $user)" title="Beri akses kursus" submit-label="Beri akses">
         <p class="muted small">Akses manual untuk <strong>{{ $user->name }}</strong>, {{ $user->email }}. Tidak membuat pesanan dan tidak dihitung sebagai pendapatan.</p>
         <x-field name="course_id" label="Kursus" type="select" :options="$grantable->mapWithKeys(fn ($course) => [$course->id => $course->title.($course->status === $draftStatus ? ' (draf)' : '')])->all()" required />
-        <x-field name="note" label="Alasan" help="Wajib diisi dan tersimpan bersama akses sebagai catatan audit." required maxlength="200" placeholder="misalnya kompensasi kendala pembayaran" />
+        <x-field name="note" label="Alasan" help="Tersimpan bersama akses sebagai catatan audit." required maxlength="200" placeholder="misalnya kompensasi kendala pembayaran" />
     </x-admin.dialog-form>
 @endif

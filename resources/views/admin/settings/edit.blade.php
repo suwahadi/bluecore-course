@@ -23,7 +23,7 @@
             <div class="form-grid form-grid--2">
                 <x-field name="address" label="Alamat" :value="$settings['address']" maxlength="200" />
                 <x-field name="phone" label="Telepon" type="tel" :value="$settings['phone']" maxlength="30" inputmode="tel" />
-                <x-field name="whatsapp" label="WhatsApp" :value="$settings['whatsapp']" help="Format internasional tanpa tanda plus, contoh 628123456789." inputmode="numeric" />
+                <x-field name="whatsapp" label="WhatsApp" :value="$settings['whatsapp']" inputmode="numeric" />
                 <x-field name="email" label="Email" type="email" :value="$settings['email']" maxlength="150" />
             </div>
         </section>

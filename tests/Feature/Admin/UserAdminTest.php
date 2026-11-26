@@ -223,7 +223,8 @@ it('shows the anonymize confirmation in the edit dialog', function () {
         ->assertSeeText('Data pribadi Sari akan dihapus permanen. Riwayat pesanan tetap disimpan untuk pembukuan.')
         ->assertSeeText('Jika diganti, status email kembali belum terverifikasi.')
         ->assertSeeText('Kosongkan jika kata sandi tidak diganti.')
-        ->assertSeeText('Wajib diisi dan tersimpan bersama akses sebagai catatan audit.');
+        ->assertSeeText('Tersimpan bersama akses sebagai catatan audit.')
+        ->assertDontSeeText('Wajib diisi dan');
 });
 
 it('logs every manual course grant', function () {

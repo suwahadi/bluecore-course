@@ -92,6 +92,6 @@ it('renders the forgot and reset forms', function () {
         ->assertOk()
         ->assertSee('name="token" value="abc"', false)
         ->assertSee('name="email" value="ada@contoh.id"', false)
-        ->assertSeeText('Minimal 8 karakter.')
+        ->assertDontSeeText('Minimal 8 karakter.')
         ->assertSeeText('Atur ulang kata sandi');
 });
