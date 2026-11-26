@@ -1,29 +1,30 @@
 <x-layouts.app title="Kontak">
     <section class="section">
-        <div class="wrap prose">
+        <div class="wrap prose page-layout">
             <h1>Kontak</h1>
-            @if (blank($address) && blank($phone) && blank($whatsapp) && blank($email))
-                <p class="muted">Informasi kontak belum diisi.</p>
-            @else
-                <dl class="dl contact-list">
-                    @if (filled($address))
-                        <dt>Alamat</dt>
-                        <dd>{{ $address }}</dd>
-                    @endif
-                    @if (filled($phone))
-                        <dt>Telepon</dt>
-                        <dd>{{ $phone }}</dd>
-                    @endif
-                    @if (filled($whatsapp))
-                        <dt>WhatsApp</dt>
-                        <dd><a href="https://wa.me/{{ $whatsapp }}" target="_blank" rel="noopener">Chat lewat WhatsApp</a></dd>
-                    @endif
-                    @if (filled($email))
-                        <dt>Email</dt>
-                        <dd><a href="mailto:{{ $email }}">{{ $email }}</a></dd>
-                    @endif
-                </dl>
-            @endif
+            <div class="panel panel--prose panel--fit">
+                @if ($rows === [])
+                    <p class="muted">Informasi kontak belum diisi.</p>
+                @else
+                    <ul class="contact-list">
+                        @foreach ($rows as $row)
+                            <li>
+                                @if ($row['url'])
+                                    <a class="contact-list__item" href="{{ $row['url'] }}" @if (str_starts_with($row['url'], 'http')) target="_blank" rel="noopener" @endif>
+                                        <span class="contact-list__icon"><x-icon :name="$row['icon']" :size="18" :solid="true" /></span>
+                                        <span><span class="sr-only">{{ $row['label'] }}: </span>{{ $row['text'] }}</span>
+                                    </a>
+                                @else
+                                    <span class="contact-list__item">
+                                        <span class="contact-list__icon"><x-icon :name="$row['icon']" :size="18" :solid="true" /></span>
+                                        <span><span class="sr-only">{{ $row['label'] }}: </span>{{ $row['text'] }}</span>
+                                    </span>
+                                @endif
+                            </li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
         </div>
     </section>
 </x-layouts.app>

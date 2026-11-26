@@ -133,3 +133,24 @@ it('keeps the footer headings in order after the page heading', function () {
 
     expect($html)->toContain('<h2 class="site-footer__title">Tautan</h2>')->not->toContain('<h4');
 });
+
+it('lists social accounts in their own footer column after the contact column', function () {
+    Settings::set([
+        'instagram_url' => 'https://instagram.com/bluecore.official',
+        'youtube_url' => 'https://youtube.com/@BlueCore.official',
+        'tiktok_url' => 'https://tiktok.com/@bluecore.id',
+    ]);
+
+    $html = $this->get('/')->assertOk()->getContent();
+    $contact = substr($html, strpos($html, 'Hubungi kami</h2>'), strpos($html, 'Sosial Media</h2>') - strpos($html, 'Hubungi kami</h2>'));
+
+    expect($html)->toContain('<h2 class="site-footer__title">Sosial Media</h2>')
+        ->and($contact)->toContain('wa.me')->not->toContain('instagram.com')
+        ->and(substr($html, strpos($html, 'Sosial Media</h2>')))->toContain('instagram.com/bluecore.official')->toContain('@BlueCore.official')->toContain('@bluecore.id');
+});
+
+it('drops the social column when no social links are set', function () {
+    Settings::set(['instagram_url' => null, 'youtube_url' => null, 'tiktok_url' => null]);
+
+    $this->get('/')->assertOk()->assertDontSeeText('Sosial Media')->assertSeeText('Hubungi kami');
+});

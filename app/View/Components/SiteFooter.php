@@ -30,6 +30,8 @@ class SiteFooter extends Component
 
     public array $contacts;
 
+    public array $socials;
+
     public array $markets;
 
     public function __construct()
@@ -44,6 +46,7 @@ class SiteFooter extends Component
             ->map(fn (Page $page) => ['title' => $page->title, 'slug' => $page->slug])
             ->all());
         $this->contacts = $this->contactRows();
+        $this->socials = $this->socialRows();
         $this->markets = array_values(array_filter(
             array_map(fn (array $market) => $market + ['url' => Settings::get($market['setting'])], self::MARKETPLACES),
             fn (array $market) => filled($market['url']),
@@ -73,6 +76,13 @@ class SiteFooter extends Component
         if ($email) {
             $rows[] = ['icon' => 'mail', 'label' => 'Email', 'text' => $email, 'url' => 'mailto:'.$email];
         }
+
+        return $rows;
+    }
+
+    private function socialRows(): array
+    {
+        $rows = [];
 
         foreach (self::SOCIALS as $social) {
             $url = Settings::get($social['setting']);

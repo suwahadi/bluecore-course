@@ -16,22 +16,24 @@
                 <li><a href="{{ url('/contact') }}">Kontak</a></li>
             </ul>
         </div>
-        @if ($contacts)
-            <div>
-                <h2 class="site-footer__title">Hubungi kami</h2>
-                <ul class="site-footer__contact">
-                    @foreach ($contacts as $contact)
-                        <li>
-                            <a href="{{ $contact['url'] }}" @if (str_starts_with($contact['url'], 'http')) rel="noopener" target="_blank" @endif>
-                                <span class="site-footer__icon"><x-icon :name="$contact['icon']" :size="16" :solid="true" /></span>
-                                <span class="sr-only">{{ $contact['label'] }}: </span>
-                                <span>{{ $contact['text'] }}</span>
-                            </a>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+        @foreach (['Hubungi kami' => $contacts, 'Sosial Media' => $socials] as $title => $rows)
+            @if ($rows)
+                <div>
+                    <h2 class="site-footer__title">{{ $title }}</h2>
+                    <ul class="site-footer__contact">
+                        @foreach ($rows as $contact)
+                            <li>
+                                <a href="{{ $contact['url'] }}" @if (str_starts_with($contact['url'], 'http')) rel="noopener" target="_blank" @endif>
+                                    <span class="site-footer__icon"><x-icon :name="$contact['icon']" :size="16" :solid="true" /></span>
+                                    <span class="sr-only">{{ $contact['label'] }}: </span>
+                                    <span>{{ $contact['text'] }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+        @endforeach
         @if ($markets)
             <div>
                 <h2 class="site-footer__title">Marketplace</h2>

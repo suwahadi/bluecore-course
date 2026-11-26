@@ -82,3 +82,11 @@ it('rejects reserved slugs in the page route pattern', function () {
         ->and(preg_match($pattern, 'livewire-e3677e29'))->toBe(0)
         ->and(preg_match($pattern, 'administrasi'))->toBe(1);
 });
+
+it('frames the page content in a panel below the title', function () {
+    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'content' => "## Akun\n\nIsi data dengan benar."]);
+
+    $html = $this->get('/terms-and-condition')->assertOk()->getContent();
+
+    expect($html)->toMatch('#<h1>Syarat dan Ketentuan</h1>\s*<article class="panel panel--prose">\s*<h2>Akun</h2>#');
+});
