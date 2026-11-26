@@ -40,7 +40,8 @@ if (app()->isLocal()) {
 
 Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
 Route::get('/courses/{course:slug}', [CourseController::class, 'show'])->name('courses.show');
-Route::get('/contact', ContactController::class)->name('contact');
+Route::get('/contact', [ContactController::class, 'show'])->name('contact');
+Route::post('/contact', [ContactController::class, 'send'])->middleware('throttle:10,1,contact')->name('contact.send');
 Route::get('/free-video', FreeVideoController::class)->name('free-video');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 Route::post('/payments/duitku/callback', DuitkuCallbackController::class)->middleware('throttle:60,1,duitku-callback')->name('payments.duitku.callback');

@@ -8,6 +8,8 @@ use Illuminate\View\View;
 class Icon extends Component
 {
     public const STROKE = [
+        'search' => '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>',
+        'sort' => '<path d="M8 19V5M4.5 8.5L8 5l3.5 3.5M16 5v14M12.5 15.5L16 19l3.5-3.5"/>',
         'play' => '<path d="M8.5 5.5v13l10-6.5z"/>',
         'pause' => '<path d="M9 6.5v11M15 6.5v11"/>',
         'clock' => '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',

@@ -3,7 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Category;
-use App\Models\Course;
 use App\Services\Courses\CourseQuery;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
@@ -74,7 +73,7 @@ class CourseCatalog extends Component
             'categories' => $categories,
             'selectedCategory' => $category?->slug ?? '',
             'selectedSort' => $sort,
-            'totalPublished' => Course::query()->published()->count(),
+            'activeFilters' => ($category ? 1 : 0) + ($sort !== 'newest' ? 1 : 0),
             'owned' => $courses->ownedProgress(Auth::user(), $results->items()),
         ]);
     }

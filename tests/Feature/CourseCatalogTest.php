@@ -27,10 +27,10 @@ it('renders the catalog page with the heading and course count', function () {
     $this->get('/courses')
         ->assertOk()
         ->assertSee('<h1>Semua kursus</h1>', false)
-        ->assertSeeText('1 kursus tersedia. Cari judul, saring kategori, atau urutkan.')
+        ->assertDontSeeText('kursus tersedia')
         ->assertSeeText('Lele Galon')
         ->assertDontSeeText('Draf Rahasia')
-        ->assertSee('placeholder="misalnya lele"', false);
+        ->assertSee('placeholder="Cari judul kursus"', false);
 });
 
 it('searches titles without caring about case', function () {
@@ -170,4 +170,23 @@ it('keeps a numeric search or category from the address', function () {
         ->test(CourseCatalog::class)
         ->assertSet('q', '2026')
         ->assertSet('category', '2026');
+});
+
+it('names the search and filters for screen readers without visible labels', function () {
+    $html = $this->get('/courses')->assertOk()->getContent();
+
+    expect($html)->not->toContain('<label for="catalog-q">')
+        ->not->toContain('<label for="catalog-cat">')
+        ->not->toContain('<label for="catalog-sort">')
+        ->toContain('aria-label="Cari judul kursus"')
+        ->toContain('aria-label="Kategori"')
+        ->toContain('aria-label="Urutkan"');
+});
+
+it('folds category and sort behind a filter button that counts the active filters', function () {
+    $html = $this->get('/courses?cat=lele&sort=cheapest')->assertOk()->getContent();
+
+    expect($html)->toContain('aria-controls="catalog-filters"')
+        ->toContain('id="catalog-filters"')
+        ->toMatch('#<button[^>]*aria-controls="catalog-filters"[^>]*>.*?Filter.*?\(2\)#s');
 });
