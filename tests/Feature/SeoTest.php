@@ -19,7 +19,8 @@ it('lists public pages, published courses and published pages in the sitemap', f
         $locations[] = (string) $url->loc;
     }
 
-    expect($locations)->toContain(url('/'), url('/courses'), url('/free-video'), url('/contact'), url('/courses/lele-galon'), url('/tentang-kami'))
+    expect($locations)->toContain(url('/'), url('/courses'), url('/contact'), url('/courses/lele-galon'), url('/tentang-kami'))
+        ->not->toContain(url('/free-video'))
         ->not->toContain(url('/courses/draf-kursus'))
         ->not->toContain(url('/draf-halaman'))
         ->and($response->getContent())->toContain('<lastmod>2026-11-20</lastmod>');

@@ -45,8 +45,9 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeText('Ditambahkan ke setiap pesanan kursus berbayar.')
         ->assertSeeText('Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus.')
         ->assertSeeText('Otomatis: kursus terbit terbaru')
-        ->assertSeeText('Tampil di halaman Nonton gratis untuk pengguna yang sudah daftar. Kosongkan tautan untuk menyembunyikan tombol Nonton gratis di beranda.')
-        ->assertSeeText('Tampil di bawah judul video. Pisahkan paragraf dengan satu baris kosong.')
+        ->assertSeeText('Landing untuk tombol Nonton gratis')
+        ->assertSeeText('Tidak ada, sembunyikan tombol')
+        ->assertDontSee('name="lead_magnet_youtube_url"', false)
         ->assertSee('placeholder="G-XXXXXXXXXX"', false)
         ->assertSee('value="BlueCore Course"', false)
         ->assertSeeText('Simpan pengaturan');
@@ -80,9 +81,6 @@ it('shows the PRD messages inline', function (array $input, string $field, strin
     'tiktok shop over http' => [['tiktokshop_url' => 'http://shop.tiktok.com/x'], 'tiktokshop_url', 'Tautan TikTok Shop harus diawali https://.'],
     'negative fee' => [['admin_fee' => '-1'], 'admin_fee', 'Biaya admin harus angka bulat 0 sampai 1.000.000.'],
     'fee too high' => [['admin_fee' => '1000001'], 'admin_fee', 'Biaya admin harus angka bulat 0 sampai 1.000.000.'],
-    'lead magnet not youtube' => [['lead_magnet_youtube_url' => 'https://vimeo.com/1', 'lead_magnet_title' => 'Gratis'], 'lead_magnet_youtube_url', 'Tautan video gratis harus tautan YouTube yang diawali https://.'],
-    'lead magnet over http' => [['lead_magnet_youtube_url' => 'http://youtu.be/dQw4w9WgXcQ', 'lead_magnet_title' => 'Gratis'], 'lead_magnet_youtube_url', 'Tautan video gratis harus tautan YouTube yang diawali https://.'],
-    'lead magnet without title' => [['lead_magnet_youtube_url' => 'https://youtu.be/dQw4w9WgXcQ', 'lead_magnet_title' => ''], 'lead_magnet_title', 'Judul video gratis wajib diisi.'],
     'ga4 without prefix' => [['ga4_measurement_id' => 'UA-12345'], 'ga4_measurement_id', 'ID Google Analytics harus diawali G-.'],
     'pixel with letters' => [['meta_pixel_id' => 'abc123'], 'meta_pixel_id', 'ID Meta Pixel hanya berisi angka.'],
 ]);
@@ -151,4 +149,23 @@ it('clears the settings cache only after the transaction commits', function () {
     }
 
     expect(Cache::has('settings'))->toBeTrue()->and(Settings::get('site_name'))->toBe('BlueCore Course');
+});
+
+it('lets the admin pick a landing page for the Nonton gratis button', function () {
+    $landing = App\Models\Page::factory()->create(['title' => 'Lele untuk Pemula', 'slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    App\Models\Page::factory()->create(['title' => 'Tentang Kami', 'slug' => 'tentang-kami']);
+
+    $this->actingAs($this->admin)->get('/admin/settings')
+        ->assertSeeText('Lele untuk Pemula (/lele-pemula)')
+        ->assertDontSeeText('Tentang Kami (/tentang-kami)');
+
+    saveSettings(['free_video_page_id' => $landing->id])->assertSessionHasNoErrors();
+
+    expect(Settings::get('free_video_page_id'))->toBe($landing->id);
+});
+
+it('refuses a page without a video for the Nonton gratis button', function () {
+    $page = App\Models\Page::factory()->create(['slug' => 'tentang-kami']);
+
+    saveSettings(['free_video_page_id' => $page->id])->assertSessionHasErrors(['free_video_page_id' => 'Pilih halaman landing yang punya video.']);
 });

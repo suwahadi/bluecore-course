@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin;
 
 use App\Enums\CourseStatus;
-use App\Rules\YouTubeLink;
 use App\Support\UploadRules;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -19,8 +18,6 @@ class SettingsRequest extends FormRequest
         'tiktokshop_url' => 'TikTok Shop',
     ];
 
-    private const LEAD_MAGNET_URL_MESSAGE = 'Tautan video gratis harus tautan YouTube yang diawali https://.';
-
     public function authorize(): bool
     {
         return true;
@@ -31,7 +28,7 @@ class SettingsRequest extends FormRequest
         $rules = collect(config('settings'))->except('logo')->map(fn (array $definition) => $definition['rules'])->all();
 
         $rules['featured_course_id'] = ['nullable', 'integer', Rule::exists('courses', 'id')->where('status', CourseStatus::Published->value)];
-        $rules['lead_magnet_youtube_url'] = [...$rules['lead_magnet_youtube_url'], new YouTubeLink(self::LEAD_MAGNET_URL_MESSAGE)];
+        $rules['free_video_page_id'] = ['nullable', 'integer', Rule::exists('pages', 'id')->whereNotNull('youtube_url')];
         $rules['logo_upload'] = UploadRules::image();
         $rules['remove_logo'] = ['nullable', 'boolean'];
 
@@ -60,12 +57,8 @@ class SettingsRequest extends FormRequest
             'admin_fee.max' => 'Biaya admin harus angka bulat 0 sampai 1.000.000.',
             'featured_course_id.integer' => 'Pilih kursus yang sudah terbit.',
             'featured_course_id.exists' => 'Pilih kursus yang sudah terbit.',
-            'lead_magnet_title.required_with' => 'Judul video gratis wajib diisi.',
-            'lead_magnet_title.max' => 'Judul video gratis maksimal 150 karakter.',
-            'lead_magnet_description.max' => 'Deskripsi maksimal 5.000 karakter.',
-            'lead_magnet_youtube_url.url' => self::LEAD_MAGNET_URL_MESSAGE,
-            'lead_magnet_youtube_url.starts_with' => self::LEAD_MAGNET_URL_MESSAGE,
-            'lead_magnet_youtube_url.max' => self::LEAD_MAGNET_URL_MESSAGE,
+            'free_video_page_id.integer' => 'Pilih halaman landing yang punya video.',
+            'free_video_page_id.exists' => 'Pilih halaman landing yang punya video.',
             'ga4_measurement_id.regex' => 'ID Google Analytics harus diawali G-.',
             'meta_pixel_id.regex' => 'ID Meta Pixel hanya berisi angka.',
             ...$links,

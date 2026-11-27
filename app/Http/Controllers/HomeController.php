@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Page;
 use App\Models\Testimonial;
 use App\Services\Courses\CourseQuery;
 use App\Support\Settings;
-use App\Support\YouTubeUrl;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -22,7 +22,14 @@ class HomeController extends Controller
             'latest' => $latest,
             'owned' => $courses->ownedProgress($request->user(), $latest),
             'testimonials' => Testimonial::query()->visible()->ordered()->get(),
-            'freeVideo' => YouTubeUrl::parse(Settings::get('lead_magnet_youtube_url')) !== null,
+            'freeVideoUrl' => $this->freeVideoUrl(),
         ]);
+    }
+
+    private function freeVideoUrl(): ?string
+    {
+        $page = Page::query()->published()->landing()->find(Settings::get('free_video_page_id'));
+
+        return $page?->videoId() ? url('/'.$page->slug) : null;
     }
 }

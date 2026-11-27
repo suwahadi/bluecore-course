@@ -83,20 +83,10 @@ return [
         'default' => null,
         'rules' => ['nullable', 'integer', 'exists:courses,id'],
     ],
-    'lead_magnet_title' => [
-        'type' => 'string',
+    'free_video_page_id' => [
+        'type' => 'int',
         'default' => null,
-        'rules' => ['nullable', 'string', 'max:150', 'required_with:lead_magnet_youtube_url'],
-    ],
-    'lead_magnet_description' => [
-        'type' => 'string',
-        'default' => null,
-        'rules' => ['nullable', 'string', 'max:5000'],
-    ],
-    'lead_magnet_youtube_url' => [
-        'type' => 'string',
-        'default' => null,
-        'rules' => $httpsUrl,
+        'rules' => ['nullable', 'integer'],
     ],
     'ga4_measurement_id' => [
         'type' => 'string',

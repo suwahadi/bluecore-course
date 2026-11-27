@@ -21,20 +21,21 @@ function featuredCourse(array $attributes = []): Course
 
 it('puts the slogan and description in the hero with the two buttons', function () {
     $course = featuredCourse();
-    Settings::set(['site_slogan' => 'Budidaya ikan dalam galon', 'site_description' => 'Kursus video berbahasa Indonesia.', 'lead_magnet_youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    $landing = App\Models\Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Settings::set(['site_slogan' => 'Budidaya ikan dalam galon', 'site_description' => 'Kursus video berbahasa Indonesia.', 'free_video_page_id' => $landing->id]);
 
     $this->get('/')
         ->assertOk()
         ->assertSee('<h1>Budidaya ikan dalam galon</h1>', false)
         ->assertSeeText('Kursus video berbahasa Indonesia.')
-        ->assertSee('href="'.url('/free-video').'"', false)
+        ->assertSee('href="'.url('/lele-pemula').'"', false)
         ->assertSeeText('Nonton gratis')
         ->assertSee('href="'.route('courses.show', $course).'"', false)
         ->assertSeeText('Lihat kursus');
 });
 
 it('hides Nonton gratis without a free video and sends Lihat kursus to the catalog without courses', function () {
-    Settings::set(['lead_magnet_youtube_url' => null]);
+    Settings::set(['free_video_page_id' => null]);
 
     $this->get('/')
         ->assertDontSeeText('Nonton gratis')
@@ -138,11 +139,20 @@ it('loads the home page with a fixed number of queries', function () {
     expect(count(DB::getQueryLog()))->toBe($few);
 });
 
-it('hides Nonton gratis when the saved free video link is not a YouTube video', function () {
-    App\Support\Settings::set(['lead_magnet_youtube_url' => 'https://contoh.id/bukan-video']);
+it('hides Nonton gratis when the chosen landing page is gone, a draft or without a video', function (array $page, bool $delete) {
+    $landing = App\Models\Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE', ...$page]);
+    App\Support\Settings::set(['free_video_page_id' => $landing->id]);
+    if ($delete) {
+        $landing->delete();
+    }
 
     $this->get('/')->assertOk()->assertDontSeeText('Nonton gratis');
-});
+})->with([
+    'deleted' => [[], true],
+    'draft' => [['is_published' => false], false],
+    'video emptied' => [['youtube_url' => null], false],
+    'link no longer a video' => [['youtube_url' => 'https://contoh.id/bukan-video'], false],
+]);
 
 it('offers a pause button for the testimonial slider', function () {
     App\Models\Testimonial::factory()->count(4)->create();

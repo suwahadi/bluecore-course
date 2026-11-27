@@ -21,7 +21,7 @@ class Page extends Model
 
     public const RESERVED_SLUGS = [
         'account', 'admin', 'api', 'assets', 'build', 'checkout', 'contact', 'course', 'courses',
-        'demo', 'email', 'fonts', 'forgot-password', 'free-video', 'images', 'learn', 'livewire', 'login', 'logout',
+        'demo', 'email', 'fonts', 'forgot-password', 'images', 'learn', 'livewire', 'login', 'logout',
         'my-courses', 'order', 'orders', 'payments', 'register', 'reset-password', 'storage', 'up',
         'user', 'verify-email',
     ];

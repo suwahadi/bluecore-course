@@ -40,7 +40,8 @@ it('labels order statuses in Indonesian', function () {
 });
 
 it('reserves system slugs for pages', function () {
-    expect(Page::RESERVED_SLUGS)->toContain('admin', 'courses', 'free-video', 'demo', 'login', 'my-courses', 'payments');
+    expect(Page::RESERVED_SLUGS)->toContain('admin', 'courses', 'demo', 'login', 'my-courses', 'payments')
+        ->not->toContain('free-video');
 });
 
 it('finds system pages by key', function () {

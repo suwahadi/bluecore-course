@@ -6,6 +6,7 @@ use App\Enums\CourseStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\SettingsRequest;
 use App\Models\Course;
+use App\Models\Page;
 use App\Services\Media\FileCleanup;
 use App\Services\Media\ImageService;
 use App\Support\Settings;
@@ -23,6 +24,7 @@ class SettingController extends Controller
         return view('admin.settings.edit', [
             'settings' => Settings::all(),
             'publishedCourses' => Course::query()->where('status', CourseStatus::Published)->orderBy('title')->pluck('title', 'id')->all(),
+            'landingPages' => Page::query()->landing()->orderBy('title')->get(['id', 'title', 'slug'])->mapWithKeys(fn (Page $page) => [$page->id => $page->title.' (/'.$page->slug.')'])->all(),
         ]);
     }
 

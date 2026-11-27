@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\CourseStatus;
 use App\Models\Category;
 use App\Models\Course;
+use App\Models\Page;
 use App\Models\Testimonial;
 use App\Support\Settings;
 use Illuminate\Database\Seeder;
@@ -53,12 +54,14 @@ class DemoSeeder extends Seeder
             }
         }
 
-        if (blank(Settings::get('lead_magnet_youtube_url'))) {
-            Settings::set([
-                'lead_magnet_title' => '[Judul video gratis]',
-                'lead_magnet_description' => "[Tulis deskripsi video gratis di sini.]\n\n[Pisahkan paragraf dengan satu baris kosong.]",
-                'lead_magnet_youtube_url' => 'https://youtu.be/'.self::VIDEO_ID,
+        if (blank(Settings::get('free_video_page_id'))) {
+            $landing = Page::query()->firstOrCreate(['slug' => 'free-video'], [
+                'title' => '[Judul video gratis]',
+                'content' => "[Tulis deskripsi video gratis di sini.]\n\n[Pakai Markdown untuk judul, daftar, dan tautan.]",
+                'youtube_url' => 'https://youtu.be/'.self::VIDEO_ID,
+                'show_in_footer' => false,
             ]);
+            Settings::set(['free_video_page_id' => $landing->id]);
         }
     }
 

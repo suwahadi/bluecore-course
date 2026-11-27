@@ -7,10 +7,10 @@
                     <p>{{ \App\Support\Settings::get('site_description') }}</p>
                 @endif
                 <div class="btn-pair">
-                    @if ($freeVideo)
-                        <a class="btn btn--primary" href="{{ url('/free-video') }}">Nonton gratis</a>
+                    @if ($freeVideoUrl)
+                        <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Nonton gratis</a>
                     @endif
-                    <a class="btn {{ $freeVideo ? 'btn--soft' : 'btn--primary' }}" href="{{ $featured ? route('courses.show', $featured) : url('/courses') }}">Lihat kursus</a>
+                    <a class="btn {{ $freeVideoUrl ? 'btn--soft' : 'btn--primary' }}" href="{{ $featured ? route('courses.show', $featured) : url('/courses') }}">Lihat kursus</a>
                 </div>
             </div>
             @if ($featured)

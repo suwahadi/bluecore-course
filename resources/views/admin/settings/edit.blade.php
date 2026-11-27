@@ -63,11 +63,8 @@
 
         <section class="panel">
             <h2 class="panel-title">Video gratis</h2>
-            <p class="field__help">Tampil di halaman Nonton gratis untuk pengguna yang sudah daftar. Kosongkan tautan untuk menyembunyikan tombol Nonton gratis di beranda.</p>
             <div class="form-grid form-grid--2">
-                <x-field name="lead_magnet_title" label="Judul video" :value="$settings['lead_magnet_title']" maxlength="150" />
-                <x-field name="lead_magnet_youtube_url" label="Tautan YouTube" type="url" :value="$settings['lead_magnet_youtube_url']" placeholder="https://youtu.be/..." inputmode="url" />
-                <x-field name="lead_magnet_description" label="Deskripsi" type="textarea" :value="$settings['lead_magnet_description']" help="Tampil di bawah judul video. Pisahkan paragraf dengan satu baris kosong." :full="true" rows="6" maxlength="5000" />
+                <x-field name="free_video_page_id" label="Landing untuk tombol Nonton gratis" type="select" :options="['' => 'Tidak ada, sembunyikan tombol'] + $landingPages" :value="$settings['free_video_page_id']" help="Buat landing di menu Halaman dengan mengisi Tautan YouTube." />
             </div>
         </section>
 
