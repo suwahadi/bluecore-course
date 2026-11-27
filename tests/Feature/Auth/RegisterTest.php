@@ -33,17 +33,23 @@ it('registers a user, cleans the phone, logs in and fires the verification event
     Event::assertDispatched(Registered::class);
 });
 
-it('derives the signup source from next', function (?string $next, SignupSource $source) {
+it('derives the signup source and landing page from next', function (?string $next, SignupSource $source, ?string $landing) {
+    Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Page::factory()->create(['slug' => 'tentang-kami']);
+
     $this->post('/register', registrationInput(['next' => $next]));
 
-    expect(User::firstWhere('email', 'budi@contoh.id')->signup_source)->toBe($source);
+    $user = User::firstWhere('email', 'budi@contoh.id');
+    expect($user->signup_source)->toBe($source)->and($user->signup_landing)->toBe($landing);
 })->with([
-    'free video' => ['/free-video', SignupSource::FreeVideo],
-    'course page' => ['/courses/lele', SignupSource::Course],
-    'orders' => ['/orders', SignupSource::Direct],
-    'outside url' => ['https://evil.com/free-video', SignupSource::Direct],
-    'protocol relative' => ['//evil.com/courses/x', SignupSource::Direct],
-    'missing' => [null, SignupSource::Direct],
+    'landing page' => ['/lele-pemula', SignupSource::FreeVideo, '/lele-pemula'],
+    'landing with tracking query' => ['/lele-pemula?utm_source=ig', SignupSource::FreeVideo, '/lele-pemula'],
+    'page without video' => ['/tentang-kami', SignupSource::Direct, null],
+    'course page' => ['/courses/lele', SignupSource::Course, null],
+    'orders' => ['/orders', SignupSource::Direct, null],
+    'outside url' => ['https://evil.com/lele-pemula', SignupSource::Direct, null],
+    'protocol relative' => ['//evil.com/courses/x', SignupSource::Direct, null],
+    'missing' => [null, SignupSource::Direct, null],
 ]);
 
 it('ignores an outside next and lands on the home page', function () {

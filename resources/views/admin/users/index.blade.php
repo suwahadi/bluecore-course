@@ -62,7 +62,7 @@
                             </td>
                             <td class="num">{{ $user->enrollments_count }}</td>
                             <td class="num">{{ Format::rupiah((int) $user->paid_total) }}</td>
-                            <td class="muted">{{ Format::datetime($user->created_at) }}</td>
+                            <td class="muted">{{ Format::datetime($user->created_at) }}<div class="small">{{ $user->signupSourceLabel() }}</div></td>
                             <td>
                                 <div class="btn-row">
                                     <x-admin.icon-button icon="pencil" label="Edit pengguna" :opens="'user-'.$user->id" />

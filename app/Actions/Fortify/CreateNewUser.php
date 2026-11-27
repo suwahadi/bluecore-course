@@ -3,6 +3,7 @@
 namespace App\Actions\Fortify;
 
 use App\Enums\SignupSource;
+use App\Models\Page;
 use App\Models\User;
 use App\Support\NextPath;
 use App\Support\PersonName;
@@ -35,23 +36,34 @@ class CreateNewUser implements CreatesNewUsers
             ...PhoneNumber::messages(),
         ])->validate();
 
+        [$source, $landing] = self::signupOrigin($input['next'] ?? null);
+
         return User::create([
             'name' => trim($input['name']),
             'email' => $input['email'],
             'phone' => $input['phone'],
             'password' => $input['password'],
-            'signup_source' => self::signupSource($input['next'] ?? null),
+            'signup_source' => $source,
+            'signup_landing' => $landing,
         ]);
     }
 
-    private static function signupSource(?string $next): SignupSource
+    private static function signupOrigin(mixed $next): array
     {
-        $path = NextPath::sanitize($next);
+        $path = parse_url((string) NextPath::sanitize($next), PHP_URL_PATH);
 
-        return match (true) {
-            $path === '/free-video' => SignupSource::FreeVideo,
-            $path !== null && str_starts_with($path, '/courses/') => SignupSource::Course,
-            default => SignupSource::Direct,
-        };
+        if (! is_string($path) || $path === '') {
+            return [SignupSource::Direct, null];
+        }
+
+        if (str_starts_with($path, '/courses/')) {
+            return [SignupSource::Course, null];
+        }
+
+        $slug = ltrim($path, '/');
+
+        return Page::query()->landing()->where('slug', $slug)->exists()
+            ? [SignupSource::FreeVideo, '/'.$slug]
+            : [SignupSource::Direct, null];
     }
 }

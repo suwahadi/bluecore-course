@@ -302,3 +302,13 @@ it('refuses to erase the last admin when the acting admin was demoted meanwhile'
 
     expect($other->fresh()->email)->toBe('admin2@contoh.id');
 });
+
+it('shows where each user signed up', function () {
+    User::factory()->create(['name' => 'Sari Lestari', 'signup_source' => 'free_video', 'signup_landing' => '/lele-pemula']);
+    User::factory()->create(['name' => 'Budi', 'signup_source' => 'course']);
+
+    $this->actingAs($this->admin)->get('/admin/users')
+        ->assertOk()
+        ->assertSeeText('Video gratis (/lele-pemula)')
+        ->assertSeeText('Halaman kursus');
+});

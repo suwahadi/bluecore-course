@@ -33,7 +33,7 @@ class UserExportController extends Controller
                         (string) $user->phone,
                         $user->role->label(),
                         $user->email_verified_at ? 'Ya' : 'Tidak',
-                        $user->signup_source->label(),
+                        $user->signupSourceLabel(),
                         $user->created_at->format('Y-m-d H:i'),
                         (string) $user->enrollments_count,
                         (string) (int) $user->paid_total,

@@ -21,7 +21,7 @@ function exportRows(string $query = ''): array
 
 it('exports the PRD columns with semicolons, a BOM and a dated file name', function () {
     $this->travelTo(now()->setDate(2026, 11, 24)->setTime(16, 22));
-    $buyer = User::factory()->create(['name' => 'Sari Lestari', 'email' => 'sari@contoh.id', 'phone' => '08123456789', 'signup_source' => 'free_video']);
+    $buyer = User::factory()->create(['name' => 'Sari Lestari', 'email' => 'sari@contoh.id', 'phone' => '08123456789', 'signup_source' => 'free_video', 'signup_landing' => '/lele-pemula']);
     Enrollment::factory()->count(2)->for($buyer)->create();
     Order::factory()->paid()->for($buyer)->create(['amount' => 150000]);
 
@@ -30,7 +30,7 @@ it('exports the PRD columns with semicolons, a BOM and a dated file name', funct
 
     $rows = exportRows();
     expect($rows[0])->toBe(['Nama', 'Email', 'Telepon', 'Peran', 'Terverifikasi', 'Sumber daftar', 'Tanggal daftar', 'Jumlah kursus', 'Total belanja lunas'])
-        ->and($rows[2])->toBe(['Sari Lestari', 'sari@contoh.id', '08123456789', 'Pengguna', 'Ya', 'Video gratis', '2026-11-24 16:22', '2', '150000']);
+        ->and($rows[2])->toBe(['Sari Lestari', 'sari@contoh.id', '08123456789', 'Pengguna', 'Ya', 'Video gratis (/lele-pemula)', '2026-11-24 16:22', '2', '150000']);
 });
 
 it('follows the active filters', function () {

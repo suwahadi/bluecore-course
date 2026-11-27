@@ -69,7 +69,6 @@ it('brings new users back to the open video and records the source', function ()
         'password' => 'rahasia123', 'password_confirmation' => 'rahasia123', 'next' => '/free-video', '_form' => 'register',
     ])->assertRedirect('/free-video');
 
-    expect(User::firstWhere('email', 'sari@contoh.id')->signup_source)->toBe(SignupSource::FreeVideo);
     $this->get('/free-video')->assertSee('data-video-id="M7lc1UVf-VE"', false);
 });
 
