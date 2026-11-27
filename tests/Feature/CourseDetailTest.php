@@ -15,7 +15,7 @@ function detailCourse(array $attributes = []): Course
         'title' => 'Lele Galon',
         'slug' => 'lele-galon',
         'short_description' => 'Mulai dari satu galon.',
-        'description' => "Paragraf <b>satu</b>.\n\nParagraf dua.",
+        'description' => "Paragraf <b>satu</b>.\n\nParagraf dua.\n\n### Yang akan kamu pelajari\n\n- **Bab 1** Hitung modal",
         'price' => 125000,
         'compare_at_price' => 175000,
         ...$attributes,
@@ -36,8 +36,10 @@ it('shows the course facts, videos and materials without a player', function () 
         ->assertSee('<h1>Lele Galon</h1>', false)
         ->assertSeeText('Lele')
         ->assertSeeText('Mulai dari satu galon.')
-        ->assertSee('<p>Paragraf &lt;b&gt;satu&lt;/b&gt;.</p>', false)
+        ->assertSee('<p>Paragraf satu.</p>', false)
         ->assertSee('<p>Paragraf dua.</p>', false)
+        ->assertSee('<h3>Yang akan kamu pelajari</h3>', false)
+        ->assertSee('<li><strong>Bab 1</strong> Hitung modal</li>', false)
         ->assertSeeText('Rp 125.000')
         ->assertSeeText('Rp 175.000')
         ->assertSeeText('Hemat 29%')
@@ -50,7 +52,7 @@ it('shows the course facts, videos and materials without a player', function () 
         ->assertSeeText('Sudah diikuti 2 orang')
         ->assertSeeText('Bisa diunduh setelah punya akses.');
 
-    expect($response->getContent())->not->toContain('<iframe')
+    expect($response->getContent())->not->toContain('<iframe')->not->toContain('<b>satu</b>')
         ->toContain('<meta name="description" content="Mulai dari satu galon.">');
 });
 
@@ -75,7 +77,7 @@ it('offers checkout to signed-in users without access', function () {
 
     $this->actingAs(User::factory()->create())->get('/courses/lele-galon')
         ->assertSee('href="'.url('/courses/lele-galon/checkout').'"', false)
-        ->assertSeeText('Beli sekarang');
+        ->assertSeeText('Beli kursus · Rp 125.000');
 });
 
 it('sends buyers with an open order back to it', function () {
@@ -87,7 +89,7 @@ it('sends buyers with an open order back to it', function () {
     $this->actingAs($user)->get('/courses/lele-galon')
         ->assertSee('href="'.url('/order/'.$open->uuid).'"', false)
         ->assertSeeText('Selesaikan pembayaran')
-        ->assertDontSeeText('Beli sekarang');
+        ->assertDontSeeText('Beli kursus');
 });
 
 it('lets owners and admins continue learning', function () {
@@ -131,4 +133,39 @@ it('uses the thumbnail as the share image', function () {
     detailCourse(['thumbnail_path' => 'courses/sampul.webp']);
 
     $this->get('/courses/lele-galon')->assertSee('<meta property="og:image" content="'.Storage::disk('public')->url('courses/sampul.webp').'">', false);
+});
+
+it('names the level in the eyebrow and falls back to the category', function () {
+    detailCourse(['level' => 'Pemula']);
+    $this->get('/courses/lele-galon')->assertSee('<p class="course-eyebrow">Kursus untuk pemula</p>', false);
+
+    Course::query()->update(['level' => null]);
+    $this->get('/courses/lele-galon')->assertSee('<p class="course-eyebrow">Lele</p>', false);
+});
+
+it('spells out the total with the admin fee, the unlock rule and the nudge', function () {
+    detailCourse();
+    App\Support\Settings::set(['admin_fee' => 2500]);
+
+    $this->actingAs(User::factory()->create())->get('/courses/lele-galon')
+        ->assertSee('id="daftar-video"', false)
+        ->assertSeeInOrder([
+            'Bayar sekali, akses selamanya.',
+            'Total pembayaran Rp 127.500, sudah termasuk biaya admin Rp 2.500.',
+            'Beli kursus · Rp 125.000',
+            'Kursus terbuka otomatis setelah pembayaran terverifikasi.',
+            'Belajar sebelum beli bibit, bukan setelah ikan bermasalah.',
+        ]);
+});
+
+it('leaves out the total line without an admin fee and the sales notes for owners', function () {
+    $course = detailCourse();
+    App\Support\Settings::set(['admin_fee' => 0]);
+
+    $this->get('/courses/lele-galon')->assertDontSeeText('Total pembayaran');
+
+    $owner = Enrollment::factory()->for($course)->create()->user;
+    $this->actingAs($owner)->get('/courses/lele-galon')
+        ->assertDontSeeText('Kursus terbuka otomatis')
+        ->assertDontSeeText('Belajar sebelum beli bibit');
 });

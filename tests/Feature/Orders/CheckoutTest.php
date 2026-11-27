@@ -36,12 +36,12 @@ it('shows the order summary with the admin fee and total', function () {
 
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
         ->assertOk()
-        ->assertSee('<h1>Checkout</h1>', false)
+        ->assertSee('<h1>Satu Langkah Lagi untuk Mulai Menyiapkan Galonmu</h1>', false)
         ->assertSeeText('Lele Galon')
         ->assertSeeText('Mulai dari satu galon.')
         ->assertSeeInOrder(['Harga kursus', 'Rp 150.000', 'Biaya admin', 'Rp 2.500', 'Total', 'Rp 152.500'])
-        ->assertSeeText('Bayar sekarang')
-        ->assertSeeText('Batas waktu bayar 24 jam.');
+        ->assertSeeText('Bayar Rp 152.500')
+        ->assertSeeText('Selesaikan pembayaran dalam 24 jam. Setelah itu, pesanan akan kedaluwarsa dan perlu dibuat ulang. Makin cepat dibayar, makin cepat kamu bisa mulai menyiapkan galon.');
 });
 
 it('hides the admin fee line when there is none', function () {
@@ -150,4 +150,35 @@ it('sends the buyer to the order page when a parallel invoice takes too long', f
 
     Http::assertNothingSent();
     expect($order->fresh()->status)->toBe(OrderStatus::Pending);
+});
+
+it('lists what the buyer gets with the help contacts and the guarantee', function () {
+    Settings::set(['whatsapp' => '6281818182878', 'email' => 'support@bluecore.co.id', 'checkout_guarantee' => 'Garansi 7 hari uang kembali.']);
+
+    $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
+        ->assertOk()
+        ->assertSeeInOrder([
+            'Kamu akan mendapatkan',
+            'Bayar sekali, tanpa langganan.',
+            'Pembayaran melalui halaman resmi Duitku: QRIS, transfer bank, dan e-wallet.',
+            'Kursus otomatis muncul di menu Kursus saya setelah pembayaran terverifikasi.',
+            'Bantuan akses melalui WhatsApp 081818182878 atau support@bluecore.co.id.',
+            'Garansi 7 hari uang kembali.',
+        ]);
+});
+
+it('drops the help line without contacts and the guarantee when it is empty', function () {
+    Settings::set(['whatsapp' => null, 'email' => null, 'checkout_guarantee' => null]);
+
+    $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
+        ->assertOk()
+        ->assertDontSeeText('Bantuan akses')
+        ->assertDontSeeText('Garansi');
+});
+
+it('offers whichever help contact is set', function () {
+    Settings::set(['whatsapp' => null, 'email' => 'support@bluecore.co.id']);
+
+    $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
+        ->assertSeeText('Bantuan akses melalui support@bluecore.co.id.');
 });

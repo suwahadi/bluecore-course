@@ -146,12 +146,18 @@ it('accepts a slug that only contains livewire later on', function () {
     $this->get('/panduan-livewire')->assertOk();
 });
 
-it('saves a landing video with an open gate', function () {
-    $this->actingAs($this->admin)->post('/admin/pages', validPage(['youtube_url' => 'https://youtu.be/M7lc1UVf-VE', 'requires_signup' => '0']))
+it('saves a landing video with an open gate and its upsell copy', function () {
+    $this->actingAs($this->admin)->post('/admin/pages', validPage(['youtube_url' => 'https://youtu.be/M7lc1UVf-VE', 'requires_signup' => '0', 'upsell_content' => '  ## Lanjutkan  ']))
         ->assertSessionHasNoErrors();
 
     $page = Page::firstWhere('slug', 'tentang-kami');
-    expect($page->youtube_url)->toBe('https://youtu.be/M7lc1UVf-VE')->and($page->requires_signup)->toBeFalse();
+    expect($page->youtube_url)->toBe('https://youtu.be/M7lc1UVf-VE')->and($page->requires_signup)->toBeFalse()
+        ->and($page->upsell_content)->toBe('## Lanjutkan');
+});
+
+it('limits the upsell copy', function () {
+    $this->actingAs($this->admin)->from('/admin/pages')->post('/admin/pages', validPage(['upsell_content' => str_repeat('a', 20001)]))
+        ->assertSessionHasErrorsIn('page-new', ['upsell_content' => 'Ajakan setelah video maksimal 20.000 karakter.']);
 });
 
 it('refuses a landing link that is not a YouTube video over https', function (string $url) {
@@ -168,6 +174,8 @@ it('shows the landing fields and marks landing pages in the list', function () {
     expect($html)->toContain('name="youtube_url"')
         ->toContain('Wajib daftar untuk menonton')
         ->toContain('Isi untuk menjadikan halaman ini landing video.')
+        ->toContain('name="upsell_content"')
+        ->toContain('Tampil di bawah video, di atas tombol ke kursus unggulan.')
         ->and(substr_count($html, 'landing video</div>'))->toBe(1);
 });
 

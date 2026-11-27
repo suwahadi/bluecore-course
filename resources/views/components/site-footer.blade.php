@@ -2,6 +2,9 @@
     <div class="site-footer__inner">
         <div>
             <p><strong>{{ $siteName }}</strong></p>
+            @if ($slogan)
+                <p class="site-footer__tagline">{{ $slogan }}</p>
+            @endif
             @if ($description)
                 <p class="muted small mt-1.5 max-w-[40ch]">{{ $description }}</p>
             @endif
@@ -9,14 +12,14 @@
         <div>
             <h2 class="site-footer__title">Tautan</h2>
             <ul>
-                <li><a href="{{ url('/courses') }}">Semua kursus</a></li>
+                <li><a href="{{ url('/courses') }}">Kursus</a></li>
                 @foreach ($pages as $page)
                     <li><a href="{{ url($page['slug']) }}">{{ $page['title'] }}</a></li>
                 @endforeach
-                <li><a href="{{ url('/contact') }}">Kontak</a></li>
+                <li><a href="{{ url('/contact') }}">Hubungi Kami</a></li>
             </ul>
         </div>
-        @foreach (['Hubungi kami' => $contacts, 'Sosial Media' => $socials] as $title => $rows)
+        @foreach (['Kontak' => $contacts, 'Sosial Media' => $socials] as $title => $rows)
             @if ($rows)
                 <div>
                     <h2 class="site-footer__title">{{ $title }}</h2>
@@ -49,5 +52,8 @@
             </div>
         @endif
     </div>
-    <p class="site-footer__bottom">&copy; {{ now()->year }} {{ $siteName }}. Hak cipta dilindungi.</p>
+    @if ($disclaimer)
+        <p class="site-footer__disclaimer">{{ $disclaimer }}</p>
+    @endif
+    <p class="site-footer__bottom">&copy; {{ now()->year }} {{ $owner }}. Hak cipta dilindungi. Pembayaran diproses oleh Duitku.</p>
 </footer>

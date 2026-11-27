@@ -19,26 +19,41 @@ function featuredCourse(array $attributes = []): Course
     return $course;
 }
 
-it('puts the slogan and description in the hero with the two buttons', function () {
-    $course = featuredCourse();
+it('puts the eyebrow, title, subtitle and the free video button in the hero', function () {
+    featuredCourse();
     $landing = App\Models\Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
-    Settings::set(['site_slogan' => 'Budidaya ikan dalam galon', 'site_description' => 'Kursus video berbahasa Indonesia.', 'free_video_page_id' => $landing->id]);
+    Settings::set([
+        'hero_eyebrow' => 'Video gratis untuk pemula',
+        'hero_title' => 'Keuntungan Maksimal Sejak Panen Pertama.',
+        'hero_subtitle' => 'Hitung Perhitungan Lengkapnya di Video Gratis Ini.',
+        'free_video_page_id' => $landing->id,
+    ]);
 
     $this->get('/')
         ->assertOk()
-        ->assertSee('<h1>Budidaya ikan dalam galon</h1>', false)
-        ->assertSeeText('Kursus video berbahasa Indonesia.')
-        ->assertSee('href="'.url('/lele-pemula').'"', false)
-        ->assertSeeText('Nonton gratis')
-        ->assertSee('href="'.route('courses.show', $course).'"', false)
-        ->assertSeeText('Lihat kursus');
+        ->assertSeeInOrder([
+            '<p class="hero__eyebrow">Video gratis untuk pemula</p>',
+            '<h1>Keuntungan Maksimal Sejak Panen Pertama.</h1>',
+            '<p class="hero__subtitle">Hitung Perhitungan Lengkapnya di Video Gratis Ini.</p>',
+            '<a class="btn btn--primary" href="'.url('/lele-pemula').'">Tonton video gratis</a>',
+        ], false);
 });
 
-it('hides Nonton gratis without a free video and sends Lihat kursus to the catalog without courses', function () {
+it('falls back to the site name when the hero title is empty', function () {
+    Settings::set(['hero_title' => null, 'hero_eyebrow' => null, 'hero_subtitle' => null]);
+
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->toContain('<h1>BlueCore Course</h1>')
+        ->not->toContain('hero__eyebrow')
+        ->not->toContain('hero__subtitle');
+});
+
+it('hides Tonton video gratis without a free video and sends Lihat kursus to the catalog without courses', function () {
     Settings::set(['free_video_page_id' => null]);
 
     $this->get('/')
-        ->assertDontSeeText('Nonton gratis')
+        ->assertDontSee('>Tonton video gratis</a>', false)
         ->assertSee('class="btn btn--primary" href="'.url('/courses').'"', false)
         ->assertSeeText('Belum ada kursus yang terbit. Kursus baru muncul di sini begitu admin menerbitkannya.');
 });
@@ -97,7 +112,7 @@ it('renders testimonials as a grid up to three and as a looping slider beyond', 
     Testimonial::factory()->count(3)->sequence(fn ($sequence) => ['name' => 'Pembeli '.($sequence->index + 1), 'sort_order' => $sequence->index + 1])->create();
 
     $this->get('/')
-        ->assertSeeText('Testimoni pembeli')
+        ->assertSeeText('Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.')
         ->assertSee('<ul class="testimonials">', false)
         ->assertDontSee('data-carousel', false)
         ->assertDontSeeText('Tersembunyi');
@@ -115,7 +130,7 @@ it('renders testimonials as a grid up to three and as a looping slider beyond', 
 it('leaves the testimonial section out when none are visible', function () {
     Testimonial::factory()->create(['is_visible' => false]);
 
-    $this->get('/')->assertDontSeeText('Testimoni pembeli');
+    $this->get('/')->assertDontSee('testimonials-title', false);
 });
 
 it('loads the home page with a fixed number of queries', function () {
@@ -139,14 +154,14 @@ it('loads the home page with a fixed number of queries', function () {
     expect(count(DB::getQueryLog()))->toBe($few);
 });
 
-it('hides Nonton gratis when the chosen landing page is gone, a draft or without a video', function (array $page, bool $delete) {
+it('hides Tonton video gratis when the chosen landing page is gone, a draft or without a video', function (array $page, bool $delete) {
     $landing = App\Models\Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE', ...$page]);
     App\Support\Settings::set(['free_video_page_id' => $landing->id]);
     if ($delete) {
         $landing->delete();
     }
 
-    $this->get('/')->assertOk()->assertDontSeeText('Nonton gratis');
+    $this->get('/')->assertOk()->assertDontSee('>Tonton video gratis</a>', false);
 })->with([
     'deleted' => [[], true],
     'draft' => [['is_published' => false], false],
@@ -164,4 +179,66 @@ it('has no pause button when the testimonials fit without a slider', function ()
     App\Models\Testimonial::factory()->count(3)->create();
 
     $this->get('/')->assertDontSee('data-carousel-toggle', false);
+});
+
+it('lists the FAQ page questions as an accordion', function () {
+    App\Models\Page::factory()->create([
+        'system_key' => 'faq', 'title' => 'FAQ', 'slug' => 'faq',
+        'content' => "Pengantar singkat.\n\n### Cocok untuk pemula?\n\nYa, **cocok**.\n\n### Butuh lahan luas?\n\nTidak.\n\n- Teras cukup\n\n<script>alert(1)</script>",
+    ]);
+
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->toContain('<section class="section" id="faq">')
+        ->toContain('<h2>FAQ</h2>')
+        ->toContain('<summary>Cocok untuk pemula?</summary>')
+        ->toContain('<p>Ya, <strong>cocok</strong>.</p>')
+        ->toContain('<summary>Butuh lahan luas?</summary>')
+        ->toContain('<li>Teras cukup</li>')
+        ->not->toContain('Pengantar singkat.')
+        ->not->toContain('<script>alert(1)</script>');
+});
+
+it('skips the FAQ section when the page is a draft or has no questions', function (array $attributes) {
+    App\Models\Page::factory()->create(['system_key' => 'faq', 'slug' => 'faq', ...$attributes]);
+
+    $this->get('/')->assertOk()->assertDontSee('id="faq"', false);
+})->with([
+    'draft' => [['is_published' => false, 'content' => "### Tanya?\n\nJawab."]],
+    'no questions' => [['content' => 'Belum ada pertanyaan.']],
+]);
+
+it('closes with the free video for guests and the course for members', function () {
+    $course = featuredCourse();
+    $landing = App\Models\Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Settings::set([
+        'cta_title' => 'Galon Bekas di Rumah Sudah Siap? Tinggal Kamu yang Mulai.',
+        'cta_text' => 'Tonton video gratisnya terlebih dahulu, atau langsung lihat kursus lengkap.',
+        'free_video_page_id' => $landing->id,
+    ]);
+
+    $this->get('/')->assertOk()->assertSeeInOrder([
+        '<h2>Galon Bekas di Rumah Sudah Siap? Tinggal Kamu yang Mulai.</h2>',
+        '<p>Tonton video gratisnya terlebih dahulu, atau langsung lihat kursus lengkap.</p>',
+        '<a class="btn btn--primary" href="'.url('/lele-pemula').'">Tonton video gratis</a>',
+        '<p class="cta-band__note">Daftar gratis • Bayar sekali, akses selamanya</p>',
+    ], false);
+
+    $this->actingAs(User::factory()->create())->get('/')
+        ->assertSee('<a class="btn btn--primary" href="'.route('courses.show', $course).'">Lihat kursus lengkap</a>', false)
+        ->assertDontSee('cta-band__note', false);
+});
+
+it('drops the closing section when its title is empty', function () {
+    Settings::set(['cta_title' => null]);
+
+    $this->get('/')->assertOk()->assertDontSee('cta-band', false);
+});
+
+it('titles the testimonials from the settings', function () {
+    Testimonial::factory()->create();
+    Settings::set(['testimonials_title' => 'Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.']);
+
+    $this->get('/')->assertOk()
+        ->assertSee('<h2 id="testimonials-title">Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.</h2>', false);
 });

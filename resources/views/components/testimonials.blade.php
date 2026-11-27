@@ -6,7 +6,7 @@
     <section class="section section--band">
         <div class="wrap">
             <div class="page-head">
-                <h2 id="testimonials-title">Testimoni pembeli</h2>
+                <h2 id="testimonials-title">{{ \App\Support\Settings::get('testimonials_title') ?: 'Testimoni pembeli' }}</h2>
                 @if ($slider)
                     <div class="carousel-nav">
                         <button type="button" class="btn btn-icon" data-carousel-prev aria-label="Testimoni sebelumnya" title="Sebelumnya"><x-icon name="back" /></button>

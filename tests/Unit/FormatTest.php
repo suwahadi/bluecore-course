@@ -35,8 +35,3 @@ it('takes up to two initials from a name', function () {
         ->and(Format::initials('  '))->toBe('');
 });
 
-it('splits text into trimmed paragraphs on blank lines', function () {
-    expect(Format::paragraphs("Satu baris.\nmasih paragraf satu.\n\n  Dua  \n\n\n"))->toBe(["Satu baris.\nmasih paragraf satu.", 'Dua'])
-        ->and(Format::paragraphs(null))->toBe([])
-        ->and(Format::paragraphs("  \n\n "))->toBe([]);
-});

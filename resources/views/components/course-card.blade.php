@@ -14,14 +14,12 @@
         @endif
     </span>
     <div class="course-card__body">
-        <span class="course-card__cat">{{ $course->category?->name }}</span>
+        <span class="course-card__cat">{{ collect([$course->level, $course->category?->name])->filter()->implode(' • ') }}</span>
         <span class="course-card__title">{{ $course->title }}</span>
-        <span class="course-card__meta">
-            <span><x-icon name="video" :size="16" />{{ $course->segments_count }} video</span>
-            @if ((int) $course->segments_sum_duration_seconds > 0)
-                <span><x-icon name="clock" :size="16" />{{ \App\Support\Format::duration((int) $course->segments_sum_duration_seconds) }}</span>
-            @endif
-        </span>
+        @if (filled($course->short_description))
+            <span class="course-card__desc">{{ $course->short_description }}</span>
+        @endif
+        <x-course-meta :course="$course" class="course-card__meta" />
         @if ($owned && $progress)
             <x-segment-bar :progress="$progress" :thin="true" />
         @endif
@@ -32,5 +30,8 @@
                 <x-price :course="$course" :badge="false" />
             @endif
         </span>
+        @unless ($owned)
+            <span class="course-card__more">Lihat isi kursus</span>
+        @endunless
     </div>
 </a>

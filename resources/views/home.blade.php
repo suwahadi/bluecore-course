@@ -1,16 +1,27 @@
+@php
+    use App\Support\Settings;
+    $heroEyebrow = Settings::get('hero_eyebrow');
+    $heroSubtitle = Settings::get('hero_subtitle');
+    $ctaTitle = Settings::get('cta_title');
+    $ctaText = Settings::get('cta_text');
+@endphp
 <x-layouts.app>
     <section class="section section--hero">
         <div class="wrap hero">
             <div class="hero__copy">
-                <h1>{{ \App\Support\Settings::get('site_slogan') }}</h1>
-                @if (filled(\App\Support\Settings::get('site_description')))
-                    <p>{{ \App\Support\Settings::get('site_description') }}</p>
+                @if (filled($heroEyebrow))
+                    <p class="hero__eyebrow">{{ $heroEyebrow }}</p>
                 @endif
-                <div class="btn-pair">
+                <h1>{{ Settings::get('hero_title') ?: Settings::get('site_name') }}</h1>
+                @if (filled($heroSubtitle))
+                    <p class="hero__subtitle">{{ $heroSubtitle }}</p>
+                @endif
+                <div class="hero__cta">
                     @if ($freeVideoUrl)
-                        <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Nonton gratis</a>
+                        <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Tonton video gratis</a>
+                    @else
+                        <a class="btn btn--primary" href="{{ $courseUrl }}">Lihat kursus</a>
                     @endif
-                    <a class="btn {{ $freeVideoUrl ? 'btn--soft' : 'btn--primary' }}" href="{{ $featured ? route('courses.show', $featured) : url('/courses') }}">Lihat kursus</a>
                 </div>
             </div>
             @if ($featured)
@@ -38,4 +49,39 @@
     </section>
 
     <x-testimonials :items="$testimonials" />
+
+    @if ($faqItems)
+        <section class="section" id="faq">
+            <div class="wrap faq">
+                <h2>{{ $faq->title }}</h2>
+                <div class="faq__list">
+                    @foreach ($faqItems as $item)
+                        <details class="faq__item">
+                            <summary>{{ $item['question'] }}</summary>
+                            <div class="prose faq__answer">{!! $item['answer'] !!}</div>
+                        </details>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    @endif
+
+    @if (filled($ctaTitle))
+        <section class="section cta-band">
+            <div class="wrap cta-band__inner">
+                <h2>{{ $ctaTitle }}</h2>
+                @if (filled($ctaText))
+                    <p>{{ $ctaText }}</p>
+                @endif
+                @if (! auth()->check() && $freeVideoUrl)
+                    <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Tonton video gratis</a>
+                @else
+                    <a class="btn btn--primary" href="{{ $courseUrl }}">Lihat kursus lengkap</a>
+                @endif
+                @guest
+                    <p class="cta-band__note">Daftar gratis • Bayar sekali, akses selamanya</p>
+                @endguest
+            </div>
+        </section>
+    @endif
 </x-layouts.app>

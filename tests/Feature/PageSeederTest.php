@@ -23,7 +23,7 @@ it('never overwrites pages the admin already changed', function () {
 
     $this->seed(PageSeeder::class);
 
-    expect(Page::query()->count())->toBe(2)
+    expect(Page::query()->count())->toBe(4)
         ->and(Page::systemPage('terms'))->title->toBe('Syarat Layanan')->content->toBe('Isi baru.');
 });
 
@@ -31,4 +31,17 @@ it('runs from the default database seeder', function () {
     $this->seed();
 
     expect(Page::systemPage('privacy'))->not->toBeNull();
+});
+
+it('adds a published FAQ and a draft about page', function () {
+    $this->seed(PageSeeder::class);
+
+    $faq = Page::systemPage('faq');
+    $about = Page::systemPage('about');
+
+    expect($faq)->title->toBe('FAQ')->slug->toBe('faq')->is_published->toBeTrue()->show_in_footer->toBeTrue()
+        ->and($faq->faqItems())->toHaveCount(11)
+        ->and($faq->faqItems()[0]['question'])->toBe('Apakah kursus ini cocok untuk pemula?')
+        ->and($faq->content)->not->toContain('KONFIRMASI')
+        ->and($about)->title->toBe('Tentang Bluecore')->slug->toBe('tentang-bluecore')->is_published->toBeFalse();
 });

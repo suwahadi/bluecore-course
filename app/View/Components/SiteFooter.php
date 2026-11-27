@@ -20,7 +20,13 @@ class SiteFooter extends Component
 
     public string $siteName;
 
+    public ?string $slogan;
+
     public ?string $description;
+
+    public ?string $disclaimer;
+
+    public string $owner;
 
     public array $pages;
 
@@ -33,7 +39,10 @@ class SiteFooter extends Component
     public function __construct()
     {
         $this->siteName = (string) Settings::get('site_name');
+        $this->slogan = Settings::get('site_slogan');
         $this->description = Settings::get('site_description');
+        $this->disclaimer = Settings::get('footer_disclaimer');
+        $this->owner = Settings::get('company_name') ?: $this->siteName;
         $this->pages = Cache::rememberForever(Page::FOOTER_CACHE_KEY, fn () => Page::query()
             ->published()
             ->inFooter()

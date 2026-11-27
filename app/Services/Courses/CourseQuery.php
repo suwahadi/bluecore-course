@@ -22,7 +22,7 @@ class CourseQuery
         return Course::query()
             ->published()
             ->with('category')
-            ->withCount('segments')
+            ->withCount(['segments', 'materials'])
             ->withSum('segments', 'duration_seconds');
     }
 

@@ -1,6 +1,8 @@
 @php
     use App\Enums\CourseStatus;
     use App\Support\Format;
+    use App\Support\Markdown;
+    use Illuminate\Support\Str;
     $draft = $course->status !== CourseStatus::Published;
     $checkoutPath = '/courses/'.$course->slug.'/checkout';
     $thumbnailUrl = $course->thumbnail_path ? Storage::disk('public')->url($course->thumbnail_path) : null;
@@ -12,7 +14,7 @@
                 @if ($draft)
                     <p class="note note--warn course-note">Kursus ini masih draf. Hanya admin yang bisa melihat halaman ini.</p>
                 @endif
-                <p class="muted">{{ $course->category?->name }}</p>
+                <p class="course-eyebrow">{{ $course->level ? 'Kursus untuk '.Str::lower($course->level) : $course->category?->name }}</p>
                 <h1>{{ $course->title }}</h1>
                 @if (filled($course->short_description))
                     <p class="course-lead">{{ $course->short_description }}</p>
@@ -32,6 +34,9 @@
                     <div class="buybox__body">
                         <div class="price-block"><x-price :course="$course" /></div>
                         <p class="muted small buybox__hint">Bayar sekali, akses selamanya.</p>
+                        @if ($adminFee > 0 && ! $canLearn)
+                            <p class="small buybox__total">Total pembayaran {{ Format::rupiah($course->price + $adminFee) }}, sudah termasuk biaya admin {{ Format::rupiah($adminFee) }}.</p>
+                        @endif
                         <div class="buybox__cta">
                             @if ($canLearn)
                                 <a class="btn btn--primary btn--block" href="{{ route('learn.index', $course) }}">Lanjutkan belajar</a>
@@ -47,9 +52,13 @@
                             @elseif ($openOrder)
                                 <a class="btn btn--primary btn--block" href="{{ url('/order/'.$openOrder->uuid) }}">Selesaikan pembayaran</a>
                             @else
-                                <a class="btn btn--primary btn--block" href="{{ url($checkoutPath) }}">Beli sekarang</a>
+                                <a class="btn btn--primary btn--block" href="{{ url($checkoutPath) }}">Beli kursus · {{ Format::rupiah($course->price) }}</a>
                             @endif
                         </div>
+                        @unless ($canLearn)
+                            <p class="muted small buybox__hint">Kursus terbuka otomatis setelah pembayaran terverifikasi.</p>
+                            <p class="buybox__urgency">Belajar sebelum beli bibit, bukan setelah ikan bermasalah.</p>
+                        @endunless
                     </div>
                 </div>
             </aside>
@@ -57,13 +66,9 @@
             <div class="course-layout__body">
                 <div class="panel">
                     <h2 class="panel-title">Tentang kursus ini</h2>
-                    <div class="course-description">
-                        @foreach (Format::paragraphs($course->description) as $paragraph)
-                            <p>{{ $paragraph }}</p>
-                        @endforeach
-                    </div>
+                    <div class="course-description prose">{!! Markdown::html($course->description) !!}</div>
                 </div>
-                <div class="panel">
+                <div class="panel" id="daftar-video">
                     <h2 class="panel-title">Daftar video</h2>
                     <ul class="list">
                         @foreach ($course->segments as $segment)

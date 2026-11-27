@@ -37,15 +37,21 @@ it('shows every panel with the PRD labels and help texts', function () {
     $this->actingAs($this->admin)->get('/admin/settings')
         ->assertOk()
         ->assertSeeInOrder(['Identitas', 'Kontak', 'Sosial', 'Marketplace', 'Pembayaran', 'Beranda', 'Video gratis', 'Pelacakan'])
-        ->assertSeeText('Slogan (di bawah nama situs pada logo dan judul beranda)')
-        ->assertSeeText('Deskripsi singkat (beranda, footer, meta)')
+        ->assertSeeText('Slogan (di bawah nama situs pada logo dan footer)')
+        ->assertSeeText('Deskripsi singkat (footer dan meta)')
+        ->assertSeeText('Nama perusahaan untuk hak cipta')
+        ->assertSeeText('Kosongkan untuk memakai nama situs.')
+        ->assertSeeText('Disclaimer di footer')
+        ->assertSeeText('Garansi di checkout')
+        ->assertSeeText('Kosongkan untuk menyembunyikannya.')
+        ->assertSeeInOrder(['Teks kecil di atas judul hero', 'Judul hero', 'Subjudul hero', 'Judul bagian testimoni', 'Judul ajakan penutup', 'Teks ajakan penutup'])
         ->assertDontSeeText('Format internasional tanpa tanda plus, contoh 628123456789.')
         ->assertSeeText('Tautan toko untuk ikon Marketplace di footer. Kosongkan jika belum punya toko di marketplace tersebut.')
         ->assertSeeText('Biaya admin per pesanan (rupiah)')
         ->assertSeeText('Ditambahkan ke setiap pesanan kursus berbayar.')
-        ->assertSeeText('Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus.')
+        ->assertSeeText('Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus lengkap.')
         ->assertSeeText('Otomatis: kursus terbit terbaru')
-        ->assertSeeText('Landing untuk tombol Nonton gratis')
+        ->assertSeeText('Landing untuk tombol Tonton video gratis')
         ->assertSeeText('Tidak ada, sembunyikan tombol')
         ->assertDontSee('name="lead_magnet_youtube_url"', false)
         ->assertSee('placeholder="G-XXXXXXXXXX"', false)
@@ -77,6 +83,15 @@ it('shows the PRD messages inline', function (array $input, string $field, strin
     'empty site name' => [['site_name' => ''], 'site_name', 'Nama situs wajib diisi.'],
     'whatsapp with plus' => [['whatsapp' => '+628123456789'], 'whatsapp', 'Nomor WhatsApp harus diawali 62 tanpa tanda plus.'],
     'bad email' => [['email' => 'bukan-email'], 'email', 'Format email belum benar, contoh nama@domain.com.'],
+    'long hero title' => [['hero_title' => str_repeat('a', 121)], 'hero_title', 'Judul hero maksimal 120 karakter.'],
+    'long hero eyebrow' => [['hero_eyebrow' => str_repeat('a', 61)], 'hero_eyebrow', 'Teks kecil hero maksimal 60 karakter.'],
+    'long hero subtitle' => [['hero_subtitle' => str_repeat('a', 201)], 'hero_subtitle', 'Subjudul hero maksimal 200 karakter.'],
+    'long testimonials title' => [['testimonials_title' => str_repeat('a', 121)], 'testimonials_title', 'Judul testimoni maksimal 120 karakter.'],
+    'long closing title' => [['cta_title' => str_repeat('a', 121)], 'cta_title', 'Judul ajakan penutup maksimal 120 karakter.'],
+    'long closing text' => [['cta_text' => str_repeat('a', 301)], 'cta_text', 'Teks ajakan penutup maksimal 300 karakter.'],
+    'long company name' => [['company_name' => str_repeat('a', 121)], 'company_name', 'Nama perusahaan maksimal 120 karakter.'],
+    'long disclaimer' => [['footer_disclaimer' => str_repeat('a', 601)], 'footer_disclaimer', 'Disclaimer maksimal 600 karakter.'],
+    'long guarantee' => [['checkout_guarantee' => str_repeat('a', 151)], 'checkout_guarantee', 'Garansi maksimal 150 karakter.'],
     'instagram over http' => [['instagram_url' => 'http://instagram.com/x'], 'instagram_url', 'Tautan Instagram harus diawali https://.'],
     'tiktok shop over http' => [['tiktokshop_url' => 'http://shop.tiktok.com/x'], 'tiktokshop_url', 'Tautan TikTok Shop harus diawali https://.'],
     'negative fee' => [['admin_fee' => '-1'], 'admin_fee', 'Biaya admin harus angka bulat 0 sampai 1.000.000.'],

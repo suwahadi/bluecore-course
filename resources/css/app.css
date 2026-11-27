@@ -170,10 +170,12 @@ img.thumb {
 }
 
 .course-description {
-    display: grid;
-    gap: 12px;
     max-width: 68ch;
     margin-top: 10px;
+}
+
+.course-description > :first-child {
+    margin-top: 0;
 }
 
 .panel .list,

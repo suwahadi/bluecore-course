@@ -38,6 +38,7 @@ function validCourse(array $overrides = []): array
         'compare_at_price' => 200000,
         'short_description' => 'Mulai dari satu galon.',
         'description' => "Paragraf satu.\n\nParagraf dua.",
+        'level' => ' Pemula ',
         ...$overrides,
     ];
 }
@@ -79,7 +80,7 @@ it('creates a draft with a WebP thumbnail and opens its edit page', function () 
 
     $course = Course::firstWhere('slug', 'budidaya-lele-galon');
     $response->assertRedirect(route('admin.courses.edit', $course))->assertSessionHas('status', 'Kursus disimpan sebagai draf.');
-    expect($course)->status->toBe(CourseStatus::Draft)->published_at->toBeNull()->price->toBe(150000)
+    expect($course)->status->toBe(CourseStatus::Draft)->published_at->toBeNull()->price->toBe(150000)->level->toBe('Pemula')
         ->and($course->thumbnail_path)->toMatch('#^courses/[a-z0-9]{14}\.webp$#');
     Storage::disk('public')->assertExists($course->thumbnail_path);
 });
@@ -97,6 +98,7 @@ it('shows the PRD messages inside the dialog that failed', function (array $inpu
     'compare not higher' => [['compare_at_price' => 150000], 'compare_at_price', 'Harga coret harus lebih besar dari harga.'],
     'long short description' => [['short_description' => str_repeat('a', 301)], 'short_description', 'Deskripsi singkat maksimal 300 karakter.'],
     'missing category' => [['category_id' => ''], 'category_id', 'Pilih kategori kursus.'],
+    'long level' => [['level' => str_repeat('a', 41)], 'level', 'Level maksimal 40 karakter.'],
     'fake thumbnail' => [['thumbnail' => UploadedFile::fake()->create('sampul.jpg', 10, 'text/plain')], 'thumbnail', 'Gambar harus JPG, PNG, atau WebP.'],
 ]);
 

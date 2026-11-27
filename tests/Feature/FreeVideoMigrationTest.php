@@ -65,5 +65,5 @@ it('shortens a long old title to fit the page title and keeps /free-video workin
     runFreeVideoMigration();
 
     expect(mb_strlen(Page::firstWhere('slug', 'free-video')->title))->toBeLessThanOrEqual(120);
-    $this->get('/free-video')->assertOk()->assertSeeText('Daftar dulu, lalu tonton gratis');
+    $this->get('/free-video')->assertOk()->assertSeeText('Satu Langkah Lagi, Lalu Langsung Tonton');
 });

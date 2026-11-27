@@ -2,8 +2,10 @@
 
 namespace App\View\Components;
 
+use App\Models\Page;
 use App\Models\User;
 use App\Support\Format;
+use App\Support\FreeVideo;
 use App\Support\Settings;
 use App\Support\SiteLogo;
 use Illuminate\View\Component;
@@ -19,6 +21,8 @@ class SiteHeader extends Component
 
     public ?User $user;
 
+    public ?string $freeVideoUrl;
+
     public array $links;
 
     public array $accountLinks;
@@ -31,8 +35,14 @@ class SiteHeader extends Component
         $this->slogan = Settings::get('site_slogan');
         $this->logoUrl = SiteLogo::url();
         $this->user = auth()->user();
+        $this->freeVideoUrl = $this->user ? null : FreeVideo::url();
 
         $links = [['path' => '/', 'label' => 'Beranda'], ['path' => '/courses', 'label' => 'Kursus']];
+        $about = Page::query()->published()->where('system_key', 'about')->first(['title', 'slug']);
+
+        if ($about) {
+            $links[] = ['path' => '/'.$about->slug, 'label' => $about->title];
+        }
 
         if ($this->user) {
             $links[] = ['path' => '/my-courses', 'label' => 'Kursus saya'];

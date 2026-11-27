@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasSlug;
 use App\Models\Concerns\HasSortOrder;
+use App\Support\Markdown;
 use App\Support\YouTubeUrl;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-#[Fillable(['title', 'slug', 'content', 'youtube_url', 'requires_signup', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
+#[Fillable(['title', 'slug', 'content', 'youtube_url', 'requires_signup', 'upsell_content', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
 class Page extends Model
 {
     use HasFactory, HasSlug, HasSortOrder;
@@ -77,6 +78,18 @@ class Page extends Model
     public function videoId(): ?string
     {
         return YouTubeUrl::parse($this->youtube_url);
+    }
+
+    public function faqItems(): array
+    {
+        $parts = preg_split('/^###[ \t]+(.+?)[ \t#]*$/m', (string) $this->content, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $items = [];
+
+        for ($index = 1; $index < count($parts); $index += 2) {
+            $items[] = ['question' => trim($parts[$index]), 'answer' => Markdown::html(trim($parts[$index + 1])) ?? ''];
+        }
+
+        return $items;
     }
 
     private static function forgetFooterAfterCommit(): void

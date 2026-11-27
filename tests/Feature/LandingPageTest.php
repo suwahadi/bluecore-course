@@ -20,6 +20,7 @@ function landingPage(array $attributes = []): Page
 it('plays the video for signed-in users, verified or not', function () {
     landingPage();
     Course::factory()->published()->create(['title' => 'Lele Galon']);
+    App\Models\CourseSegment::factory()->count(4)->for(Course::first())->create();
 
     $this->actingAs(User::factory()->unverified()->create())->get('/lele-pemula')
         ->assertOk()
@@ -30,8 +31,11 @@ it('plays the video for signed-in users, verified or not', function () {
         ->assertSee('<h2>Mulai</h2>', false)
         ->assertSee('<li>Galon bersih</li>', false)
         ->assertDontSee('<b>tebal</b>', false)
-        ->assertSeeText('Video lainnya ada di kursus lengkap')
-        ->assertSeeText('Lele Galon')
+        ->assertSeeText('Lanjutan dari video gratis')
+        ->assertSee('<h2>Lele Galon</h2>', false)
+        ->assertSee('<a class="btn btn--primary btn--block" href="'.route('courses.show', Course::first()).'">Lihat kursus lengkap</a>', false)
+        ->assertSee('href="'.route('courses.show', Course::first()).'#daftar-video">Lihat isi 4 bab</a>', false)
+        ->assertSeeText('Belajar sebelum beli bibit, bukan setelah ikan bermasalah.')
         ->assertDontSee('lead-gate', false);
 });
 
@@ -42,8 +46,10 @@ it('locks the page for guests without sending the video', function () {
     $html = $this->get('/lele-pemula')->assertOk()->getContent();
 
     expect($html)->toContain('class="lead-gate__page" inert aria-hidden="true"')
-        ->toContain('Daftar dulu, lalu tonton gratis')
-        ->toContain('Daftar dan tonton')
+        ->toContain('<h1 id="lead-gate-title">Satu Langkah Lagi, Lalu Langsung Tonton</h1>')
+        ->toContain('Buat akun gratis untuk membuka videonya. Akunmu juga menyimpan video ini agar bisa ditonton ulang kapan saja.')
+        ->toContain('Daftar &amp; tonton gratis')
+        ->toContain('Gratis, tanpa kartu kredit. Email dipakai untuk akunmu dan informasi belajar dari BlueCore Course.')
         ->toContain('Masuk dan tonton')
         ->toContain('name="next" value="/lele-pemula"')
         ->toContain('Dengan mendaftar, Anda setuju dengan')
@@ -126,4 +132,34 @@ it('frames the landing content in the same panel as the static pages', function 
     $html = $this->get('/lele-pemula')->assertOk()->getContent();
 
     expect($html)->toMatch('#<h1>Lele untuk Pemula</h1>\s*<article class="panel panel--prose prose">\s*<h2>Mulai</h2>#');
+});
+
+it('sells the featured course under the video with the upsell copy', function () {
+    landingPage(['requires_signup' => false, 'upsell_content' => "## Rencanamu Rp18.200 per Kilo\n\n- Kenapa bibit sehat bisa stres?\n\n<b>x</b>"]);
+    $course = Course::factory()->published()->create(['title' => 'Lele Galon', 'price' => 149000]);
+    App\Support\Settings::set(['featured_course_id' => $course->id]);
+
+    $html = $this->get('/lele-pemula')->assertOk()->getContent();
+
+    expect($html)->toContain('<h2>Rencanamu Rp18.200 per Kilo</h2>')
+        ->toContain('<li>Kenapa bibit sehat bisa stres?</li>')
+        ->not->toContain('<h2>Lele Galon</h2>')
+        ->not->toContain('<b>x</b>')
+        ->toContain('Rp 149.000 • Bayar sekali, akses selamanya');
+});
+
+it('lets owners continue the course instead of buying it again', function () {
+    landingPage();
+    $course = Course::factory()->published()->create(['title' => 'Lele Galon']);
+    $owner = App\Models\Enrollment::factory()->for($course)->create()->user;
+
+    $this->actingAs($owner)->get('/lele-pemula')
+        ->assertSee('href="'.route('learn.index', $course).'">Lanjutkan belajar</a>', false)
+        ->assertDontSeeText('Bayar sekali, akses selamanya');
+});
+
+it('skips the upsell when no course is published', function () {
+    landingPage(['requires_signup' => false]);
+
+    $this->get('/lele-pemula')->assertOk()->assertDontSeeText('Lanjutan dari video gratis');
 });

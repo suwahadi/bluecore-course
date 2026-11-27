@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Models\Course;
 use App\Models\Order;
 use App\Services\Progress\ProgressService;
+use App\Support\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
@@ -35,6 +36,7 @@ class CourseController extends Controller
         return view('courses.show', [
             'course' => $course,
             'canLearn' => $canLearn,
+            'adminFee' => (int) Settings::get('admin_fee'),
             'progress' => $canLearn ? $this->progress->fromSegments($course->segments, $this->progress->forSegments($user, $course->segments)) : null,
             'openOrder' => $user && ! $canLearn ? Order::query()
                 ->where(['user_id' => $user->id, 'course_id' => $course->id, 'status' => OrderStatus::Pending])

@@ -1,11 +1,16 @@
 @php
     use App\Support\Format;
+    use App\Support\Settings;
+    use App\Support\WhatsApp;
+    $whatsapp = Settings::get('whatsapp');
+    $helpContacts = array_filter([$whatsapp ? 'WhatsApp '.WhatsApp::display($whatsapp) : null, Settings::get('email')]);
+    $guarantee = Settings::get('checkout_guarantee');
 @endphp
 <x-layouts.app title="Checkout" :noindex="true">
     <section class="section">
         <div class="wrap">
             <div class="page-head">
-                <h1>Checkout</h1>
+                <h1>Satu Langkah Lagi untuk Mulai Menyiapkan Galonmu</h1>
             </div>
             <div class="two-col checkout-layout">
                 <div class="panel checkout-item">
@@ -24,6 +29,18 @@
                         @if (filled($course->short_description))
                             <p class="checkout-summary">{{ $course->short_description }}</p>
                         @endif
+                        <h3 class="checkout-gets__title">Kamu akan mendapatkan</h3>
+                        <ul class="checkout-gets">
+                            <li><x-icon name="check" :size="16" />Bayar sekali, tanpa langganan.</li>
+                            <li><x-icon name="check" :size="16" />Pembayaran melalui halaman resmi Duitku: QRIS, transfer bank, dan e-wallet.</li>
+                            <li><x-icon name="check" :size="16" />Kursus otomatis muncul di menu Kursus saya setelah pembayaran terverifikasi.</li>
+                            @if ($helpContacts)
+                                <li><x-icon name="check" :size="16" />Bantuan akses melalui {{ implode(' atau ', $helpContacts) }}.</li>
+                            @endif
+                            @if (filled($guarantee))
+                                <li><x-icon name="check" :size="16" />{{ $guarantee }}</li>
+                            @endif
+                        </ul>
                     </div>
                 </div>
                 <aside class="panel">
@@ -36,9 +53,9 @@
                         <div class="summary-line summary-line--total"><span>Total</span><span class="num">{{ Format::rupiah($total) }}</span></div>
                     </div>
                     <x-form :action="route('checkout.store', $course)">
-                        <button type="submit" class="btn btn--primary btn--block">Bayar sekarang</button>
+                        <button type="submit" class="btn btn--primary btn--block">Bayar {{ Format::rupiah($total) }}</button>
                     </x-form>
-                    <p class="muted small checkout-note">Anda akan diarahkan ke halaman pembayaran Duitku. Batas waktu bayar {{ $deadline }}.</p>
+                    <p class="muted small checkout-note">Selesaikan pembayaran dalam {{ $deadline }}. Setelah itu, pesanan akan kedaluwarsa dan perlu dibuat ulang. Makin cepat dibayar, makin cepat kamu bisa mulai menyiapkan galon.</p>
                 </aside>
             </div>
         </div>

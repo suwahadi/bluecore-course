@@ -34,7 +34,11 @@
                 </div>
             @else
                 <a href="{{ url('/login') }}" @if (request()->is('login')) aria-current="page" @endif>Masuk</a>
-                <a href="{{ url('/register') }}" class="btn btn--brand btn--small">Daftar</a>
+                @if ($freeVideoUrl)
+                    <a href="{{ $freeVideoUrl }}" class="btn btn--brand btn--small">Tonton video gratis</a>
+                @else
+                    <a href="{{ url('/register') }}" class="btn btn--brand btn--small">Daftar</a>
+                @endif
             @endif
         </nav>
         <button type="button" class="nav-toggle" aria-label="Buka menu" aria-controls="nav-mobile" aria-expanded="false" :aria-expanded="navOpen.toString()" @click="navOpen = ! navOpen">
@@ -56,7 +60,11 @@
             </form>
         @else
             <a href="{{ url('/login') }}">Masuk</a>
-            <a href="{{ url('/register') }}" class="btn btn--brand btn--small">Daftar</a>
+            @if ($freeVideoUrl)
+                <a href="{{ $freeVideoUrl }}" class="btn btn--brand btn--small">Tonton video gratis</a>
+            @else
+                <a href="{{ url('/register') }}" class="btn btn--brand btn--small">Daftar</a>
+            @endif
         @endif
     </nav>
 </header>

@@ -10,13 +10,58 @@ return [
     ],
     'site_slogan' => [
         'type' => 'string',
-        'default' => 'Budidaya ikan dalam galon, langkah demi langkah.',
+        'default' => 'Mulai dari Nol, Naik Kelas Bersama Bluecore.',
         'rules' => ['nullable', 'string', 'max:120'],
     ],
     'site_description' => [
         'type' => 'string',
-        'default' => 'Kursus video berbahasa Indonesia tentang budidaya ikan dalam galon: menyiapkan galon, memilih benih, pakan, merawat air, sampai panen dan menjualnya. Materi dipecah per video yang diputar berurutan. Bayar sekali, akses selamanya.',
+        'default' => 'Belajar budidaya lebih terarah melalui materi berbasis praktik, perhitungan, dan evaluasi.',
         'rules' => ['nullable', 'string', 'max:300'],
+    ],
+    'company_name' => [
+        'type' => 'string',
+        'default' => null,
+        'rules' => ['nullable', 'string', 'max:120'],
+    ],
+    'footer_disclaimer' => [
+        'type' => 'string',
+        'default' => 'Hasil budidaya setiap peserta dapat berbeda, bergantung pada bibit, pakan, kualitas air, cuaca, dan perawatan. Materi bersifat edukasi dan tidak menjamin hasil panen atau keuntungan tertentu. Contoh hitungan bersifat ilustrasi.',
+        'rules' => ['nullable', 'string', 'max:600'],
+    ],
+    'hero_eyebrow' => [
+        'type' => 'string',
+        'default' => 'Video gratis untuk pemula',
+        'rules' => ['nullable', 'string', 'max:60'],
+    ],
+    'hero_title' => [
+        'type' => 'string',
+        'default' => 'Keuntungan Maksimal Sejak Panen Pertama.',
+        'rules' => ['nullable', 'string', 'max:120'],
+    ],
+    'hero_subtitle' => [
+        'type' => 'string',
+        'default' => 'Hitung Perhitungan Lengkapnya di Video Gratis Ini.',
+        'rules' => ['nullable', 'string', 'max:200'],
+    ],
+    'testimonials_title' => [
+        'type' => 'string',
+        'default' => 'Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.',
+        'rules' => ['nullable', 'string', 'max:120'],
+    ],
+    'cta_title' => [
+        'type' => 'string',
+        'default' => 'Galon Bekas di Rumah Sudah Siap? Tinggal Kamu yang Mulai.',
+        'rules' => ['nullable', 'string', 'max:120'],
+    ],
+    'cta_text' => [
+        'type' => 'string',
+        'default' => 'Tonton video gratisnya terlebih dahulu, atau langsung lihat kursus lengkap.',
+        'rules' => ['nullable', 'string', 'max:300'],
+    ],
+    'checkout_guarantee' => [
+        'type' => 'string',
+        'default' => 'Garansi 7 hari uang kembali.',
+        'rules' => ['nullable', 'string', 'max:150'],
     ],
     'logo' => [
         'type' => 'string',

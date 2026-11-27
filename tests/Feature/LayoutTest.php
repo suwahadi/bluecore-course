@@ -16,9 +16,9 @@ it('shows guest links and the brand', function () {
     $this->get('/_layout-probe')
         ->assertOk()
         ->assertSeeText('BlueCore Course')
-        ->assertSeeText('Budidaya ikan dalam galon, langkah demi langkah.')
+        ->assertSeeText('Mulai dari Nol, Naik Kelas Bersama Bluecore.')
         ->assertSeeText('Masuk')
-        ->assertSeeText('Daftar')
+        ->assertSee('href="'.url('/register').'" class="btn btn--brand btn--small">Daftar</a>', false)
         ->assertDontSeeText('Keluar')
         ->assertSee(asset('images/logo.webp'), false);
 });
@@ -48,7 +48,7 @@ it('lists only published footer pages in order', function () {
 
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSeeTextInOrder(['Semua kursus', 'Syarat dan Ketentuan', 'Kebijakan Privasi', 'Kontak'])
+        ->assertSeeTextInOrder(['Kursus', 'Syarat dan Ketentuan', 'Kebijakan Privasi', 'Hubungi Kami'])
         ->assertDontSeeText('Draf Rahasia')
         ->assertDontSeeText('Tidak di Footer');
 });
@@ -142,7 +142,7 @@ it('lists social accounts in their own footer column after the contact column', 
     ]);
 
     $html = $this->get('/')->assertOk()->getContent();
-    $contact = substr($html, strpos($html, 'Hubungi kami</h2>'), strpos($html, 'Sosial Media</h2>') - strpos($html, 'Hubungi kami</h2>'));
+    $contact = substr($html, strpos($html, 'Kontak</h2>'), strpos($html, 'Sosial Media</h2>') - strpos($html, 'Kontak</h2>'));
 
     expect($html)->toContain('<h2 class="site-footer__title">Sosial Media</h2>')
         ->and($contact)->toContain('wa.me')->not->toContain('instagram.com')
@@ -152,7 +152,7 @@ it('lists social accounts in their own footer column after the contact column', 
 it('drops the social column when no social links are set', function () {
     Settings::set(['instagram_url' => null, 'youtube_url' => null, 'tiktok_url' => null]);
 
-    $this->get('/')->assertOk()->assertDontSeeText('Sosial Media')->assertSeeText('Hubungi kami');
+    $this->get('/')->assertOk()->assertDontSeeText('Sosial Media')->assertSee('<h2 class="site-footer__title">Kontak</h2>', false);
 });
 
 it('ships a real favicon and an apple touch icon', function () {
@@ -163,4 +163,53 @@ it('ships a real favicon and an apple touch icon', function () {
 
     expect(filesize(public_path('favicon.ico')))->toBeGreaterThan(0)
         ->and(getimagesize(public_path('apple-touch-icon.png'))[0])->toBe(180);
+});
+
+it('sends guests to the free video from the header instead of the sign-up button', function () {
+    $landing = Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE', 'show_in_footer' => false]);
+    Settings::set(['free_video_page_id' => $landing->id]);
+
+    $this->get('/_layout-probe')
+        ->assertOk()
+        ->assertSee('<a href="'.url('/lele-pemula').'" class="btn btn--brand btn--small">Tonton video gratis</a>', false)
+        ->assertDontSee('class="btn btn--brand btn--small">Daftar</a>', false);
+
+    $this->actingAs(User::factory()->create())->get('/_layout-probe')->assertDontSeeText('Tonton video gratis');
+});
+
+it('adds the about page to the menu only once it is published', function () {
+    $about = Page::factory()->create(['system_key' => 'about', 'title' => 'Tentang Bluecore', 'slug' => 'tentang-bluecore', 'is_published' => false, 'show_in_footer' => false]);
+
+    $this->get('/_layout-probe')->assertDontSee('href="'.url('/tentang-bluecore').'"', false);
+
+    $about->update(['is_published' => true]);
+
+    $this->get('/_layout-probe')
+        ->assertSeeInOrder(['>Beranda</a>', '>Kursus</a>', 'href="'.url('/tentang-bluecore').'"'], false)
+        ->assertSeeText('Tentang Bluecore');
+});
+
+it('closes the footer with the tagline, disclaimer and company copyright', function () {
+    Settings::set([
+        'site_slogan' => 'Mulai dari Nol, Naik Kelas Bersama Bluecore.',
+        'site_description' => 'Belajar budidaya lebih terarah.',
+        'footer_disclaimer' => 'Hasil budidaya setiap peserta dapat berbeda.',
+        'company_name' => 'PT Bluecore Akuakultur Indonesia',
+    ]);
+
+    $footer = strstr($this->get('/_layout-probe')->assertOk()->getContent(), '<footer');
+
+    expect($footer)->toContain('<p class="site-footer__tagline">Mulai dari Nol, Naik Kelas Bersama Bluecore.</p>')
+        ->toContain('Belajar budidaya lebih terarah.')
+        ->toContain('<p class="site-footer__disclaimer">Hasil budidaya setiap peserta dapat berbeda.</p>')
+        ->toContain('&copy; '.now()->year.' PT Bluecore Akuakultur Indonesia. Hak cipta dilindungi. Pembayaran diproses oleh Duitku.');
+});
+
+it('falls back to the site name in the copyright without a company name', function () {
+    Settings::set(['company_name' => null, 'footer_disclaimer' => null]);
+
+    $footer = strstr($this->get('/_layout-probe')->getContent(), '<footer');
+
+    expect($footer)->toContain('&copy; '.now()->year.' BlueCore Course. Hak cipta dilindungi.')
+        ->not->toContain('site-footer__disclaimer');
 });

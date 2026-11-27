@@ -20,17 +20,29 @@
         </div>
     </div>
 </section>
-@if ($courses->isNotEmpty())
+@if ($upsellCourse)
     <section class="section section--band">
-        <div class="wrap">
-            <div class="page-head">
-                <h2>Video lainnya ada di kursus lengkap</h2>
-                <a href="{{ route('courses.index') }}">Semua kursus</a>
+        <div class="wrap upsell">
+            <div class="upsell__copy">
+                <p class="upsell__eyebrow">Lanjutan dari video gratis</p>
+                @if ($upsellHtml)
+                    <div class="prose">{!! $upsellHtml !!}</div>
+                @else
+                    <h2>{{ $upsellCourse->title }}</h2>
+                    @if (filled($upsellCourse->short_description))
+                        <p>{{ $upsellCourse->short_description }}</p>
+                    @endif
+                @endif
             </div>
-            <div class="course-grid course-grid--four">
-                @foreach ($courses as $course)
-                    <x-course-card :course="$course" :owned="isset($owned[$course->id])" :progress="$owned[$course->id] ?? null" />
-                @endforeach
+            <div class="panel upsell__cta">
+                @if ($ownsUpsell)
+                    <a class="btn btn--primary btn--block" href="{{ route('learn.index', $upsellCourse) }}">Lanjutkan belajar</a>
+                @else
+                    <a class="btn btn--primary btn--block" href="{{ route('courses.show', $upsellCourse) }}">Lihat kursus lengkap</a>
+                    <a class="upsell__link" href="{{ route('courses.show', $upsellCourse) }}#daftar-video">Lihat isi {{ $upsellCourse->segments_count }} bab</a>
+                    <p class="upsell__price">{{ \App\Support\Format::rupiah($upsellCourse->price) }} • Bayar sekali, akses selamanya</p>
+                    <p class="buybox__urgency">Belajar sebelum beli bibit, bukan setelah ikan bermasalah.</p>
+                @endif
             </div>
         </div>
     </section>

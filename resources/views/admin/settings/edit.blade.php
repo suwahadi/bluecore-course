@@ -4,8 +4,10 @@
             <h2 class="panel-title">Identitas</h2>
             <div class="form-grid form-grid--2">
                 <x-field name="site_name" label="Nama situs" :value="$settings['site_name']" required maxlength="60" />
-                <x-field name="site_slogan" label="Slogan (di bawah nama situs pada logo dan judul beranda)" :value="$settings['site_slogan']" maxlength="120" />
-                <x-field name="site_description" label="Deskripsi singkat (beranda, footer, meta)" type="textarea" :value="$settings['site_description']" :full="true" rows="3" maxlength="300" />
+                <x-field name="site_slogan" label="Slogan (di bawah nama situs pada logo dan footer)" :value="$settings['site_slogan']" maxlength="120" />
+                <x-field name="site_description" label="Deskripsi singkat (footer dan meta)" type="textarea" :value="$settings['site_description']" :full="true" rows="3" maxlength="300" />
+                <x-field name="company_name" label="Nama perusahaan untuk hak cipta" :value="$settings['company_name']" help="Kosongkan untuk memakai nama situs." maxlength="120" />
+                <x-field name="footer_disclaimer" label="Disclaimer di footer" type="textarea" :value="$settings['footer_disclaimer']" :full="true" rows="3" maxlength="600" />
                 <div class="logo-field field--full">
                     <img class="logo-field__preview" src="{{ \App\Support\SiteLogo::url() }}" alt="Logo saat ini" height="56">
                     <div class="form-grid">
@@ -51,20 +53,27 @@
             <h2 class="panel-title">Pembayaran</h2>
             <div class="form-grid form-grid--2">
                 <x-field name="admin_fee" label="Biaya admin per pesanan (rupiah)" type="number" :value="$settings['admin_fee']" help="Ditambahkan ke setiap pesanan kursus berbayar." required min="0" max="1000000" step="1" inputmode="numeric" />
+                <x-field name="checkout_guarantee" label="Garansi di checkout" :value="$settings['checkout_guarantee']" help="Kosongkan untuk menyembunyikannya." maxlength="150" />
             </div>
         </section>
 
         <section class="panel">
             <h2 class="panel-title">Beranda</h2>
             <div class="form-grid form-grid--2">
-                <x-field name="featured_course_id" label="Kursus unggulan di hero" type="select" :options="['' => 'Otomatis: kursus terbit terbaru'] + $publishedCourses" :value="$settings['featured_course_id']" help="Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus." />
+                <x-field name="hero_eyebrow" label="Teks kecil di atas judul hero" :value="$settings['hero_eyebrow']" maxlength="60" />
+                <x-field name="hero_title" label="Judul hero" :value="$settings['hero_title']" maxlength="120" />
+                <x-field name="hero_subtitle" label="Subjudul hero" :value="$settings['hero_subtitle']" :full="true" maxlength="200" />
+                <x-field name="featured_course_id" label="Kursus unggulan di hero" type="select" :options="['' => 'Otomatis: kursus terbit terbaru'] + $publishedCourses" :value="$settings['featured_course_id']" help="Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus lengkap." />
+                <x-field name="testimonials_title" label="Judul bagian testimoni" :value="$settings['testimonials_title']" maxlength="120" />
+                <x-field name="cta_title" label="Judul ajakan penutup" :value="$settings['cta_title']" :full="true" maxlength="120" />
+                <x-field name="cta_text" label="Teks ajakan penutup" type="textarea" :value="$settings['cta_text']" :full="true" rows="2" maxlength="300" />
             </div>
         </section>
 
         <section class="panel">
             <h2 class="panel-title">Video gratis</h2>
             <div class="form-grid form-grid--2">
-                <x-field name="free_video_page_id" label="Landing untuk tombol Nonton gratis" type="select" :options="['' => 'Tidak ada, sembunyikan tombol'] + $landingPages" :value="$settings['free_video_page_id']" help="Buat landing di menu Halaman dengan mengisi Tautan YouTube." />
+                <x-field name="free_video_page_id" label="Landing untuk tombol Tonton video gratis" type="select" :options="['' => 'Tidak ada, sembunyikan tombol'] + $landingPages" :value="$settings['free_video_page_id']" help="Buat landing di menu Halaman dengan mengisi Tautan YouTube." />
             </div>
         </section>
 

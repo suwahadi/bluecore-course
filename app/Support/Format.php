@@ -41,14 +41,6 @@ class Format
             : sprintf('%d:%02d', $minutes, $seconds % 60);
     }
 
-    public static function paragraphs(?string $text): array
-    {
-        return array_values(array_filter(
-            array_map('trim', preg_split('/\R\s*\R/', (string) $text) ?: []),
-            fn (string $paragraph) => $paragraph !== '',
-        ));
-    }
-
     public static function fileSize(int $bytes): string
     {
         if ($bytes < 1024 * 1024) {

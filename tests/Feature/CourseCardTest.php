@@ -57,3 +57,31 @@ it('lists course facts and hides participants when there are none', function () 
     $course->setAttribute('enrollments_count', 120);
     expect((string) $this->blade('<x-course-meta :course="$course" :participants="true" />', ['course' => $course]))->toContain('Sudah diikuti 120 orang');
 });
+
+it('labels the card with level and category and invites a look inside', function () {
+    $course = Course::factory()->published()->for(Category::factory()->create(['name' => 'Lele']))->create([
+        'level' => 'Pemula', 'short_description' => 'Dari galon bekas sampai panen pertama, cukup di teras rumah.',
+    ]);
+    CourseSegment::factory()->for($course)->create(['duration_seconds' => 900]);
+    App\Models\CourseMaterial::factory()->for($course)->create();
+    $card = app(CourseQuery::class)->cards()->firstOrFail();
+
+    $html = (string) $this->blade('<x-course-card :course="$course" />', ['course' => $card]);
+
+    expect($html)->toContain('<span class="course-card__cat">Pemula • Lele</span>')
+        ->toContain('<span class="course-card__desc">Dari galon bekas sampai panen pertama, cukup di teras rumah.</span>')
+        ->toContain('1 materi PDF')
+        ->toContain('Akses selamanya')
+        ->toContain('<span class="course-card__more">Lihat isi kursus</span>');
+});
+
+it('shows only the category without a level and no invite for owners', function () {
+    $course = cardCourse();
+    $course->short_description = null;
+
+    $html = (string) $this->blade('<x-course-card :course="$course" :owned="true" />', ['course' => $course]);
+
+    expect($html)->toContain('<span class="course-card__cat">Lele</span>')
+        ->not->toContain('course-card__desc')
+        ->not->toContain('course-card__more');
+});
