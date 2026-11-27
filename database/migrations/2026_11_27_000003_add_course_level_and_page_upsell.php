@@ -13,7 +13,7 @@ return new class extends Migration
         });
 
         Schema::table('pages', function (Blueprint $table) {
-            $table->text('upsell_content')->nullable()->after('requires_signup');
+            $table->mediumText('upsell_content')->nullable()->after('requires_signup');
         });
     }
 

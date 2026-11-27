@@ -34,7 +34,7 @@
                     <div class="buybox__body">
                         <div class="price-block"><x-price :course="$course" /></div>
                         <p class="muted small buybox__hint">Bayar sekali, akses selamanya.</p>
-                        @if ($adminFee > 0 && ! $canLearn)
+                        @if ($adminFee > 0 && ! $canLearn && ! $openOrder)
                             <p class="small buybox__total">Total pembayaran {{ Format::rupiah($course->price + $adminFee) }}, sudah termasuk biaya admin {{ Format::rupiah($adminFee) }}.</p>
                         @endif
                         <div class="buybox__cta">

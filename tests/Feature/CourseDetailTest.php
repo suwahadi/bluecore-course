@@ -169,3 +169,14 @@ it('leaves out the total line without an admin fee and the sales notes for owner
         ->assertDontSeeText('Kursus terbuka otomatis')
         ->assertDontSeeText('Belajar sebelum beli bibit');
 });
+
+it('hides the total line while an order is already open', function () {
+    $course = detailCourse();
+    App\Support\Settings::set(['admin_fee' => 2500]);
+    $user = User::factory()->create();
+    Order::factory()->for($user)->for($course)->create(['status' => OrderStatus::Pending, 'expires_at' => now()->addHour()]);
+
+    $this->actingAs($user)->get('/courses/lele-galon')
+        ->assertSeeText('Selesaikan pembayaran')
+        ->assertDontSeeText('Total pembayaran');
+});
