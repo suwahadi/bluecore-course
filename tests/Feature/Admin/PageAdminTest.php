@@ -17,6 +17,7 @@ function validPage(array $overrides = []): array
         'is_published' => '1',
         'sort_order' => 1,
         'show_in_footer' => '1',
+        'requires_signup' => '1',
         ...$overrides,
     ];
 }
@@ -144,3 +145,29 @@ it('accepts a slug that only contains livewire later on', function () {
 
     $this->get('/panduan-livewire')->assertOk();
 });
+
+it('saves a landing video with an open gate', function () {
+    $this->actingAs($this->admin)->post('/admin/pages', validPage(['youtube_url' => 'https://youtu.be/M7lc1UVf-VE', 'requires_signup' => '0']))
+        ->assertSessionHasNoErrors();
+
+    $page = Page::firstWhere('slug', 'tentang-kami');
+    expect($page->youtube_url)->toBe('https://youtu.be/M7lc1UVf-VE')->and($page->requires_signup)->toBeFalse();
+});
+
+it('refuses a landing link that is not a YouTube video over https', function (string $url) {
+    $this->actingAs($this->admin)->from('/admin/pages')->post('/admin/pages', validPage(['youtube_url' => $url]))
+        ->assertSessionHasErrorsIn('page-new', ['youtube_url' => 'Tautan YouTube harus tautan video YouTube yang diawali https://.']);
+})->with(['vimeo' => 'https://vimeo.com/1', 'plain http' => 'http://youtu.be/M7lc1UVf-VE']);
+
+it('shows the landing fields and marks landing pages in the list', function () {
+    Page::factory()->create(['title' => 'Lele Pemula', 'slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Page::factory()->create(['title' => 'Tentang Kami', 'slug' => 'tentang-kami']);
+
+    $html = $this->actingAs($this->admin)->get('/admin/pages')->assertOk()->getContent();
+
+    expect($html)->toContain('name="youtube_url"')
+        ->toContain('Wajib daftar untuk menonton')
+        ->toContain('Isi untuk menjadikan halaman ini landing video.')
+        ->and(substr_count($html, 'landing video</div>'))->toBe(1);
+});
+

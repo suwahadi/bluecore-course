@@ -16,7 +16,7 @@
                             <td class="num">{{ $page->sort_order }}</td>
                             <td>
                                 <strong>{{ $page->title }}</strong>
-                                <div class="muted small"><a href="{{ url('/'.$page->slug) }}">/{{ $page->slug }}</a>@if ($page->system_key), halaman sistem @endif</div>
+                                <div class="muted small"><a href="{{ url('/'.$page->slug) }}">/{{ $page->slug }}</a>{{ $page->system_key ? ', halaman sistem' : '' }}{{ $page->youtube_url ? ', landing video' : '' }}</div>
                             </td>
                             <td><span class="{{ $page->is_published ? 'badge badge--ok' : 'badge' }}">{{ $page->is_published ? 'Terbit' : 'Draf' }}</span></td>
                             <td>

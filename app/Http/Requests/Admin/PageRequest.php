@@ -3,11 +3,14 @@
 namespace App\Http\Requests\Admin;
 
 use App\Models\Page;
+use App\Rules\YouTubeLink;
 use App\Support\Slug;
 use Illuminate\Validation\Rule;
 
 class PageRequest extends DialogRequest
 {
+    private const YOUTUBE_MESSAGE = 'Tautan YouTube harus tautan video YouTube yang diawali https://.';
+
     protected function prepareForValidation(): void
     {
         parent::prepareForValidation();
@@ -24,6 +27,8 @@ class PageRequest extends DialogRequest
             'title' => ['required', 'string', 'min:2', 'max:120'],
             'slug' => [...Slug::rules('pages', $this->route('page')?->id), Rule::notIn(Page::RESERVED_SLUGS), 'not_regex:/^livewire/'],
             'content' => ['nullable', 'string', 'max:60000'],
+            'youtube_url' => ['nullable', 'string', 'max:255', 'url', 'starts_with:https://', new YouTubeLink(self::YOUTUBE_MESSAGE)],
+            'requires_signup' => ['required', 'boolean'],
             'is_published' => ['required', 'boolean'],
             'sort_order' => ['required', 'integer', 'min:1'],
             'show_in_footer' => ['required', 'boolean'],
@@ -41,6 +46,12 @@ class PageRequest extends DialogRequest
             'slug.not_regex' => 'Slug ini dipakai sistem. Pilih slug lain.',
             'content.string' => 'Isi halaman harus berupa teks.',
             'content.max' => 'Isi halaman maksimal 60.000 karakter.',
+            'youtube_url.string' => self::YOUTUBE_MESSAGE,
+            'youtube_url.max' => self::YOUTUBE_MESSAGE,
+            'youtube_url.url' => self::YOUTUBE_MESSAGE,
+            'youtube_url.starts_with' => self::YOUTUBE_MESSAGE,
+            'requires_signup.required' => 'Pilih apakah video wajib daftar.',
+            'requires_signup.boolean' => 'Pilih apakah video wajib daftar.',
             'is_published.required' => 'Pilih status halaman.',
             'is_published.boolean' => 'Pilih status halaman.',
             'sort_order.required' => 'Urutan harus angka bulat mulai dari 1.',
