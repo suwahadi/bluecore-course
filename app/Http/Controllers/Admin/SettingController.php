@@ -24,7 +24,10 @@ class SettingController extends Controller
         return view('admin.settings.edit', [
             'settings' => Settings::all(),
             'publishedCourses' => Course::query()->where('status', CourseStatus::Published)->orderBy('title')->pluck('title', 'id')->all(),
-            'landingPages' => Page::query()->landing()->orderBy('title')->get(['id', 'title', 'slug'])->mapWithKeys(fn (Page $page) => [$page->id => $page->title.' (/'.$page->slug.')'])->all(),
+            'landingPages' => Page::query()->landing()->orderBy('title')->get(['id', 'title', 'slug', 'youtube_url', 'is_published'])
+                ->filter(fn (Page $page) => $page->videoId() !== null)
+                ->mapWithKeys(fn (Page $page) => [$page->id => $page->title.' (/'.$page->slug.($page->is_published ? '' : ', draf').')'])
+                ->all(),
         ]);
     }
 

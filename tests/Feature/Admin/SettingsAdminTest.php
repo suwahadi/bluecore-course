@@ -169,3 +169,12 @@ it('refuses a page without a video for the Nonton gratis button', function () {
 
     saveSettings(['free_video_page_id' => $page->id])->assertSessionHasErrors(['free_video_page_id' => 'Pilih halaman landing yang punya video.']);
 });
+
+it('marks draft landing pages and leaves out pages whose link is not a video', function () {
+    App\Models\Page::factory()->create(['title' => 'Lele Draf', 'slug' => 'lele-draf', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE', 'is_published' => false]);
+    App\Models\Page::factory()->create(['title' => 'Tautan Lama', 'slug' => 'tautan-lama', 'youtube_url' => 'https://contoh.id/video']);
+
+    $this->actingAs($this->admin)->get('/admin/settings')
+        ->assertSeeText('Lele Draf (/lele-draf, draf)')
+        ->assertDontSeeText('Tautan Lama (/tautan-lama)');
+});

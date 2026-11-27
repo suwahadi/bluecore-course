@@ -491,7 +491,6 @@ table { border-collapse: collapse; width: 100%; }
 .free-video { display: grid; gap: 28px; }
 .free-video__copy h1 { font-size: clamp(26px, 3.4vw, 34px); }
 .free-video__copy p { margin-top: 1em; font-size: 17px; line-height: 1.75; color: var(--ink); }
-.free-video__copy h1 + p { margin-top: 14px; }
 
 .lead-gate { position: relative; min-height: 760px; overflow: clip; }
 .lead-gate__page { filter: blur(4px); pointer-events: none; user-select: none; }

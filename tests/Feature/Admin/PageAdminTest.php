@@ -171,3 +171,9 @@ it('shows the landing fields and marks landing pages in the list', function () {
         ->and(substr_count($html, 'landing video</div>'))->toBe(1);
 });
 
+
+it('does not call a page with a non-video link a landing page', function () {
+    Page::factory()->create(['title' => 'Tautan Lama', 'slug' => 'tautan-lama', 'youtube_url' => 'https://contoh.id/video']);
+
+    $this->actingAs($this->admin)->get('/admin/pages')->assertOk()->assertDontSee('landing video</div>', false);
+});
