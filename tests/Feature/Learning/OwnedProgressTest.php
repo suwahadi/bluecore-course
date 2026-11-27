@@ -3,13 +3,13 @@
 use App\Models\Course;
 use App\Models\CourseSegment;
 use App\Models\Enrollment;
+use App\Models\Page;
 use App\Models\SegmentProgress;
 use App\Models\User;
-use App\Support\Settings;
 use Illuminate\Support\Facades\DB;
 
 beforeEach(function () {
-    Settings::set(['lead_magnet_youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
     $this->user = User::factory()->create();
     $this->owned = Course::factory()->published()->create(['title' => 'Lele Galon', 'slug' => 'lele-galon']);
     $this->other = Course::factory()->published()->create(['title' => 'Cupang Hias']);
@@ -31,7 +31,7 @@ it('shows a progress bar on owned cards only', function (string $url) {
 
     expect(thinBars($html))->toBe(['1/2'])
         ->and($html)->toContain('Dimiliki');
-})->with(['home' => '/', 'catalog' => '/courses', 'free video' => '/free-video']);
+})->with(['home' => '/', 'catalog' => '/courses', 'landing page' => '/lele-pemula']);
 
 it('adds at most two queries for the owner and none for guests', function () {
     $stranger = User::factory()->create();

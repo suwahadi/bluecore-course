@@ -74,11 +74,11 @@ it('keeps the course page flat', function () {
     });
 });
 
-it('keeps the free video page flat', function () {
-    Settings::set(['lead_magnet_youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+it('keeps a landing page flat', function () {
+    Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
     $this->actingAs($this->user);
 
-    expectFlatQueries('/free-video', function (int $n) {
+    expectFlatQueries('/lele-pemula', function (int $n) {
         foreach (range(1, $n) as $i) {
             Enrollment::factory()->for($this->user)->for(richCourse())->create();
         }
