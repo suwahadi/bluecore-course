@@ -10,6 +10,8 @@ return new class extends Migration
 
     private const SLUG = 'free-video';
 
+    private const TITLE_LIMIT = 120;
+
     public function up(): void
     {
         $old = DB::table('settings')->whereIn('key', self::OLD_KEYS)->pluck('value', 'key')
@@ -19,7 +21,7 @@ return new class extends Migration
             if (filled($old['lead_magnet_youtube_url'] ?? null) && DB::table('pages')->where('slug', self::SLUG)->doesntExist()) {
                 $now = now();
                 $pageId = DB::table('pages')->insertGetId([
-                    'title' => filled($old['lead_magnet_title'] ?? null) ? $old['lead_magnet_title'] : 'Video gratis',
+                    'title' => filled($old['lead_magnet_title'] ?? null) ? rtrim(mb_substr(trim($old['lead_magnet_title']), 0, self::TITLE_LIMIT)) : 'Video gratis',
                     'slug' => self::SLUG,
                     'content' => $old['lead_magnet_description'] ?? null,
                     'youtube_url' => $old['lead_magnet_youtube_url'],

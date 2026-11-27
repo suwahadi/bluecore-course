@@ -57,3 +57,13 @@ it('only drops the old keys when no free video was set', function () {
         ->and(Settings::get('free_video_page_id'))->toBeNull()
         ->and(DB::table('settings')->where('key', 'like', 'lead_magnet_%')->count())->toBe(0);
 });
+
+it('shortens a long old title to fit the page title and keeps /free-video working', function () {
+    legacySetting('lead_magnet_title', str_repeat('Lele ', 30));
+    legacySetting('lead_magnet_youtube_url', 'https://youtu.be/M7lc1UVf-VE');
+
+    runFreeVideoMigration();
+
+    expect(mb_strlen(Page::firstWhere('slug', 'free-video')->title))->toBeLessThanOrEqual(120);
+    $this->get('/free-video')->assertOk()->assertSeeText('Daftar dulu, lalu tonton gratis');
+});
