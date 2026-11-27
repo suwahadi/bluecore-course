@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Models\Concerns\HasSlug;
 use App\Models\Concerns\HasSortOrder;
+use App\Support\YouTubeUrl;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
-#[Fillable(['title', 'slug', 'content', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
+#[Fillable(['title', 'slug', 'content', 'youtube_url', 'requires_signup', 'is_published', 'show_in_footer', 'sort_order', 'system_key'])]
 class Page extends Model
 {
     use HasFactory, HasSlug, HasSortOrder;
@@ -28,6 +29,7 @@ class Page extends Model
     protected $attributes = [
         'is_published' => true,
         'show_in_footer' => true,
+        'requires_signup' => true,
         'sort_order' => 1,
     ];
 
@@ -42,6 +44,7 @@ class Page extends Model
         return [
             'is_published' => 'boolean',
             'show_in_footer' => 'boolean',
+            'requires_signup' => 'boolean',
             'sort_order' => 'integer',
         ];
     }
@@ -64,6 +67,16 @@ class Page extends Model
     public function scopeInFooter(Builder $query): Builder
     {
         return $query->where('show_in_footer', true);
+    }
+
+    public function scopeLanding(Builder $query): Builder
+    {
+        return $query->whereNotNull('youtube_url');
+    }
+
+    public function videoId(): ?string
+    {
+        return YouTubeUrl::parse($this->youtube_url);
     }
 
     private static function forgetFooterAfterCommit(): void

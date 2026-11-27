@@ -79,3 +79,26 @@ it('shows only visible testimonials in order', function () {
 
     expect(Testimonial::visible()->ordered()->pluck('name')->all())->toBe(['Pertama', 'Kedua']);
 });
+
+it('reads the landing video of a page and locks it by default', function () {
+    $landing = Page::factory()->make(['youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+
+    expect($landing->videoId())->toBe('M7lc1UVf-VE')
+        ->and($landing->requires_signup)->toBeTrue()
+        ->and(Page::factory()->make()->videoId())->toBeNull()
+        ->and(Page::factory()->make(['youtube_url' => 'https://contoh.id/video'])->videoId())->toBeNull();
+});
+
+it('scopes landing pages to pages with a video', function () {
+    Page::factory()->create(['slug' => 'lele-pemula', 'youtube_url' => 'https://youtu.be/M7lc1UVf-VE']);
+    Page::factory()->create(['slug' => 'tentang-kami']);
+
+    expect(Page::query()->landing()->pluck('slug')->all())->toBe(['lele-pemula']);
+});
+
+it('names the signup source with the landing page it came from', function () {
+    expect(User::factory()->make(['signup_source' => App\Enums\SignupSource::FreeVideo, 'signup_landing' => '/lele-pemula'])->signupSourceLabel())->toBe('Video gratis (/lele-pemula)')
+        ->and(User::factory()->make(['signup_source' => App\Enums\SignupSource::FreeVideo])->signupSourceLabel())->toBe('Video gratis')
+        ->and(User::factory()->make(['signup_source' => App\Enums\SignupSource::Course])->signupSourceLabel())->toBe('Halaman kursus');
+});
+

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'signup_source'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'signup_source', 'signup_landing'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -35,6 +35,13 @@ class User extends Authenticatable implements MustVerifyEmail
             'role' => UserRole::class,
             'signup_source' => SignupSource::class,
         ];
+    }
+
+    public function signupSourceLabel(): string
+    {
+        $label = $this->signup_source->label();
+
+        return $this->signup_landing ? $label.' ('.$this->signup_landing.')' : $label;
     }
 
     public function sendEmailVerificationNotification(): void
