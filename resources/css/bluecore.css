@@ -1075,6 +1075,7 @@ a.contact-list__item:hover .contact-list__icon { background: var(--cyan); color:
 .faq__item summary:focus-visible { outline: none; box-shadow: var(--focus); }
 .faq__answer { padding: 0 18px 16px; }
 .faq__answer > :first-child { margin-top: 0; }
+.faq__answer p, .faq__answer li, .panel--faq p, .panel--faq li { font-size: 14px; line-height: 1.7; }
 @media (prefers-reduced-motion: reduce) { .faq__item summary::after { transition: none; } }
 
 .cta-band { background: var(--laut); color: var(--on-blue-soft); }
@@ -1085,7 +1086,7 @@ a.contact-list__item:hover .contact-list__icon { background: var(--cyan); color:
 .cta-band p.cta-band__note { font-size: 14px; }
 
 .site-footer__tagline { margin-top: 6px; font-size: 14px; font-weight: 500; color: var(--on-blue); }
-.site-footer__disclaimer { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter) 18px; font-size: 13px; line-height: 1.6; color: var(--on-blue-soft); }
+.site-footer__disclaimer { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter) 18px; font-size: 13px; font-weight: 300; line-height: 1.6; text-align: center; color: var(--on-blue-soft); }
 
 @media print {
     .print-only { display: inline; }

@@ -5,7 +5,7 @@
                 <p class="note note--warn course-note">Halaman ini masih draf. Hanya admin yang bisa melihatnya.</p>
             @endunless
             <h1>{{ $page->title }}</h1>
-            <article class="panel panel--prose">
+            <article class="panel panel--prose{{ $page->system_key === 'faq' ? ' panel--faq' : '' }}">
                 @if ($html)
                     {!! $html !!}
                 @else

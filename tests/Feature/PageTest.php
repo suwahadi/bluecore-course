@@ -90,3 +90,11 @@ it('frames the page content in a panel below the title', function () {
 
     expect($html)->toMatch('#<h1>Syarat dan Ketentuan</h1>\s*<article class="panel panel--prose">\s*<h2>Akun</h2>#');
 });
+
+it('marks only the FAQ system page for the compact answer text', function () {
+    Page::factory()->create(['system_key' => 'faq', 'slug' => 'faq', 'content' => "### Tanya?\n\nJawab."]);
+    Page::factory()->create(['slug' => 'tentang-kami', 'content' => 'Isi biasa.']);
+
+    $this->get('/faq')->assertOk()->assertSee('<article class="panel panel--prose panel--faq">', false);
+    $this->get('/tentang-kami')->assertOk()->assertSee('<article class="panel panel--prose">', false);
+});
