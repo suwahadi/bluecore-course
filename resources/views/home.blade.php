@@ -54,14 +54,7 @@
         <section class="section" id="faq">
             <div class="wrap faq">
                 <h2>{{ $faq->title }}</h2>
-                <div class="faq__list">
-                    @foreach ($faqItems as $item)
-                        <details class="faq__item">
-                            <summary>{{ $item['question'] }}</summary>
-                            <div class="prose faq__answer">{!! $item['answer'] !!}</div>
-                        </details>
-                    @endforeach
-                </div>
+                <x-faq-list :items="$faqItems" />
             </div>
         </section>
     @endif

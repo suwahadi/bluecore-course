@@ -1075,10 +1075,12 @@ a.contact-list__item:hover .contact-list__icon { background: var(--cyan); color:
 .faq__item summary:focus-visible { outline: none; box-shadow: var(--focus); }
 .faq__answer { padding: 0 18px 16px; }
 .faq__answer > :first-child { margin-top: 0; }
-.faq__answer p, .faq__answer li, .panel--faq p, .panel--faq li { font-size: 14px; line-height: 1.7; }
+.faq__answer p, .faq__answer li { font-size: 15px; line-height: 1.7; }
+.faq__intro { max-width: 860px; }
+.faq__intro > :first-child { margin-top: 0; }
 @media (prefers-reduced-motion: reduce) { .faq__item summary::after { transition: none; } }
 
-.cta-band { background: var(--laut); color: var(--on-blue-soft); }
+.cta-band { background: linear-gradient(180deg, rgba(4, 76, 148, 0.76), rgba(12, 56, 101, 0.86)), var(--laut-deep) url('../images/cta-pond.webp') center / cover no-repeat; color: var(--on-blue-soft); }
 .cta-band__inner { display: grid; justify-items: center; gap: 14px; text-align: center; }
 .cta-band h2 { max-width: 26ch; color: var(--on-blue); text-wrap: balance; }
 .cta-band p { max-width: 52ch; font-size: 17px; line-height: 1.6; }

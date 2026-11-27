@@ -19,7 +19,14 @@ class PageController extends Controller
         $videoId = $page->videoId();
 
         if ($videoId === null) {
-            return view('pages.show', ['page' => $page, 'html' => $html]);
+            $faqItems = $page->system_key === 'faq' ? $page->faqItems() : [];
+
+            return view('pages.show', [
+                'page' => $page,
+                'html' => $html,
+                'faqItems' => $faqItems,
+                'faqIntro' => $faqItems ? $page->faqIntro() : null,
+            ]);
         }
 
         $user = $request->user();

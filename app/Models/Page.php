@@ -80,9 +80,14 @@ class Page extends Model
         return YouTubeUrl::parse($this->youtube_url);
     }
 
+    public function faqIntro(): ?string
+    {
+        return Markdown::html(trim($this->faqParts()[0]));
+    }
+
     public function faqItems(): array
     {
-        $parts = preg_split('/^###[ \t]+(.+?)[ \t#]*$/m', (string) $this->content, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $parts = $this->faqParts();
         $items = [];
 
         for ($index = 1; $index < count($parts); $index += 2) {
@@ -90,6 +95,11 @@ class Page extends Model
         }
 
         return $items;
+    }
+
+    private function faqParts(): array
+    {
+        return preg_split('/^###[ \t]+(.+?)[ \t#]*$/m', (string) $this->content, -1, PREG_SPLIT_DELIM_CAPTURE);
     }
 
     private static function forgetFooterAfterCommit(): void

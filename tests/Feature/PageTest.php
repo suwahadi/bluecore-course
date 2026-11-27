@@ -91,10 +91,27 @@ it('frames the page content in a panel below the title', function () {
     expect($html)->toMatch('#<h1>Syarat dan Ketentuan</h1>\s*<article class="panel panel--prose">\s*<h2>Akun</h2>#');
 });
 
-it('marks only the FAQ system page for the compact answer text', function () {
-    Page::factory()->create(['system_key' => 'faq', 'slug' => 'faq', 'content' => "### Tanya?\n\nJawab."]);
-    Page::factory()->create(['slug' => 'tentang-kami', 'content' => 'Isi biasa.']);
+it('shows the FAQ system page as an accordion under its intro', function () {
+    Page::factory()->create(['system_key' => 'faq', 'title' => 'FAQ', 'slug' => 'faq', 'content' => "Belum terjawab? Hubungi kami.
 
-    $this->get('/faq')->assertOk()->assertSee('<article class="panel panel--prose panel--faq">', false);
-    $this->get('/tentang-kami')->assertOk()->assertSee('<article class="panel panel--prose">', false);
+### Tanya?
+
+Jawab **singkat**."]);
+    Page::factory()->create(['slug' => 'tentang-kami', 'content' => "### Visi
+
+Isi biasa."]);
+
+    $this->get('/faq')->assertOk()
+        ->assertSeeInOrder(['<h1>FAQ</h1>', '<p>Belum terjawab? Hubungi kami.</p>', '<summary>Tanya?</summary>', '<p>Jawab <strong>singkat</strong>.</p>'], false)
+        ->assertDontSee('panel--prose', false);
+    $this->get('/tentang-kami')->assertOk()->assertSee('<h3>Visi</h3>', false)->assertDontSee('faq__item', false);
+});
+
+it('keeps the FAQ page as plain text until it has questions', function () {
+    Page::factory()->create(['system_key' => 'faq', 'slug' => 'faq', 'content' => 'Belum ada pertanyaan.']);
+
+    $this->get('/faq')->assertOk()
+        ->assertSee('<article class="panel panel--prose">', false)
+        ->assertSee('<p>Belum ada pertanyaan.</p>', false)
+        ->assertDontSee('faq__item', false);
 });

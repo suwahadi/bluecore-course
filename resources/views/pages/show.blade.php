@@ -5,13 +5,20 @@
                 <p class="note note--warn course-note">Halaman ini masih draf. Hanya admin yang bisa melihatnya.</p>
             @endunless
             <h1>{{ $page->title }}</h1>
-            <article class="panel panel--prose{{ $page->system_key === 'faq' ? ' panel--faq' : '' }}">
-                @if ($html)
-                    {!! $html !!}
-                @else
-                    <p class="muted">Konten belum diisi.</p>
+            @if ($faqItems)
+                @if ($faqIntro)
+                    <div class="faq__intro">{!! $faqIntro !!}</div>
                 @endif
-            </article>
+                <x-faq-list :items="$faqItems" />
+            @else
+                <article class="panel panel--prose">
+                    @if ($html)
+                        {!! $html !!}
+                    @else
+                        <p class="muted">Konten belum diisi.</p>
+                    @endif
+                </article>
+            @endif
         </div>
     </section>
 </x-layouts.app>
