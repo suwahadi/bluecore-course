@@ -489,7 +489,7 @@ table { border-collapse: collapse; width: 100%; }
 @media (prefers-reduced-motion: reduce) { .carousel__track { transition: none; } }
 
 .free-video { display: grid; gap: 28px; }
-.free-video__copy h1 { font-size: clamp(26px, 3.4vw, 34px); }
+.free-video__copy h1 { font-size: clamp(26px, 3.4vw, 34px); margin-bottom: 20px; }
 .free-video__copy p { margin-top: 1em; font-size: 17px; line-height: 1.75; color: var(--ink); }
 
 .lead-gate { position: relative; min-height: 760px; overflow: clip; }
@@ -915,6 +915,7 @@ a.kpi--primary:hover .kpi__ornament { opacity: 0.14; }
 
 .prose h1 { font-size: clamp(26px, 3.4vw, 34px); }
 .prose h2 { font-size: 20px; margin-top: 28px; }
+.prose h3 { font-size: 17px; margin-top: 24px; }
 .prose p, .prose li, .prose .dl { font-size: 17px; line-height: 1.75; color: var(--ink); }
 .prose p { margin-top: 1em; }
 .prose ul { margin: 12px 0 0; padding-left: 22px; list-style: disc; }

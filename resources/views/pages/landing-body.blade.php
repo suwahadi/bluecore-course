@@ -15,7 +15,7 @@
         <div class="free-video__copy">
             <h1>{{ $page->title }}</h1>
             @if ($html)
-                <div class="prose">{!! $html !!}</div>
+                <article class="panel panel--prose prose">{!! $html !!}</article>
             @endif
         </div>
     </div>

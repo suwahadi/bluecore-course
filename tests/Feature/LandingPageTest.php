@@ -119,3 +119,11 @@ it('reopens the register tab with its errors', function () {
         ->toContain('id="lead-register-name-error" role="alert">Nama wajib diisi.')
         ->not->toContain('id="lead-login-email-error"');
 });
+
+it('frames the landing content in the same panel as the static pages', function () {
+    landingPage(['requires_signup' => false]);
+
+    $html = $this->get('/lele-pemula')->assertOk()->getContent();
+
+    expect($html)->toMatch('#<h1>Lele untuk Pemula</h1>\s*<article class="panel panel--prose prose">\s*<h2>Mulai</h2>#');
+});
