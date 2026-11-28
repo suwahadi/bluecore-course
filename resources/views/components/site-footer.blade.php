@@ -10,13 +10,11 @@
             @endif
         </div>
         <div>
-            <h2 class="site-footer__title">Tautan</h2>
+            <h2 class="site-footer__title">Navigasi</h2>
             <ul>
-                <li><a href="{{ url('/courses') }}">Kursus</a></li>
-                @foreach ($pages as $page)
-                    <li><a href="{{ url($page['slug']) }}">{{ $page['title'] }}</a></li>
+                @foreach ($links as $link)
+                    <li><a href="{{ url($link['url']) }}">{{ $link['title'] }}</a></li>
                 @endforeach
-                <li><a href="{{ url('/contact') }}">Hubungi Kami</a></li>
             </ul>
         </div>
         @foreach (['Kontak' => $contacts, 'Sosial Media' => $socials] as $title => $rows)

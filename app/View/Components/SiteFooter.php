@@ -28,7 +28,7 @@ class SiteFooter extends Component
 
     public string $owner;
 
-    public array $pages;
+    public array $links;
 
     public array $contacts;
 
@@ -43,13 +43,13 @@ class SiteFooter extends Component
         $this->description = Settings::get('site_description');
         $this->disclaimer = Settings::get('footer_disclaimer');
         $this->owner = Settings::get('company_name') ?: $this->siteName;
-        $this->pages = Cache::rememberForever(Page::FOOTER_CACHE_KEY, fn () => Page::query()
+        $this->links = $this->navigationLinks(Cache::rememberForever(Page::FOOTER_CACHE_KEY, fn () => Page::query()
             ->published()
             ->inFooter()
             ->ordered()
-            ->get(['title', 'slug'])
-            ->map(fn (Page $page) => ['title' => $page->title, 'slug' => $page->slug])
-            ->all());
+            ->get(['title', 'slug', 'system_key'])
+            ->map(fn (Page $page) => ['title' => $page->title, 'url' => '/'.$page->slug, 'key' => $page->system_key])
+            ->all()));
         $this->contacts = $this->contactRows();
         $this->socials = SocialLinks::rows();
         $this->markets = array_values(array_filter(
@@ -61,6 +61,20 @@ class SiteFooter extends Component
     public function render(): View
     {
         return view('components.site-footer');
+    }
+
+    private function navigationLinks(array $pages): array
+    {
+        $pages = collect($pages);
+        $pinned = fn (string $key) => $pages->firstWhere('key', $key);
+
+        return collect([
+            $pinned('about'),
+            ['title' => 'Kursus', 'url' => '/courses'],
+            $pinned('faq'),
+            ['title' => 'Hubungi Kami', 'url' => '/contact'],
+            ...$pages->whereNotIn('key', ['about', 'faq'])->all(),
+        ])->filter()->values()->all();
     }
 
     private function contactRows(): array

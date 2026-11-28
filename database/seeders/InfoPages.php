@@ -51,8 +51,10 @@ Tidak ada hasil budidaya yang dapat dijamin. Hasil dipengaruhi jumlah ikan yang 
 MARKDOWN;
 
     public const ABOUT = <<<'MARKDOWN'
-Bluecore adalah brand akuakultur Indonesia.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante venenatis dapibus. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Donec sed odio dui, cras mattis consectetur purus sit amet fermentum.
 
-Tulis profil Bluecore di sini, lalu terbitkan halaman ini agar muncul di menu atas dan footer.
+Sed posuere consectetur est at lobortis. Maecenas faucibus mollis interdum. Nullam quis risus eget urna mollis ornare vel eu leo. Vestibulum id ligula porta felis euismod semper, aenean lacinia bibendum nulla sed consectetur.
+
+Curabitur blandit tempus porttitor. Etiam porta sem malesuada magna mollis euismod. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.
 MARKDOWN;
 }

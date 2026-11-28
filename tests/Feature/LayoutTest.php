@@ -48,7 +48,7 @@ it('lists only published footer pages in order', function () {
 
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSeeTextInOrder(['Kursus', 'Syarat dan Ketentuan', 'Kebijakan Privasi', 'Hubungi Kami'])
+        ->assertSeeTextInOrder(['Kursus', 'Hubungi Kami', 'Syarat dan Ketentuan', 'Kebijakan Privasi'])
         ->assertDontSeeText('Draf Rahasia')
         ->assertDontSeeText('Tidak di Footer');
 });
@@ -131,7 +131,7 @@ it('shows social handles without query strings or fragments', function () {
 it('keeps the footer headings in order after the page heading', function () {
     $html = $this->get('/')->getContent();
 
-    expect($html)->toContain('<h2 class="site-footer__title">Tautan</h2>')->not->toContain('<h4');
+    expect($html)->toContain('<h2 class="site-footer__title">Navigasi</h2>')->not->toContain('<h4');
 });
 
 it('lists social accounts in their own footer column after the contact column', function () {
@@ -212,4 +212,17 @@ it('falls back to the site name in the copyright without a company name', functi
 
     expect($footer)->toContain('&copy; '.now()->year.' BlueCore Course. Hak cipta dilindungi.')
         ->not->toContain('site-footer__disclaimer');
+});
+
+it('orders the footer navigation like the copy brief', function () {
+    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'system_key' => 'terms', 'sort_order' => 4]);
+    Page::factory()->create(['title' => 'Kebijakan Privasi', 'system_key' => 'privacy', 'sort_order' => 3]);
+    Page::factory()->create(['title' => 'FAQ', 'slug' => 'faq', 'system_key' => 'faq', 'sort_order' => 2]);
+    Page::factory()->create(['title' => 'Tentang Bluecore', 'slug' => 'about', 'system_key' => 'about', 'sort_order' => 1]);
+
+    $footer = strstr($this->get('/_layout-probe')->assertOk()->getContent(), '<footer');
+
+    expect($footer)->toContain('<h2 class="site-footer__title">Navigasi</h2>')
+        ->toMatch('#Tentang Bluecore</a>.*>Kursus</a>.*>FAQ</a>.*>Hubungi Kami</a>.*>Kebijakan Privasi</a>.*>Syarat dan Ketentuan</a>#s')
+        ->toContain('href="'.url('/about').'"');
 });

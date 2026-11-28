@@ -18,7 +18,7 @@ class Page extends Model
 {
     use HasFactory, HasSlug, HasSortOrder;
 
-    public const FOOTER_CACHE_KEY = 'footer_pages';
+    public const FOOTER_CACHE_KEY = 'footer_nav_pages';
 
     public const RESERVED_SLUGS = [
         'account', 'admin', 'api', 'assets', 'build', 'checkout', 'contact', 'course', 'courses',
