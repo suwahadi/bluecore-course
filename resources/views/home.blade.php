@@ -51,7 +51,7 @@
                             <div class="prose">{!! $pitchHtml !!}</div>
                         </div>
                         <div class="panel upsell__cta">
-                            <a class="btn btn--primary btn--block" href="{{ $courseUrl }}">Lihat kursus lengkap</a>
+                            <a class="btn btn--primary btn--block" href="{{ $buyUrl }}">BELI KURSUS SEKARANG</a>
                             <p class="upsell__price">{{ \App\Support\Format::rupiah($featured->price) }} • Bayar sekali, akses selamanya</p>
                         </div>
                     </div>
@@ -79,9 +79,11 @@
                     <p>{{ $ctaText }}</p>
                 @endif
                 @if (! auth()->check() && $freeVideoUrl)
-                    <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Tonton video gratis</a>
+                    <a class="btn btn--primary" href="{{ $freeVideoUrl }}">TONTON VIDEO GRATIS</a>
+                @elseif ($buyUrl)
+                    <a class="btn btn--primary" href="{{ $buyUrl }}">BELI KURSUS SEKARANG</a>
                 @else
-                    <a class="btn btn--primary" href="{{ $courseUrl }}">Lihat kursus lengkap</a>
+                    <a class="btn btn--primary" href="{{ $courseUrl }}">Lihat kursus</a>
                 @endif
                 @guest
                     <p class="cta-band__note">Daftar gratis • Bayar sekali, akses selamanya</p>

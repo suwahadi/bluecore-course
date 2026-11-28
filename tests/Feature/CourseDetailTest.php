@@ -154,7 +154,7 @@ it('spells out the total with the admin fee, the unlock rule and the nudge', fun
             'Total pembayaran Rp 127.500, sudah termasuk biaya admin Rp 2.500.',
             'BELI KURSUS SEKARANG',
             'Kursus terbuka otomatis setelah pembayaran terverifikasi.',
-            'Belajar sebelum beli bibit, bukan setelah ikan bermasalah.',
+            'Belajar sebelum beli bibit, agar keuntungan maksimal sejak panen pertama!',
         ]);
 });
 

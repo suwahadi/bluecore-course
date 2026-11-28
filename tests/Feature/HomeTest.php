@@ -53,7 +53,8 @@ it('hides Tonton video gratis without a free video and sends Lihat kursus to the
     Settings::set(['free_video_page_id' => null]);
 
     $this->get('/')
-        ->assertDontSee('>Tonton video gratis</a>', false)
+        ->assertDontSee('>TONTON VIDEO GRATIS</a>', false)
+        ->assertDontSee('>NONTON GRATIS</a>', false)
         ->assertSee('class="btn btn--primary" href="'.url('/courses').'"', false)
         ->assertSeeText('Belum ada kursus yang terbit. Kursus baru muncul di sini begitu admin menerbitkannya.');
 });
@@ -161,7 +162,7 @@ it('hides Tonton video gratis when the chosen landing page is gone, a draft or w
         $landing->delete();
     }
 
-    $this->get('/')->assertOk()->assertDontSee('>Tonton video gratis</a>', false);
+    $this->get('/')->assertOk()->assertDontSee('>TONTON VIDEO GRATIS</a>', false)->assertDontSee('>NONTON GRATIS</a>', false);
 })->with([
     'deleted' => [[], true],
     'draft' => [['is_published' => false], false],
@@ -220,12 +221,12 @@ it('closes with the free video for guests and the course for members', function 
     $this->get('/')->assertOk()->assertSeeInOrder([
         '<h2>Galon Bekas di Rumah Sudah Siap? Tinggal Kamu yang Mulai.</h2>',
         '<p>Tonton video gratisnya terlebih dahulu, atau langsung lihat kursus lengkap.</p>',
-        '<a class="btn btn--primary" href="'.url('/lele-pemula').'">Tonton video gratis</a>',
+        '<a class="btn btn--primary" href="'.url('/lele-pemula').'">TONTON VIDEO GRATIS</a>',
         '<p class="cta-band__note">Daftar gratis • Bayar sekali, akses selamanya</p>',
     ], false);
 
     $this->actingAs(User::factory()->create())->get('/')
-        ->assertSee('<a class="btn btn--primary" href="'.route('courses.show', $course).'">Lihat kursus lengkap</a>', false)
+        ->assertSee('<a class="btn btn--primary" href="'.url('/courses/'.$course->slug.'/checkout').'">BELI KURSUS SEKARANG</a>', false)
         ->assertDontSee('cta-band__note', false);
 });
 
@@ -252,7 +253,7 @@ it('follows the course list with the brief pitch and a link to the full course',
     expect($html)->toMatch('#Kursus terbaru.*<div class="prose">\s*<p>Di kursus lengkap, kamu akan <strong>menjalankannya</strong>.</p>#s')
         ->toContain('<li>Kenapa bibit sehat pun bisa stres?</li>')
         ->not->toContain('<script>x</script>')
-        ->toContain('<a class="btn btn--primary btn--block" href="'.route('courses.show', $course).'">Lihat kursus lengkap</a>');
+        ->toContain('<a class="btn btn--primary btn--block" href="'.url('/register?next='.urlencode('/courses/'.$course->slug.'/checkout')).'">BELI KURSUS SEKARANG</a>');
 });
 
 it('drops the course list pitch when its text is empty or no course is published', function () {

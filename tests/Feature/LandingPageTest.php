@@ -35,7 +35,7 @@ it('plays the video for signed-in users, verified or not', function () {
         ->assertSee('<h2>Lele Galon</h2>', false)
         ->assertSee('<a class="btn btn--primary btn--block" href="'.url('/courses/'.Course::first()->slug.'/checkout').'">BELI KURSUS SEKARANG</a>', false)
         ->assertSee('href="'.route('courses.show', Course::first()).'#daftar-video">Lihat isi 4 bab</a>', false)
-        ->assertSeeText('Belajar sebelum beli bibit, bukan setelah ikan bermasalah.')
+        ->assertSeeText('Belajar sebelum beli bibit, agar keuntungan maksimal sejak panen pertama!')
         ->assertDontSee('lead-gate', false);
 });
 

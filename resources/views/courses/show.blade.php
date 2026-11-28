@@ -57,7 +57,7 @@
                         </div>
                         @unless ($canLearn)
                             <p class="muted small buybox__hint">Kursus terbuka otomatis setelah pembayaran terverifikasi.</p>
-                            <p class="buybox__urgency">Belajar sebelum beli bibit, bukan setelah ikan bermasalah.</p>
+                            <p class="buybox__urgency">Belajar sebelum beli bibit, agar keuntungan maksimal sejak panen pertama!</p>
                         @endunless
                     </div>
                 </div>

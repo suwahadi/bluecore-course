@@ -62,7 +62,7 @@
                 <x-field name="hero_eyebrow" label="Teks kecil di atas judul hero" :value="$settings['hero_eyebrow']" maxlength="60" />
                 <x-field name="hero_title" label="Judul hero" :value="$settings['hero_title']" maxlength="120" />
                 <x-field name="hero_subtitle" label="Subjudul hero" :value="$settings['hero_subtitle']" :full="true" maxlength="200" />
-                <x-field name="featured_course_id" label="Kursus unggulan di hero" type="select" :options="['' => 'Otomatis: kursus terbit terbaru'] + $publishedCourses" :value="$settings['featured_course_id']" help="Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus lengkap." />
+                <x-field name="featured_course_id" label="Kursus unggulan di hero" type="select" :options="['' => 'Otomatis: kursus terbit terbaru'] + $publishedCourses" :value="$settings['featured_course_id']" help="Kursus ini tampil di hero beranda dan menjadi tujuan tombol BELI KURSUS SEKARANG." />
                 <x-field name="home_courses_text" label="Teks di bawah daftar kursus" type="textarea" :value="$settings['home_courses_text']" help='Markdown: "- " untuk daftar, "**tebal**".' :full="true" rows="6" maxlength="2000" />
                 <x-field name="testimonials_title" label="Judul bagian testimoni" :value="$settings['testimonials_title']" maxlength="120" />
                 <x-field name="cta_title" label="Judul ajakan penutup" :value="$settings['cta_title']" :full="true" maxlength="120" />

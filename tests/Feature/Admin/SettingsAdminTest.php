@@ -48,7 +48,7 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeText('Tautan toko untuk ikon Marketplace di footer. Kosongkan jika belum punya toko di marketplace tersebut.')
         ->assertSeeText('Biaya admin per pesanan (rupiah)')
         ->assertSeeText('Ditambahkan ke setiap pesanan kursus berbayar.')
-        ->assertSeeText('Kursus ini tampil di hero beranda dan menjadi tujuan tombol Lihat kursus lengkap.')
+        ->assertSeeText('Kursus ini tampil di hero beranda dan menjadi tujuan tombol BELI KURSUS SEKARANG.')
         ->assertSeeText('Otomatis: kursus terbit terbaru')
         ->assertSeeText('Landing untuk tombol Tonton video gratis')
         ->assertSeeText('Tidak ada, sembunyikan tombol')
