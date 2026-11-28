@@ -185,7 +185,7 @@ it('adds the about page to the menu only once it is published', function () {
     $about->update(['is_published' => true]);
 
     $this->get('/_layout-probe')
-        ->assertSeeInOrder(['>Beranda</a>', '>Kursus</a>', 'href="'.url('/tentang-bluecore').'"'], false)
+        ->assertSeeInOrder(['>Kursus</a>', 'href="'.url('/tentang-bluecore').'"'], false)
         ->assertSeeText('Tentang Bluecore');
 });
 
@@ -225,4 +225,12 @@ it('orders the footer navigation like the copy brief', function () {
     expect($footer)->toContain('<h2 class="site-footer__title">Navigasi</h2>')
         ->toMatch('#Tentang Bluecore</a>.*>Kursus</a>.*>FAQ</a>.*>Hubungi Kami</a>.*>Kebijakan Privasi</a>.*>Syarat dan Ketentuan</a>#s')
         ->toContain('href="'.url('/about').'"');
+});
+
+it('leaves Beranda out of the menu because the logo already links home', function () {
+    $html = $this->get('/_layout-probe')->assertOk()->getContent();
+    $header = substr($html, strpos($html, '<header'), strpos($html, '</header>') - strpos($html, '<header'));
+
+    expect($header)->not->toContain('>Beranda</a>')
+        ->toContain('<a class="brand" href="'.url('/').'"');
 });

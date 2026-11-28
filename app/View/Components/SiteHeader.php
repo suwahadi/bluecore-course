@@ -37,7 +37,7 @@ class SiteHeader extends Component
         $this->user = auth()->user();
         $this->freeVideoUrl = $this->user ? null : FreeVideo::url();
 
-        $links = [['path' => '/', 'label' => 'Beranda'], ['path' => '/courses', 'label' => 'Kursus']];
+        $links = [['path' => '/courses', 'label' => 'Kursus']];
         $about = Page::query()->published()->where('system_key', 'about')->first(['title', 'slug']);
 
         if ($about) {
@@ -74,10 +74,6 @@ class SiteHeader extends Component
 
     private function isCurrent(string $path): bool
     {
-        if ($path === '/') {
-            return request()->is('/');
-        }
-
         $segment = ltrim($path, '/');
 
         return request()->is($segment, $segment.'/*');
