@@ -56,3 +56,9 @@ it('renders a standalone Indonesian maintenance page', function () {
         ->not->toContain('/build/assets')
         ->and(DB::getQueryLog())->toBe([]);
 });
+
+it('frames the whole error message in the static page panel', function () {
+    $html = $this->get('/halaman-yang-tidak-ada')->assertNotFound()->getContent();
+
+    expect($html)->toMatch('#<div class="panel panel--prose error-panel">\s*<p class="error-panel__code">404</p>\s*<h1>Halaman tidak ditemukan</h1>\s*<p class="muted">[^<]+</p>\s*<div class="btn-row error-panel__actions">\s*<a class="btn btn--brand" href="[^"]+">Kembali ke beranda</a>\s*</div>\s*</div>#');
+});
