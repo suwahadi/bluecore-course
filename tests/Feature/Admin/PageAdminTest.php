@@ -13,7 +13,7 @@ function validPage(array $overrides = []): array
         '_modal' => 'page-new',
         'title' => 'Tentang Kami',
         'slug' => 'tentang-kami',
-        'content' => "## Siapa kami\n\nBlueCore di Bogor.",
+        'content' => "## Siapa kami\n\nBluecore di Bogor.",
         'is_published' => '1',
         'sort_order' => 1,
         'show_in_footer' => '1',
@@ -23,12 +23,12 @@ function validPage(array $overrides = []): array
 }
 
 it('lists pages with their link, status, footer flag and system label', function () {
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms', 'sort_order' => 1]);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms', 'sort_order' => 1]);
     Page::factory()->create(['title' => 'Tentang Kami', 'slug' => 'tentang-kami', 'is_published' => false, 'show_in_footer' => false, 'sort_order' => 2]);
 
     $this->actingAs($this->admin)->get('/admin/pages')
         ->assertOk()
-        ->assertSeeInOrder(['Syarat dan Ketentuan', '/terms-and-condition', 'halaman sistem', 'Terbit', 'Tampil', 'Tentang Kami', '/tentang-kami', 'Draf', 'Tidak'])
+        ->assertSeeInOrder(['Syarat & Ketentuan', '/terms-and-condition', 'halaman sistem', 'Terbit', 'Tampil', 'Tentang Kami', '/tentang-kami', 'Draf', 'Tidak'])
         ->assertSee('aria-label="Halaman sistem tidak bisa dihapus"', false)
         ->assertSee('aria-label="Terbitkan halaman"', false)
         ->assertSeeText('Markdown: baris "## Judul" untuk judul, "- " untuk daftar.')
@@ -73,7 +73,7 @@ it('shows the PRD messages inside the dialog that failed', function (array $inpu
 ]);
 
 it('updates a system page but never its system key', function () {
-    $terms = Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
+    $terms = Page::factory()->create(['title' => 'Syarat & Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
 
     $this->actingAs($this->admin)->from('/admin/pages')
         ->put("/admin/pages/{$terms->id}", validPage(['_modal' => "page-{$terms->id}", 'title' => 'Syarat Layanan', 'slug' => 'syarat', 'system_key' => null]))
@@ -113,15 +113,15 @@ it('refreshes the footer after save, toggle and move', function () {
     Page::factory()->create(['title' => 'Cara Belajar', 'sort_order' => 2]);
     $this->actingAs($this->admin)->get('/admin/pages');
 
-    $this->from('/admin/pages')->put("/admin/pages/{$about->id}", validPage(['_modal' => "page-{$about->id}", 'title' => 'Profil BlueCore', 'slug' => $about->slug]));
-    $this->get('/admin/pages')->assertSee('>Profil BlueCore</a>', false);
+    $this->from('/admin/pages')->put("/admin/pages/{$about->id}", validPage(['_modal' => "page-{$about->id}", 'title' => 'Profil Bluecore', 'slug' => $about->slug]));
+    $this->get('/admin/pages')->assertSee('>Profil Bluecore</a>', false);
 
     $this->post("/admin/pages/{$about->id}/move", ['direction' => 'down']);
     $footer = $this->get('/admin/pages')->getContent();
-    expect(strpos($footer, '>Cara Belajar</a>'))->toBeLessThan(strpos($footer, '>Profil BlueCore</a>'));
+    expect(strpos($footer, '>Cara Belajar</a>'))->toBeLessThan(strpos($footer, '>Profil Bluecore</a>'));
 
     $this->post("/admin/pages/{$about->id}/toggle");
-    $this->get('/admin/pages')->assertDontSee('>Profil BlueCore</a>', false);
+    $this->get('/admin/pages')->assertDontSee('>Profil Bluecore</a>', false);
 });
 
 it('keeps the footer cache when the save rolls back', function () {

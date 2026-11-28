@@ -34,7 +34,7 @@ class MailPreviewController extends Controller
     public static function previews(): array
     {
         $buyer = (new User)->forceFill(['id' => 1, 'name' => 'Sari Lestari', 'email' => 'sari@contoh.id', 'email_verified_at' => now()]);
-        $admin = (new User)->forceFill(['id' => 2, 'name' => 'Admin BlueCore', 'email' => 'admin@contoh.id', 'email_verified_at' => now()]);
+        $admin = (new User)->forceFill(['id' => 2, 'name' => 'Admin Bluecore', 'email' => 'admin@contoh.id', 'email_verified_at' => now()]);
         $course = (new Course)->forceFill(['id' => 1, 'title' => 'Budidaya Lele dalam Galon', 'slug' => 'budidaya-lele-dalam-galon']);
         $order = fn (OrderStatus $status) => (new Order)->forceFill([
             'id' => 1,

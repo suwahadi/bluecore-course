@@ -12,7 +12,7 @@ it('shows a published page with its Markdown content', function () {
         ->assertSee('<h1>Tentang Kami</h1>', false)
         ->assertSee('<h2>Siapa kami</h2>', false)
         ->assertSee('<li>Bogor</li>', false)
-        ->assertSee('<title>Tentang Kami: BlueCore Course</title>', false);
+        ->assertSee('<title>Tentang Kami: Bluecore Course</title>', false);
 });
 
 it('strips raw HTML and unsafe links from the content', function () {
@@ -45,7 +45,7 @@ it('hides draft pages from everyone but admins', function () {
 it('serves the seeded system pages', function () {
     $this->seed(PageSeeder::class);
 
-    $this->get('/terms-and-condition')->assertOk()->assertSeeText('Syarat dan Ketentuan');
+    $this->get('/terms-and-condition')->assertOk()->assertSeeText('Syarat & Ketentuan');
     $this->get('/privacy-policy')->assertOk()->assertSeeText('Kebijakan Privasi');
 });
 
@@ -84,11 +84,11 @@ it('rejects reserved slugs in the page route pattern', function () {
 });
 
 it('frames the page content in a panel below the title', function () {
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'content' => "## Akun\n\nIsi data dengan benar."]);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'slug' => 'terms-and-condition', 'content' => "## Akun\n\nIsi data dengan benar."]);
 
     $html = $this->get('/terms-and-condition')->assertOk()->getContent();
 
-    expect($html)->toMatch('#<h1>Syarat dan Ketentuan</h1>\s*<article class="panel panel--prose">\s*<h2>Akun</h2>#');
+    expect($html)->toMatch('#<h1>Syarat &amp; Ketentuan</h1>\s*<article class="panel panel--prose">\s*<h2>Akun</h2>#');
 });
 
 it('shows the FAQ system page as an accordion under its intro', function () {

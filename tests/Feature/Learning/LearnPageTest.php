@@ -42,7 +42,7 @@ it('asks guests to sign up and unverified users to verify', function () {
 it('refuses users without access and lets admins in', function () {
     $stranger = User::factory()->create();
 
-    $this->actingAs($stranger)->get(learnUrl())->assertForbidden()->assertSeeText('Anda belum punya akses ke kursus ini.');
+    $this->actingAs($stranger)->get(learnUrl())->assertForbidden()->assertSeeText('Kamu belum punya akses ke kursus ini.');
     $this->actingAs($stranger)->get(learnUrl($this->segments[0]))->assertForbidden();
 
     $this->actingAs(User::factory()->admin()->create())->get(learnUrl($this->segments[0]))->assertOk();
@@ -125,7 +125,7 @@ it('shows the finished state when every video is done', function () {
     $this->segments->each(fn ($segment) => progressFor($segment, ['percent' => 100, 'completed_at' => now()]));
 
     $this->actingAs($this->buyer)->get(learnUrl($this->segments[0]))
-        ->assertSeeText('Kursus selesai. Semua video sudah ditandai selesai. Anda tetap bisa memutar ulang kapan saja.')
+        ->assertSeeText('Kursus selesai. Semua video sudah ditandai selesai. Kamu tetap bisa memutar ulang kapan saja.')
         ->assertSeeText('3 dari 3 video (100%)');
 });
 

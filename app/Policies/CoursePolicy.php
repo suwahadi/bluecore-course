@@ -19,6 +19,6 @@ class CoursePolicy
     {
         $allowed = $user->isAdmin() || Enrollment::query()->where(['user_id' => $user->id, 'course_id' => $course->id])->exists();
 
-        return $allowed ? Response::allow() : Response::deny('Anda belum punya akses ke kursus ini.');
+        return $allowed ? Response::allow() : Response::deny('Kamu belum punya akses ke kursus ini.');
     }
 }

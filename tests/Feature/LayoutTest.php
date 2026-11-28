@@ -15,8 +15,8 @@ beforeEach(function () {
 it('shows guest links and the brand', function () {
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSeeText('BlueCore Course')
-        ->assertSeeText('Mulai dari Nol, Naik Kelas Bersama Bluecore.')
+        ->assertSeeText('Bluecore Course')
+        ->assertSeeText('Naik Kelas Bersama Bluecore')
         ->assertSeeText('Masuk')
         ->assertSee('href="'.url('/register').'" class="btn btn--brand btn--small">Daftar</a>', false)
         ->assertDontSeeText('Keluar')
@@ -42,13 +42,13 @@ it('shows the admin link to admins', function () {
 
 it('lists only published footer pages in order', function () {
     Page::factory()->create(['title' => 'Kebijakan Privasi', 'sort_order' => 2]);
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'sort_order' => 1]);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'sort_order' => 1]);
     Page::factory()->create(['title' => 'Draf Rahasia', 'is_published' => false]);
     Page::factory()->create(['title' => 'Tidak di Footer', 'show_in_footer' => false]);
 
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSeeTextInOrder(['Kursus', 'Hubungi Kami', 'Syarat dan Ketentuan', 'Kebijakan Privasi'])
+        ->assertSeeTextInOrder(['Kursus', 'Hubungi Kami', 'Syarat & Ketentuan', 'Kebijakan Privasi'])
         ->assertDontSeeText('Draf Rahasia')
         ->assertDontSeeText('Tidak di Footer');
 });
@@ -57,9 +57,9 @@ it('refreshes footer pages after a page changes', function () {
     $page = Page::factory()->create(['title' => 'Tentang Kami']);
     $this->get('/_layout-probe')->assertSeeText('Tentang Kami');
 
-    $page->update(['title' => 'Profil BlueCore']);
+    $page->update(['title' => 'Profil Bluecore']);
 
-    $this->get('/_layout-probe')->assertSeeText('Profil BlueCore')->assertDontSeeText('Tentang Kami');
+    $this->get('/_layout-probe')->assertSeeText('Profil Bluecore')->assertDontSeeText('Tentang Kami');
 });
 
 it('hides the marketplace column when no store links are set', function () {
@@ -79,7 +79,7 @@ it('shows only the marketplace stores that have links', function () {
 it('links contact details from settings', function () {
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSee('https://wa.me/6281818182878?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.'), false)
+        ->assertSee('https://wa.me/6281818182878?text='.rawurlencode('Halo Bluecore Course, saya ingin bertanya.'), false)
         ->assertSee('mailto:support@bluecore.co.id', false)
         ->assertSeeText('@bluecore.official');
 });
@@ -87,9 +87,9 @@ it('links contact details from settings', function () {
 it('builds the page title and meta tags', function () {
     $this->get('/_layout-probe')
         ->assertOk()
-        ->assertSee('<title>Uji: BlueCore Course</title>', false)
+        ->assertSee('<title>Uji: Bluecore Course</title>', false)
         ->assertSee('<meta name="description" content="Deskripsi halaman uji">', false)
-        ->assertSee('<meta property="og:title" content="Uji: BlueCore Course">', false)
+        ->assertSee('<meta property="og:title" content="Uji: Bluecore Course">', false)
         ->assertSee('<link rel="canonical" href="'.url('/_layout-probe').'">', false)
         ->assertDontSee('noindex', false);
 });
@@ -119,7 +119,7 @@ it('returns focus to the account button when its menu closes with Escape', funct
 it('shows the WhatsApp number in the WhatsApp row, not the phone number', function () {
     Settings::set(['whatsapp' => '6281211112222', 'phone' => '0215550000']);
 
-    $this->get('/')->assertSee('href="https://wa.me/6281211112222?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.').'"', false)->assertSeeText('081211112222')->assertDontSeeText('0215550000');
+    $this->get('/')->assertSee('href="https://wa.me/6281211112222?text='.rawurlencode('Halo Bluecore Course, saya ingin bertanya.').'"', false)->assertSeeText('081211112222')->assertDontSeeText('0215550000');
 });
 
 it('shows social handles without query strings or fragments', function () {
@@ -191,7 +191,7 @@ it('adds the about page to the menu only once it is published', function () {
 
 it('closes the footer with the tagline, disclaimer and company copyright', function () {
     Settings::set([
-        'site_slogan' => 'Mulai dari Nol, Naik Kelas Bersama Bluecore.',
+        'site_slogan' => 'Naik Kelas Bersama Bluecore',
         'site_description' => 'Belajar budidaya lebih terarah.',
         'footer_disclaimer' => 'Hasil budidaya setiap peserta dapat berbeda.',
         'company_name' => 'PT Bluecore Akuakultur Indonesia',
@@ -199,7 +199,7 @@ it('closes the footer with the tagline, disclaimer and company copyright', funct
 
     $footer = strstr($this->get('/_layout-probe')->assertOk()->getContent(), '<footer');
 
-    expect($footer)->toContain('<p class="site-footer__tagline">Mulai dari Nol, Naik Kelas Bersama Bluecore.</p>')
+    expect($footer)->toContain('<p class="site-footer__tagline">Naik Kelas Bersama Bluecore</p>')
         ->toContain('Belajar budidaya lebih terarah.')
         ->toContain('<p class="site-footer__disclaimer">Hasil budidaya setiap peserta dapat berbeda.</p>')
         ->toContain('&copy; '.now()->year.' PT Bluecore Akuakultur Indonesia. Hak cipta dilindungi. Pembayaran diproses oleh Duitku.');
@@ -210,12 +210,12 @@ it('falls back to the site name in the copyright without a company name', functi
 
     $footer = strstr($this->get('/_layout-probe')->getContent(), '<footer');
 
-    expect($footer)->toContain('&copy; '.now()->year.' BlueCore Course. Hak cipta dilindungi.')
+    expect($footer)->toContain('&copy; '.now()->year.' Bluecore Course. Hak cipta dilindungi.')
         ->not->toContain('site-footer__disclaimer');
 });
 
 it('orders the footer navigation like the copy brief', function () {
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'system_key' => 'terms', 'sort_order' => 4]);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'system_key' => 'terms', 'sort_order' => 4]);
     Page::factory()->create(['title' => 'Kebijakan Privasi', 'system_key' => 'privacy', 'sort_order' => 3]);
     Page::factory()->create(['title' => 'FAQ', 'slug' => 'faq', 'system_key' => 'faq', 'sort_order' => 2]);
     Page::factory()->create(['title' => 'Tentang Bluecore', 'slug' => 'about', 'system_key' => 'about', 'sort_order' => 1]);
@@ -223,7 +223,7 @@ it('orders the footer navigation like the copy brief', function () {
     $footer = strstr($this->get('/_layout-probe')->assertOk()->getContent(), '<footer');
 
     expect($footer)->toContain('<h2 class="site-footer__title">Navigasi</h2>')
-        ->toMatch('#Tentang Bluecore</a>.*>Kursus</a>.*>FAQ</a>.*>Hubungi Kami</a>.*>Kebijakan Privasi</a>.*>Syarat dan Ketentuan</a>#s')
+        ->toMatch('#Tentang Bluecore</a>.*>Kursus</a>.*>FAQ</a>.*>Hubungi Kami</a>.*>Kebijakan Privasi</a>.*>Syarat &amp; Ketentuan</a>#s')
         ->toContain('href="'.url('/about').'"');
 });
 

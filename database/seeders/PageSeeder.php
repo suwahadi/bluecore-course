@@ -12,7 +12,7 @@ class PageSeeder extends Seeder
     public function run(): void
     {
         $systemPages = [
-            ['terms', 'Syarat dan Ketentuan', 'terms-and-condition', LegalPages::TERMS],
+            ['terms', 'Syarat & Ketentuan', 'terms-and-condition', LegalPages::TERMS],
             ['privacy', 'Kebijakan Privasi', 'privacy-policy', LegalPages::PRIVACY],
             ['faq', 'FAQ', 'faq', InfoPages::FAQ],
             ['about', 'Tentang Bluecore', 'about', InfoPages::ABOUT],

@@ -16,17 +16,17 @@ function previewText(string $key): string
     return (string) app(Markdown::class)->renderText($message->markdown, $message->data());
 }
 
-it('dresses every email in the BlueCore brand', function (string $key) {
+it('dresses every email in the Bluecore brand', function (string $key) {
     $html = previewHtml($key);
 
     expect($html)
         ->toMatch('/background-color:\s*#044C94/i')
         ->toContain('src="'.SiteLogo::emailUrl().'"')
-        ->toContain('BlueCore Course')
+        ->toContain('Bluecore Course')
         ->toMatch('/background-color:\s*#C64B00/i')
         ->toContain('support@bluecore.co.id')
-        ->toContain('https://wa.me/6281818182878?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.'))
-        ->toMatch('/Salam,<br\s*\/?>\s*BlueCore Course/')
+        ->toContain('https://wa.me/6281818182878?text='.rawurlencode('Halo Bluecore Course, saya ingin bertanya.'))
+        ->toMatch('/Salam,<br\s*\/?>\s*Bluecore Course/')
         ->not->toContain('laravel.com')
         ->not->toContain('Bogor');
 })->with(['verify', 'reset', 'order-created', 'payment-succeeded', 'order-expired', 'access-granted', 'admin-order-paid']);

@@ -7,7 +7,7 @@ it('shows the gate in place with status 401 and next links', function () {
     $this->get('/account')
         ->assertStatus(401)
         ->assertSeeText('Daftar dulu untuk melanjutkan')
-        ->assertSeeText('Buat akun atau masuk dengan akun yang sudah ada. Setelah itu Anda langsung kembali ke halaman ini.')
+        ->assertSeeText('Buat akun atau masuk dengan akun yang sudah ada. Setelah itu kamu langsung kembali ke halaman ini.')
         ->assertSee('href="'.url('/register').'?next=%2Faccount"', false)
         ->assertSee('href="'.url('/login').'?next=%2Faccount"', false)
         ->assertSee('class="btn-pair', false)

@@ -53,7 +53,6 @@
             <h2 class="panel-title">Pembayaran</h2>
             <div class="form-grid form-grid--2">
                 <x-field name="admin_fee" label="Biaya admin per pesanan (rupiah)" type="number" :value="$settings['admin_fee']" help="Ditambahkan ke setiap pesanan kursus berbayar." required min="0" max="1000000" step="1" inputmode="numeric" />
-                <x-field name="checkout_guarantee" label="Garansi di checkout" :value="$settings['checkout_guarantee']" help="Kosongkan untuk menyembunyikannya." maxlength="150" />
             </div>
         </section>
 

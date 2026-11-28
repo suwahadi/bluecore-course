@@ -43,7 +43,7 @@ Daftar atau masuk untuk menonton video gratis. Untuk kursus, selesaikan pembayar
 
 ### Apakah tersedia garansi atau refund?
 
-Karena materi digital langsung terbuka setelah pembayaran, ketentuan pengembalian dana dapat dilihat di [Syarat dan Ketentuan](/terms-and-condition).
+Karena materi digital langsung terbuka setelah pembayaran, ketentuan pengembalian dana dapat dilihat di [Syarat & Ketentuan](/terms-and-condition).
 
 ### Apakah kursus ini menjamin keuntungan?
 

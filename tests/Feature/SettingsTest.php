@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 it('returns defaults when nothing is stored', function () {
-    expect(Settings::get('site_name'))->toBe('BlueCore Course')
+    expect(Settings::get('site_name'))->toBe('Bluecore Course')
         ->and(Settings::get('admin_fee'))->toBe(0)
         ->and(Settings::get('address'))->toBe('Bogor')
         ->and(Settings::get('whatsapp'))->toBe('6281818182878')
@@ -26,7 +26,7 @@ it('reads a new value right after saving', function () {
 });
 
 it('starts every test with fresh values', function () {
-    expect(Settings::get('site_name'))->toBe('BlueCore Course');
+    expect(Settings::get('site_name'))->toBe('Bluecore Course');
 });
 
 it('lists every configured key', function () {

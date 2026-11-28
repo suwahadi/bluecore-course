@@ -15,7 +15,7 @@ it('renders every email the app sends from its real notification', function () {
     foreach ($previews as $preview) {
         $html = (string) $preview['message']()->render();
 
-        expect($html)->toContain('<html')->toMatch('/Halo,( Sari Lestari| Admin BlueCore)?<\/h1>/');
+        expect($html)->toContain('<html')->toMatch('/Halo,( Sari Lestari| Admin Bluecore)?<\/h1>/');
     }
 });
 
@@ -23,6 +23,6 @@ it('greets the verified sample people by name, except in verify and reset emails
     $previews = MailPreviewController::previews();
 
     expect((string) $previews['order-created']['message']()->render())->toContain('Halo, Sari Lestari')
-        ->and((string) $previews['admin-order-paid']['message']()->render())->toContain('Halo, Admin BlueCore')
+        ->and((string) $previews['admin-order-paid']['message']()->render())->toContain('Halo, Admin Bluecore')
         ->and((string) $previews['verify']['message']()->render())->not->toContain('Halo, Sari');
 });

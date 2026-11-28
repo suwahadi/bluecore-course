@@ -43,7 +43,7 @@
                         <h2 class="panel-title">Kirim pesan</h2>
                         <x-form :action="route('contact.send')" class="contact-form__fields">
                             <x-field name="name" label="Nama" :value="auth()->user()?->name" required maxlength="100" autocomplete="name" />
-                            <x-field name="message" label="Pesan" type="textarea" required maxlength="1000" rows="5" placeholder="Tulis pertanyaan Anda" />
+                            <x-field name="message" label="Pesan" type="textarea" required maxlength="1000" rows="5" placeholder="Tulis pertanyaanmu" />
                             <button type="submit" class="btn btn--primary btn--block">Kirim Sekarang</button>
                         </x-form>
                     </div>

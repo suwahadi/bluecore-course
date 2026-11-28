@@ -69,7 +69,7 @@ it('shows progress, last access and the right button', function () {
 
 it('shows an empty state with a link to the catalog', function () {
     $this->actingAs($this->user)->get('/my-courses')
-        ->assertSeeText('Belum ada kursus. Kursus yang Anda beli muncul di sini.')
+        ->assertSeeText('Belum ada kursus. Kursus yang kamu beli muncul di sini.')
         ->assertSee('href="'.route('courses.index').'">Lihat kursus</a>', false);
 });
 

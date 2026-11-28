@@ -8,7 +8,7 @@ it('renders an Indonesian 404 page inside the site layout', function () {
         ->assertNotFound()
         ->assertSeeText('Halaman tidak ditemukan')
         ->assertSeeText('Kembali ke beranda')
-        ->assertSeeText('BlueCore Course');
+        ->assertSeeText('Bluecore Course');
 });
 
 it('renders an Indonesian 403 page', function () {
@@ -42,7 +42,7 @@ it('renders an Indonesian 429 page with a way back', function () {
         ->assertStatus(429)
         ->assertSeeText('Terlalu banyak permintaan')
         ->assertSeeText('Kembali ke beranda')
-        ->assertSeeText('BlueCore Course');
+        ->assertSeeText('Bluecore Course');
 });
 
 it('renders a standalone Indonesian maintenance page', function () {

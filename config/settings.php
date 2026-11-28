@@ -5,12 +5,12 @@ $httpsUrl = ['nullable', 'url', 'starts_with:https://', 'max:255'];
 return [
     'site_name' => [
         'type' => 'string',
-        'default' => 'BlueCore Course',
+        'default' => 'Bluecore Course',
         'rules' => ['required', 'string', 'max:60'],
     ],
     'site_slogan' => [
         'type' => 'string',
-        'default' => 'Mulai dari Nol, Naik Kelas Bersama Bluecore.',
+        'default' => 'Naik Kelas Bersama Bluecore',
         'rules' => ['nullable', 'string', 'max:120'],
     ],
     'site_description' => [
@@ -62,11 +62,6 @@ return [
         'type' => 'string',
         'default' => 'Tonton video gratisnya terlebih dahulu, atau langsung lihat kursus lengkap.',
         'rules' => ['nullable', 'string', 'max:300'],
-    ],
-    'checkout_guarantee' => [
-        'type' => 'string',
-        'default' => 'Garansi 7 hari uang kembali.',
-        'rules' => ['nullable', 'string', 'max:150'],
     ],
     'logo' => [
         'type' => 'string',

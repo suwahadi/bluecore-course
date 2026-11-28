@@ -33,7 +33,7 @@ it('plays the video for signed-in users, verified or not', function () {
         ->assertDontSee('<b>tebal</b>', false)
         ->assertSeeText('Lanjutan dari video gratis')
         ->assertSee('<h2>Lele Galon</h2>', false)
-        ->assertSee('<a class="btn btn--primary btn--block" href="'.route('courses.show', Course::first()).'">Lihat kursus lengkap</a>', false)
+        ->assertSee('<a class="btn btn--primary btn--block" href="'.url('/courses/'.Course::first()->slug.'/checkout').'">BELI KURSUS SEKARANG</a>', false)
         ->assertSee('href="'.route('courses.show', Course::first()).'#daftar-video">Lihat isi 4 bab</a>', false)
         ->assertSeeText('Belajar sebelum beli bibit, bukan setelah ikan bermasalah.')
         ->assertDontSee('lead-gate', false);
@@ -49,10 +49,10 @@ it('locks the page for guests without sending the video', function () {
         ->toContain('<h1 id="lead-gate-title">Satu Langkah Lagi, Lalu Langsung Tonton</h1>')
         ->toContain('Buat akun gratis untuk membuka videonya. Akunmu juga menyimpan video ini agar bisa ditonton ulang kapan saja.')
         ->toContain('Daftar &amp; tonton gratis')
-        ->toContain('Gratis, tanpa kartu kredit. Email dipakai untuk akunmu dan informasi belajar dari BlueCore Course.')
+        ->toContain('Gratis, tanpa kartu kredit. Email dipakai untuk akunmu dan informasi belajar dari Bluecore Course.')
         ->toContain('Masuk dan tonton')
         ->toContain('name="next" value="/lele-pemula"')
-        ->toContain('Dengan mendaftar, Anda setuju dengan')
+        ->toContain('Dengan mendaftar, kamu menyetujui')
         ->not->toContain('youtube-nocookie')
         ->not->toContain('M7lc1UVf-VE')
         ->not->toContain('data-player')
@@ -162,4 +162,12 @@ it('skips the upsell when no course is published', function () {
     landingPage(['requires_signup' => false]);
 
     $this->get('/lele-pemula')->assertOk()->assertDontSeeText('Lanjutan dari video gratis');
+});
+
+it('sends guests on an open landing to sign up before the checkout', function () {
+    landingPage(['requires_signup' => false]);
+    $course = Course::factory()->published()->create(['slug' => 'lele-galon']);
+
+    $this->get('/lele-pemula')
+        ->assertSee('<a class="btn btn--primary btn--block" href="'.url('/register?next='.urlencode('/courses/lele-galon/checkout')).'">BELI KURSUS SEKARANG</a>', false);
 });

@@ -38,7 +38,8 @@
                 @if ($ownsUpsell)
                     <a class="btn btn--primary btn--block" href="{{ route('learn.index', $upsellCourse) }}">Lanjutkan belajar</a>
                 @else
-                    <a class="btn btn--primary btn--block" href="{{ route('courses.show', $upsellCourse) }}">Lihat kursus lengkap</a>
+                    @php($upsellCheckout = '/courses/'.$upsellCourse->slug.'/checkout')
+                    <a class="btn btn--primary btn--block" href="{{ auth()->check() ? url($upsellCheckout) : url('/register?next='.urlencode($upsellCheckout)) }}">BELI KURSUS SEKARANG</a>
                     <a class="upsell__link" href="{{ route('courses.show', $upsellCourse) }}#daftar-video">Lihat isi {{ $upsellCourse->segments_count }} bab</a>
                     <p class="upsell__price">{{ \App\Support\Format::rupiah($upsellCourse->price) }} • Bayar sekali, akses selamanya</p>
                     <p class="buybox__urgency">Belajar sebelum beli bibit, bukan setelah ikan bermasalah.</p>

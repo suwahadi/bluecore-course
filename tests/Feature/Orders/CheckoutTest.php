@@ -154,7 +154,7 @@ it('sends the buyer to the order page when a parallel invoice takes too long', f
 });
 
 it('lists what the buyer gets with the help contacts and the guarantee', function () {
-    Settings::set(['whatsapp' => '6281818182878', 'email' => 'support@bluecore.co.id', 'checkout_guarantee' => 'Garansi 7 hari uang kembali.']);
+    Settings::set(['whatsapp' => '6281818182878', 'email' => 'support@bluecore.co.id']);
 
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
         ->assertOk()
@@ -164,12 +164,11 @@ it('lists what the buyer gets with the help contacts and the guarantee', functio
             'Pembayaran melalui halaman resmi Duitku: QRIS, transfer bank, dan e-wallet.',
             'Kursus otomatis muncul di menu Kursus saya setelah pembayaran terverifikasi.',
             'Bantuan akses melalui WhatsApp 081818182878 atau support@bluecore.co.id.',
-            'Garansi 7 hari uang kembali.',
         ]);
 });
 
-it('drops the help line without contacts and the guarantee when it is empty', function () {
-    Settings::set(['whatsapp' => null, 'email' => null, 'checkout_guarantee' => null]);
+it('drops the help line without contacts and never promises a guarantee', function () {
+    Settings::set(['whatsapp' => null, 'email' => null]);
 
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
         ->assertOk()

@@ -189,13 +189,13 @@ it('sends the purchase event once when the owner first sees the paid order', fun
 });
 
 it('prints as an invoice with the site identity', function () {
-    Settings::set(['site_name' => 'BlueCore Course', 'address' => 'Bogor', 'email' => 'support@bluecore.co.id']);
+    Settings::set(['site_name' => 'Bluecore Course', 'address' => 'Bogor', 'email' => 'support@bluecore.co.id']);
     $order = ownerOrder(['status' => OrderStatus::Paid, 'paid_at' => now()]);
 
     $this->actingAs($this->owner)->get('/order/'.$order->uuid)
         ->assertSee('<span class="print-only">Invoice</span>', false)
         ->assertSee('class="print-only print-head"', false)
-        ->assertSeeInOrder(['print-head', 'BlueCore Course', 'Bogor', 'support@bluecore.co.id']);
+        ->assertSeeInOrder(['print-head', 'Bluecore Course', 'Bogor', 'support@bluecore.co.id']);
 });
 
 it('lets the owner cancel a pending order, and explains why a paid one cannot be cancelled', function () {
@@ -220,7 +220,7 @@ it('shows the cancel confirmation text', function () {
     $order = ownerOrder();
 
     $this->actingAs($this->owner)->get('/order/'.$order->uuid)
-        ->assertSeeText('Pesanan '.$order->order_number.' akan dibatalkan. Jika Anda tetap membayar lewat tautan lama, pembayaran tetap diproses.');
+        ->assertSeeText('Pesanan '.$order->order_number.' akan dibatalkan. Jika kamu tetap membayar lewat tautan lama, pembayaran tetap diproses.');
 });
 
 it('stays quiet while Duitku has no transaction yet because no payment method was picked', function () {

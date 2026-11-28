@@ -16,7 +16,7 @@ it('shows the contact details from the settings', function () {
         ->assertSee('<h1>Kontak</h1>', false)
         ->assertSeeInOrder(['Bogor', '0251 123456', '081818182878', 'support@bluecore.co.id'])
         ->assertSee('href="tel:0251123456"', false)
-        ->assertSee('href="https://wa.me/6281818182878?text='.rawurlencode('Halo BlueCore Course, saya ingin bertanya.').'"', false)
+        ->assertSee('href="https://wa.me/6281818182878?text='.rawurlencode('Halo Bluecore Course, saya ingin bertanya.').'"', false)
         ->assertSee('href="mailto:support@bluecore.co.id"', false);
 });
 
@@ -53,7 +53,7 @@ it('offers a message form that goes to WhatsApp', function () {
         ->assertSee('name="name"', false)
         ->assertSee('name="message"', false)
         ->assertSeeText('Kirim Sekarang')
-        ->assertDontSeeText('Pesan Anda terbuka di WhatsApp');
+        ->assertDontSeeText('Pesan kamu terbuka di WhatsApp');
 });
 
 it('fills in the name of a signed-in visitor', function () {
@@ -66,7 +66,7 @@ it('opens WhatsApp with the greeting, the name and the message', function () {
     contactSettings();
 
     $this->post('/contact', ['name' => ' Budi ', 'message' => "Kapan kursus nila terbit?\nTerima kasih."])
-        ->assertRedirect('https://wa.me/6281818182878?text='.rawurlencode("Halo BlueCore Course, saya Budi.\n\nKapan kursus nila terbit?\nTerima kasih."));
+        ->assertRedirect('https://wa.me/6281818182878?text='.rawurlencode("Halo Bluecore Course, saya Budi.\n\nKapan kursus nila terbit?\nTerima kasih."));
 });
 
 it('shows inline errors when the name or message is missing', function () {

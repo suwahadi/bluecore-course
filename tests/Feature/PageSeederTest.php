@@ -10,7 +10,7 @@ it('creates the two system pages with the appendix drafts', function () {
     $terms = Page::systemPage('terms');
     $privacy = Page::systemPage('privacy');
 
-    expect($terms)->title->toBe('Syarat dan Ketentuan')->slug->toBe('terms-and-condition')
+    expect($terms)->title->toBe('Syarat & Ketentuan')->slug->toBe('terms-and-condition')
         ->is_published->toBeTrue()->show_in_footer->toBeTrue()->sort_order->toBe(4)
         ->and($terms->content)->toBe(LegalPages::TERMS)->toStartWith('Berlaku sejak: [tanggal situs live]')
         ->and($privacy)->title->toBe('Kebijakan Privasi')->slug->toBe('privacy-policy')->sort_order->toBe(3)

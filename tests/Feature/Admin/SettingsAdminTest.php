@@ -42,8 +42,7 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeText('Nama perusahaan untuk hak cipta')
         ->assertSeeText('Kosongkan untuk memakai nama situs.')
         ->assertSeeText('Disclaimer di footer')
-        ->assertSeeText('Garansi di checkout')
-        ->assertSeeText('Kosongkan untuk menyembunyikannya.')
+        ->assertDontSee('name="checkout_guarantee"', false)
         ->assertSeeInOrder(['Teks kecil di atas judul hero', 'Judul hero', 'Subjudul hero', 'Teks di bawah daftar kursus', 'Judul bagian testimoni', 'Judul ajakan penutup', 'Teks ajakan penutup'])
         ->assertDontSeeText('Format internasional tanpa tanda plus, contoh 628123456789.')
         ->assertSeeText('Tautan toko untuk ikon Marketplace di footer. Kosongkan jika belum punya toko di marketplace tersebut.')
@@ -55,7 +54,7 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeText('Tidak ada, sembunyikan tombol')
         ->assertDontSee('name="lead_magnet_youtube_url"', false)
         ->assertSee('placeholder="G-XXXXXXXXXX"', false)
-        ->assertSee('value="BlueCore Course"', false)
+        ->assertSee('value="Bluecore Course"', false)
         ->assertSeeText('Simpan pengaturan');
 });
 
@@ -92,7 +91,6 @@ it('shows the PRD messages inline', function (array $input, string $field, strin
     'long course list text' => [['home_courses_text' => str_repeat('a', 2001)], 'home_courses_text', 'Teks di bawah daftar kursus maksimal 2.000 karakter.'],
     'long company name' => [['company_name' => str_repeat('a', 121)], 'company_name', 'Nama perusahaan maksimal 120 karakter.'],
     'long disclaimer' => [['footer_disclaimer' => str_repeat('a', 601)], 'footer_disclaimer', 'Disclaimer maksimal 600 karakter.'],
-    'long guarantee' => [['checkout_guarantee' => str_repeat('a', 151)], 'checkout_guarantee', 'Garansi maksimal 150 karakter.'],
     'instagram over http' => [['instagram_url' => 'http://instagram.com/x'], 'instagram_url', 'Tautan Instagram harus diawali https://.'],
     'tiktok shop over http' => [['tiktokshop_url' => 'http://shop.tiktok.com/x'], 'tiktokshop_url', 'Tautan TikTok Shop harus diawali https://.'],
     'negative fee' => [['admin_fee' => '-1'], 'admin_fee', 'Biaya admin harus angka bulat 0 sampai 1.000.000.'],
@@ -164,7 +162,7 @@ it('clears the settings cache only after the transaction commits', function () {
     } catch (RuntimeException) {
     }
 
-    expect(Cache::has('settings'))->toBeTrue()->and(Settings::get('site_name'))->toBe('BlueCore Course');
+    expect(Cache::has('settings'))->toBeTrue()->and(Settings::get('site_name'))->toBe('Bluecore Course');
 });
 
 it('lets the admin pick a landing page for the Nonton gratis button', function () {

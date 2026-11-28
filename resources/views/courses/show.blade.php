@@ -47,12 +47,12 @@
                                     </div>
                                 @endif
                             @elseif (! auth()->check())
-                                <a class="btn btn--primary btn--block" href="{{ url('/register?next='.urlencode($checkoutPath)) }}">Daftar untuk membeli</a>
+                                <a class="btn btn--primary btn--block" href="{{ url('/register?next='.urlencode($checkoutPath)) }}">BELI KURSUS SEKARANG</a>
                                 <p class="muted small buybox__hint">Sudah punya akun? <a href="{{ url('/login?next='.urlencode($checkoutPath)) }}">Masuk</a></p>
                             @elseif ($openOrder)
                                 <a class="btn btn--primary btn--block" href="{{ url('/order/'.$openOrder->uuid) }}">Selesaikan pembayaran</a>
                             @else
-                                <a class="btn btn--primary btn--block" href="{{ url($checkoutPath) }}">Beli kursus · {{ Format::rupiah($course->price) }}</a>
+                                <a class="btn btn--primary btn--block" href="{{ url($checkoutPath) }}">BELI KURSUS SEKARANG</a>
                             @endif
                         </div>
                         @unless ($canLearn)

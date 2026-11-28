@@ -30,7 +30,7 @@
                         @endif
                     </div>
                     @if ($courseProgress->isComplete())
-                        <p class="note learn__note">Kursus selesai. Semua video sudah ditandai selesai. Anda tetap bisa memutar ulang kapan saja.</p>
+                        <p class="note learn__note">Kursus selesai. Semua video sudah ditandai selesai. Kamu tetap bisa memutar ulang kapan saja.</p>
                     @endif
                     <h1 id="video-title" tabindex="-1">{{ $segment->title }}</h1>
                     @if ($resumeAt > 0)

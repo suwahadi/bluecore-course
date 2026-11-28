@@ -55,7 +55,6 @@ class SettingsRequest extends FormRequest
             'testimonials_title.max' => 'Judul testimoni maksimal 120 karakter.',
             'cta_title.max' => 'Judul ajakan penutup maksimal 120 karakter.',
             'cta_text.max' => 'Teks ajakan penutup maksimal 300 karakter.',
-            'checkout_guarantee.max' => 'Garansi maksimal 150 karakter.',
             'address.max' => 'Alamat maksimal 200 karakter.',
             'phone.max' => 'Telepon maksimal 30 karakter.',
             'whatsapp.regex' => 'Nomor WhatsApp harus diawali 62 tanpa tanda plus.',

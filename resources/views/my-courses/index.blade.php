@@ -6,7 +6,7 @@
         <div class="wrap">
             <div class="page-head"><h1>Kursus saya</h1></div>
             @if ($enrollments->isEmpty())
-                <x-empty-state message="Belum ada kursus. Kursus yang Anda beli muncul di sini.">
+                <x-empty-state message="Belum ada kursus. Kursus yang kamu beli muncul di sini.">
                     <a class="btn btn--brand" href="{{ route('courses.index') }}">Lihat kursus</a>
                 </x-empty-state>
             @else

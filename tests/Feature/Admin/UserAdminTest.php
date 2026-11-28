@@ -41,7 +41,7 @@ it('lists users with role, verification, courses owned and paid total', function
 
     $this->actingAs($this->admin)->get('/admin/users')
         ->assertOk()
-        ->assertSeeInOrder(['Admin Utama', 'Anda'])
+        ->assertSeeInOrder(['Admin Utama', 'Kamu'])
         ->assertSeeText('sari@contoh.id')
         ->assertSeeText('08123456789')
         ->assertSeeText('Rp 250.000')

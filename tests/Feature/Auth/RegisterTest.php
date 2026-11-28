@@ -85,7 +85,7 @@ it('treats the email case-insensitively', function () {
 });
 
 it('renders the two-column form with helper texts and consent links', function () {
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
     Page::factory()->create(['title' => 'Kebijakan Privasi', 'slug' => 'privacy-policy', 'system_key' => 'privacy', 'is_published' => false]);
 
     $this->get('/register?next=/free-video')

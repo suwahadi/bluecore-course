@@ -44,7 +44,7 @@ it('falls back to the site name when the hero title is empty', function () {
 
     $html = $this->get('/')->assertOk()->getContent();
 
-    expect($html)->toContain('<h1>BlueCore Course</h1>')
+    expect($html)->toContain('<h1>Bluecore Course</h1>')
         ->not->toContain('hero__eyebrow')
         ->not->toContain('hero__subtitle');
 });

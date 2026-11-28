@@ -5,7 +5,7 @@
     $status = $order->status;
     $pastDue = $status === OrderStatus::Pending && $order->expires_at?->isPast();
     $note = match (true) {
-        $pastDue => ['warn', 'clock', 'Batas waktu bayar sudah lewat', 'Pesanan ini akan segera kedaluwarsa. Jika Anda tetap membayar lewat halaman Duitku, pembayaran tetap diproses dan akses kursus dibuka.'],
+        $pastDue => ['warn', 'clock', 'Batas waktu bayar sudah lewat', 'Pesanan ini akan segera kedaluwarsa. Jika kamu tetap membayar lewat halaman Duitku, pembayaran tetap diproses dan akses kursus dibuka.'],
         $status === OrderStatus::Pending => ['warn', 'clock', 'Menunggu pembayaran', 'Selesaikan pembayaran sebelum '.Format::datetime($order->expires_at).'. Akses kursus terbuka otomatis setelah pembayaran diterima.'],
         $status === OrderStatus::Paid => ['ok', 'check', 'Pembayaran diterima', 'Lunas pada '.Format::datetime($order->paid_at).'. Akses kursus sudah terbuka.'],
         $status === OrderStatus::Expired => ['muted', 'clock', 'Pesanan kedaluwarsa', 'Pesanan tidak dibayar sampai batas waktu. Buat pesanan baru untuk membeli kursus ini.'],
@@ -106,7 +106,7 @@
                             <div x-data>
                                 <button type="button" class="btn btn--quiet-danger" x-on:click="$dispatch('open-modal', 'cancel-order')">Batalkan pesanan</button>
                                 <x-modal name="cancel-order" title="Batalkan pesanan?">
-                                    <p>Pesanan {{ $order->order_number }} akan dibatalkan. Jika Anda tetap membayar lewat tautan lama, pembayaran tetap diproses.</p>
+                                    <p>Pesanan {{ $order->order_number }} akan dibatalkan. Jika kamu tetap membayar lewat tautan lama, pembayaran tetap diproses.</p>
                                     <x-form :action="route('order.cancel', $order)">
                                         <x-button-pair>
                                             <button type="button" class="btn" x-on:click="open = false">Batal</button>

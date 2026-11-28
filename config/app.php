@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'name' => env('APP_NAME', 'BlueCore Course'),
+    'name' => env('APP_NAME', 'Bluecore Course'),
 
     'env' => env('APP_ENV', 'production'),
 

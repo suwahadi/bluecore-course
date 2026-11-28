@@ -45,7 +45,7 @@ it('reserves system slugs for pages', function () {
 });
 
 it('finds system pages by key', function () {
-    Page::factory()->create(['title' => 'Syarat dan Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
+    Page::factory()->create(['title' => 'Syarat & Ketentuan', 'slug' => 'terms-and-condition', 'system_key' => 'terms']);
 
     expect(Page::systemPage('terms')?->slug)->toBe('terms-and-condition')
         ->and(Page::systemPage('privacy'))->toBeNull();

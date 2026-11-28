@@ -48,7 +48,7 @@
         <button type="submit" class="btn btn--brand">Simpan video</button>
     </x-button-pair>
     <x-modal name="segment-remove" title="Hapus video ini?">
-        <p>Baris video akan dihapus dari daftar. Perubahan tersimpan setelah Anda menekan Simpan video.</p>
+        <p>Baris video akan dihapus dari daftar. Perubahan tersimpan setelah kamu menekan Simpan video.</p>
         <x-button-pair>
             <button type="button" class="btn" x-on:click="open = false">Batal</button>
             <button type="button" class="btn btn--danger" x-on:click="confirmRemove(); open = false">Ya, hapus</button>

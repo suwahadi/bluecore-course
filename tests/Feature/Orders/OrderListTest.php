@@ -60,7 +60,7 @@ it('rejects dates in the wrong format', function () {
 
 it('shows an empty state with a link to the catalog when there are no orders', function () {
     $this->actingAs($this->user)->get('/orders')
-        ->assertSeeText('Belum ada pesanan. Pesanan muncul di sini setelah Anda membeli kursus.')
+        ->assertSeeText('Belum ada pesanan. Pesanan muncul di sini setelah kamu membeli kursus.')
         ->assertSee('href="'.route('courses.index').'"', false)
         ->assertDontSeeText('Terapkan');
 });

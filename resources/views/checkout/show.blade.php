@@ -4,7 +4,6 @@
     use App\Support\WhatsApp;
     $whatsapp = Settings::get('whatsapp');
     $helpContacts = array_filter([$whatsapp ? 'WhatsApp '.WhatsApp::display($whatsapp) : null, Settings::get('email')]);
-    $guarantee = Settings::get('checkout_guarantee');
 @endphp
 <x-layouts.app title="Checkout" :noindex="true">
     <section class="section">
@@ -37,9 +36,6 @@
                             <li><x-icon name="check" :size="16" />Kursus otomatis muncul di menu Kursus saya setelah pembayaran terverifikasi.</li>
                             @if ($helpContacts)
                                 <li><x-icon name="check" :size="16" />Bantuan akses melalui {{ implode(' atau ', $helpContacts) }}.</li>
-                            @endif
-                            @if (filled($guarantee))
-                                <li><x-icon name="check" :size="16" />{{ $guarantee }}</li>
                             @endif
                         </ul>
                     </div>

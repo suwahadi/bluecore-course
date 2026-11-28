@@ -51,7 +51,7 @@ it('sends an Indonesian, queued reset email from the site', function () {
             && $mail->actionText === 'Atur ulang kata sandi'
             && $mail->greeting === 'Halo,'
             && $mail->replyTo[0][0] === 'support@bluecore.co.id'
-            && $mail->from[1] === 'BlueCore Course';
+            && $mail->from[1] === 'Bluecore Course';
     });
 });
 

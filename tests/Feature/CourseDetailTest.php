@@ -67,7 +67,7 @@ it('asks guests to sign up with a checkout next path', function () {
 
     $this->get('/courses/lele-galon')
         ->assertSee('href="'.url('/register?next='.urlencode('/courses/lele-galon/checkout')).'"', false)
-        ->assertSeeText('Daftar untuk membeli')
+        ->assertSee('<a class="btn btn--primary btn--block" href="'.url('/register?next='.urlencode('/courses/lele-galon/checkout')).'">BELI KURSUS SEKARANG</a>', false)
         ->assertSee('href="'.url('/login?next='.urlencode('/courses/lele-galon/checkout')).'"', false)
         ->assertSeeText('Sudah punya akun?');
 });
@@ -77,7 +77,7 @@ it('offers checkout to signed-in users without access', function () {
 
     $this->actingAs(User::factory()->create())->get('/courses/lele-galon')
         ->assertSee('href="'.url('/courses/lele-galon/checkout').'"', false)
-        ->assertSeeText('Beli kursus · Rp 125.000');
+        ->assertSee('<a class="btn btn--primary btn--block" href="'.url('/courses/lele-galon/checkout').'">BELI KURSUS SEKARANG</a>', false);
 });
 
 it('sends buyers with an open order back to it', function () {
@@ -89,7 +89,7 @@ it('sends buyers with an open order back to it', function () {
     $this->actingAs($user)->get('/courses/lele-galon')
         ->assertSee('href="'.url('/order/'.$open->uuid).'"', false)
         ->assertSeeText('Selesaikan pembayaran')
-        ->assertDontSeeText('Beli kursus');
+        ->assertDontSeeText('BELI KURSUS SEKARANG');
 });
 
 it('lets owners and admins continue learning', function () {
@@ -152,7 +152,7 @@ it('spells out the total with the admin fee, the unlock rule and the nudge', fun
         ->assertSeeInOrder([
             'Bayar sekali, akses selamanya.',
             'Total pembayaran Rp 127.500, sudah termasuk biaya admin Rp 2.500.',
-            'Beli kursus · Rp 125.000',
+            'BELI KURSUS SEKARANG',
             'Kursus terbuka otomatis setelah pembayaran terverifikasi.',
             'Belajar sebelum beli bibit, bukan setelah ikan bermasalah.',
         ]);

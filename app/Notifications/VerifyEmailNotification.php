@@ -17,10 +17,10 @@ class VerifyEmailNotification extends VerifyEmail implements ShouldQueue
     {
         $minutes = config('auth.verification.expire', 60);
 
-        return $this->siteMail($notifiable, 'Verifikasi email Anda', greetByName: false)
-            ->line('Klik tombol di bawah untuk memastikan email ini milik Anda.')
+        return $this->siteMail($notifiable, 'Verifikasi emailmu', greetByName: false)
+            ->line('Klik tombol di bawah untuk memastikan email ini milikmu.')
             ->action('Verifikasi email', $this->verificationUrl($notifiable))
             ->line("Tautan ini berlaku {$minutes} menit.")
-            ->line('Jika Anda tidak mendaftar atau tidak mengganti email di '.Settings::get('site_name').', abaikan email ini.');
+            ->line('Jika kamu tidak mendaftar atau tidak mengganti email di '.Settings::get('site_name').', abaikan email ini.');
     }
 }

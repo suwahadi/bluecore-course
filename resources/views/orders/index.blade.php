@@ -44,7 +44,7 @@
                     <a class="btn" href="{{ route('orders.index') }}">Hapus filter</a>
                 </x-empty-state>
             @else
-                <x-empty-state message="Belum ada pesanan. Pesanan muncul di sini setelah Anda membeli kursus.">
+                <x-empty-state message="Belum ada pesanan. Pesanan muncul di sini setelah kamu membeli kursus.">
                     <a class="btn btn--brand" href="{{ route('courses.index') }}">Lihat kursus</a>
                 </x-empty-state>
             @endif

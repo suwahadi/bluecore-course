@@ -45,7 +45,7 @@
                             <td>
                                 <strong>{{ $user->name }}</strong>
                                 @if ($user->is(auth()->user()))
-                                    <span class="badge">Anda</span>
+                                    <span class="badge">Kamu</span>
                                 @endif
                                 <div class="muted small">{{ $user->email }}</div>
                                 @if ($user->phone)

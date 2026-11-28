@@ -1,5 +1,5 @@
 <x-layouts.app title="Verifikasi email" :noindex="true">
-    <x-auth-panel title="Verifikasi email Anda">
+    <x-auth-panel title="Verifikasi emailmu">
         <x-form action="{{ route('verification.send') }}">
             <p>Kami sudah mengirim tautan verifikasi ke <strong>{{ auth()->user()->email }}</strong>. Buka email itu untuk melanjutkan.</p>
             <div class="btn-row">

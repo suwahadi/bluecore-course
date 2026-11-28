@@ -15,7 +15,7 @@ it('holds unverified users on the notice page', function () {
     $this->actingAs($user)->get('/_verified-only')->assertRedirect(route('verification.notice'));
     $this->actingAs($user)->get(route('verification.notice'))
         ->assertOk()
-        ->assertSeeText('Verifikasi email Anda')
+        ->assertSeeText('Verifikasi emailmu')
         ->assertSeeText('budi@contoh.id')
         ->assertSeeText('Kirim ulang email verifikasi')
         ->assertSee('href="'.url('/account').'"', false);
@@ -31,7 +31,7 @@ it('resends the verification email with a toast', function () {
     Notification::assertSentTo($user, VerifyEmailNotification::class);
 
     $this->actingAs($user)->withSession(['status' => 'verification-link-sent'])->get(route('verification.notice'))
-        ->assertSee('Tautan verifikasi baru sudah dikirim ke email Anda.', false);
+        ->assertSee('Tautan verifikasi baru sudah dikirim ke emailmu.', false);
 });
 
 it('verifies through the signed link and returns to the intended page', function () {
@@ -63,10 +63,10 @@ it('sends an Indonesian, queued verification email from the site', function () {
     $mail = $notification->toMail($user);
 
     expect($notification)->toBeInstanceOf(ShouldQueue::class)
-        ->and($mail->subject)->toBe('Verifikasi email Anda')
+        ->and($mail->subject)->toBe('Verifikasi emailmu')
         ->and($mail->actionText)->toBe('Verifikasi email')
         ->and($mail->greeting)->toBe('Halo,')
-        ->and($mail->from[1])->toBe('BlueCore Course')
+        ->and($mail->from[1])->toBe('Bluecore Course')
         ->and($mail->replyTo[0][0])->toBe('support@bluecore.co.id')
         ->and($mail->actionUrl)->toContain('/email/verify/'.$user->id.'/');
 });
@@ -75,10 +75,10 @@ it('words the verification email so it fits a new account and an email change', 
     $mail = (new VerifyEmailNotification)->toMail(User::factory()->unverified()->create());
     $text = implode(' ', [...$mail->introLines, ...$mail->outroLines]);
 
-    expect($text)->toContain('Klik tombol di bawah untuk memastikan email ini milik Anda.')
-        ->toContain('Jika Anda tidak mendaftar atau tidak mengganti email di BlueCore Course, abaikan email ini.')
+    expect($text)->toContain('Klik tombol di bawah untuk memastikan email ini milikmu.')
+        ->toContain('Jika kamu tidak mendaftar atau tidak mengganti email di Bluecore Course, abaikan email ini.')
         ->not->toContain('Terima kasih sudah mendaftar')
-        ->not->toContain('Jika Anda tidak membuat akun');
+        ->not->toContain('Jika kamu tidak membuat akun');
 });
 
 it('lets verified users skip the notice', function () {

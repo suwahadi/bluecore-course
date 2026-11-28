@@ -34,7 +34,7 @@ it('downloads a material as an attachment for owners and admins', function () {
 
 it('refuses guests and users without access', function () {
     $this->get(downloadUrl())->assertStatus(401)->assertSee('next='.urlencode(downloadUrl()), false);
-    $this->actingAs(User::factory()->create())->get(downloadUrl())->assertForbidden()->assertSeeText('Anda belum punya akses ke kursus ini.');
+    $this->actingAs(User::factory()->create())->get(downloadUrl())->assertForbidden()->assertSeeText('Kamu belum punya akses ke kursus ini.');
 });
 
 it('keeps downloads open after the course goes back to draft', function () {
