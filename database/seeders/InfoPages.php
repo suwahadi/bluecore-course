@@ -13,7 +13,7 @@ Ya. Materi dimulai dari menghitung modal sampai mengevaluasi panen, tanpa perlu 
 
 Video gratis membahas perhitungan modal dan biaya produksi di atas kertas. Kursus menjalankan satu siklus lengkap, dari merakit galon sampai panen, lalu mencocokkan hasilnya dengan hitunganmu.
 
-### Kenapa durasinya singkat, tetapi harganya Rp149.000?
+### Kenapa durasinya singkat, tetapi harganya Rp35.000?
 
 Kursus ini padat, bukan panjang. Empat bab dengan total durasi sekitar 15 menit merangkum urutan langkah satu siklus dan bisa diputar ulang kapan saja. Termasuk Handbook Bluecore.
 

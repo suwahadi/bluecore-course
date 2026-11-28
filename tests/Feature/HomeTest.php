@@ -35,7 +35,7 @@ it('puts the eyebrow, title, subtitle and the free video button in the hero', fu
             '<p class="hero__eyebrow">Video gratis untuk pemula</p>',
             '<h1>Keuntungan Maksimal Sejak Panen Pertama.</h1>',
             '<p class="hero__subtitle">Hitung Perhitungan Lengkapnya di Video Gratis Ini.</p>',
-            '<a class="btn btn--primary" href="'.url('/lele-pemula').'">Tonton video gratis</a>',
+            '<a class="btn btn--primary" href="'.url('/lele-pemula').'">NONTON GRATIS</a>',
         ], false);
 });
 

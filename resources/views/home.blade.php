@@ -19,7 +19,7 @@
                 @endif
                 <div class="hero__cta">
                     @if ($freeVideoUrl)
-                        <a class="btn btn--primary" href="{{ $freeVideoUrl }}">Tonton video gratis</a>
+                        <a class="btn btn--primary" href="{{ $freeVideoUrl }}">NONTON GRATIS</a>
                     @else
                         <a class="btn btn--primary" href="{{ $courseUrl }}">Lihat kursus</a>
                     @endif
