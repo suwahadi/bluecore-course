@@ -21,6 +21,7 @@ class TestimonialRequest extends DialogRequest
             'quote' => ['required', 'string', 'min:10', 'max:400'],
             'sort_order' => ['required', 'integer', 'min:1'],
             'is_visible' => ['required', 'boolean'],
+            'is_genuine' => ['required', 'boolean'],
         ];
     }
 
@@ -41,6 +42,8 @@ class TestimonialRequest extends DialogRequest
             'sort_order.min' => 'Urutan harus angka bulat mulai dari 1.',
             'is_visible.required' => 'Pilih status testimoni.',
             'is_visible.boolean' => 'Pilih status testimoni.',
+            'is_genuine.required' => 'Pilih apakah testimoni ini asli.',
+            'is_genuine.boolean' => 'Pilih apakah testimoni ini asli.',
         ];
     }
 }

@@ -269,3 +269,13 @@ it('writes the testimonial author and city on one line', function () {
 
     $this->get('/')->assertOk()->assertSee('<figcaption><strong>[Nama pembeli]</strong> <span>• [Kota]</span></figcaption>', false);
 });
+
+it('tags sample testimonials so visitors do not read them as real buyers', function () {
+    Testimonial::factory()->create(['name' => 'Galih Pradipta', 'is_genuine' => false]);
+    Testimonial::factory()->create(['name' => 'Bu Sari', 'is_genuine' => true]);
+
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect(substr_count($html, '<span class="badge testimonial__tag">Contoh</span>'))->toBe(1)
+        ->and($html)->toMatch('#<span class="badge testimonial__tag">Contoh</span>\s*<blockquote>[^<]*</blockquote>\s*<figcaption><strong>Galih Pradipta</strong>#');
+});

@@ -4,4 +4,5 @@
     <x-field name="quote" label="Testimoni" type="textarea" :value="$testimonial->quote" help="Tulis sesuai ucapan pembeli." :full="true" required maxlength="400" rows="4" />
     <x-field name="sort_order" label="Urutan" type="number" :value="$testimonial->sort_order" required min="1" step="1" inputmode="numeric" />
     <x-field name="is_visible" label="Status" type="select" :options="['1' => 'Tampil di beranda', '0' => 'Sembunyikan']" :value="$testimonial->is_visible" />
+    <x-checkbox name="is_genuine" label="Testimoni asli dari pembeli. Tanpa centang, kartu diberi label Contoh." :checked="$testimonial->is_genuine" />
 </x-admin.dialog-form>

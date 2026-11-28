@@ -16,6 +16,7 @@ function validTestimonial(array $overrides = []): array
         'quote' => 'Galon pertama saya panen dua bulan kemudian.',
         'sort_order' => 1,
         'is_visible' => '1',
+        'is_genuine' => '1',
         ...$overrides,
     ];
 }
@@ -53,7 +54,15 @@ it('creates a testimonial at the chosen position', function () {
         ->assertSessionHas('status', 'Testimoni dibuat.');
 
     expect(Testimonial::query()->ordered()->pluck('name')->all())->toBe(['Bu Sari', 'Pak Budi'])
-        ->and(Testimonial::firstWhere('name', 'Bu Sari')->note)->toBe('Bogor');
+        ->and(Testimonial::firstWhere('name', 'Bu Sari'))->note->toBe('Bogor')->is_genuine->toBeTrue();
+});
+
+it('keeps a testimonial marked as a sample until the box is ticked', function () {
+    $this->actingAs($this->admin)->from('/admin/testimonials')->post('/admin/testimonials', validTestimonial(['is_genuine' => '0']))
+        ->assertSessionHasNoErrors();
+
+    expect(Testimonial::first()->is_genuine)->toBeFalse();
+    $this->actingAs($this->admin)->get('/admin/testimonials')->assertSeeText('Testimoni asli dari pembeli');
 });
 
 it('stores an empty note as null', function () {

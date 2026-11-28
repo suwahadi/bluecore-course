@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['name', 'note', 'quote', 'sort_order', 'is_visible'])]
+#[Fillable(['name', 'note', 'quote', 'sort_order', 'is_visible', 'is_genuine'])]
 class Testimonial extends Model
 {
     use HasFactory, HasSortOrder;
@@ -16,6 +16,7 @@ class Testimonial extends Model
     protected $attributes = [
         'sort_order' => 1,
         'is_visible' => true,
+        'is_genuine' => false,
     ];
 
     protected function casts(): array
@@ -23,6 +24,7 @@ class Testimonial extends Model
         return [
             'sort_order' => 'integer',
             'is_visible' => 'boolean',
+            'is_genuine' => 'boolean',
         ];
     }
 

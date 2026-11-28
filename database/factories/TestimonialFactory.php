@@ -14,6 +14,7 @@ class TestimonialFactory extends Factory
             'quote' => fake()->sentence(12),
             'sort_order' => fake()->numberBetween(1, 20),
             'is_visible' => true,
+            'is_genuine' => true,
         ];
     }
 }
