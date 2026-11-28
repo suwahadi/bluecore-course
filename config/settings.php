@@ -43,6 +43,11 @@ return [
         'default' => 'Hitung Perhitungan Lengkapnya di Video Gratis Ini.',
         'rules' => ['nullable', 'string', 'max:200'],
     ],
+    'home_courses_text' => [
+        'type' => 'string',
+        'default' => "Di kursus lengkap, kamu akan menjalankannya: merakit galon, menebar bibit, mengatur pakan dan air, sampai panen. Setelah itu, hasilmu dicocokkan dengan hitungan awal.\n\n- Peralatan apa di rumahmu yang bisa dipakai, dan apa yang tidak perlu dibeli?\n- Kenapa bibit sehat pun bisa stres jika salah ditebar?\n- Berapa pakan yang tepat, dan tanda apa pada air yang muncul sebelum ikan sakit?\n- Kapan ikan siap dipanen, dan bagaimana menghitung SR serta FCR milikmu sendiri?",
+        'rules' => ['nullable', 'string', 'max:2000'],
+    ],
     'testimonials_title' => [
         'type' => 'string',
         'default' => 'Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.',

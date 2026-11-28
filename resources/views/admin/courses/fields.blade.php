@@ -2,6 +2,9 @@
 <x-slug-field :value="$course->slug" :auto="! $course->exists" />
 <x-field name="category_id" label="Kategori" type="select" :options="['' => 'Pilih kategori'] + $categoryOptions" :value="$course->category_id" :full="true" required />
 <x-field name="level" label="Level (opsional)" :value="$course->level" maxlength="40" placeholder="Misalnya Pemula" />
+<x-field name="badge" label="Label sorotan di kartu (opsional)" :value="$course->badge" maxlength="30" placeholder="Misalnya Terlaris" />
+<x-field name="rating" label="Rating di kartu (opsional)" type="number" :value="$course->rating" min="1" max="5" step="0.1" inputmode="decimal" placeholder="Misalnya 4.8" />
+<x-field name="fish_type" label="Jenis ikan di kartu (opsional)" :value="$course->fish_type" maxlength="40" placeholder="Misalnya Ikan Lele" />
 <x-field name="price" label="Harga (rupiah)" type="number" :value="$course->price" required min="1" step="1" inputmode="numeric" />
 <x-field name="compare_at_price" label="Harga coret (opsional)" type="number" :value="$course->compare_at_price" min="1" step="1" inputmode="numeric" />
 <x-field name="short_description" label="Deskripsi singkat" type="textarea" :value="$course->short_description" :full="true" rows="3" maxlength="300" />

@@ -54,7 +54,7 @@ class OrderController extends Controller
             $this->syncWithDuitku($order, 'order-page-check:'.$order->id, self::PAGE_CHECK_SECONDS);
         }
 
-        $order->load(['user:id,name', 'course.category', 'confirmedBy:id,name'])
+        $order->load(['user:id,name', 'course.category', 'course.materials:id,course_id,title', 'confirmedBy:id,name'])
             ->course->loadCount(['segments', 'materials'])->loadSum('segments', 'duration_seconds');
 
         $isOwner = $order->user_id === $request->user()->id;

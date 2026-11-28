@@ -44,7 +44,7 @@ it('shows every panel with the PRD labels and help texts', function () {
         ->assertSeeText('Disclaimer di footer')
         ->assertSeeText('Garansi di checkout')
         ->assertSeeText('Kosongkan untuk menyembunyikannya.')
-        ->assertSeeInOrder(['Teks kecil di atas judul hero', 'Judul hero', 'Subjudul hero', 'Judul bagian testimoni', 'Judul ajakan penutup', 'Teks ajakan penutup'])
+        ->assertSeeInOrder(['Teks kecil di atas judul hero', 'Judul hero', 'Subjudul hero', 'Teks di bawah daftar kursus', 'Judul bagian testimoni', 'Judul ajakan penutup', 'Teks ajakan penutup'])
         ->assertDontSeeText('Format internasional tanpa tanda plus, contoh 628123456789.')
         ->assertSeeText('Tautan toko untuk ikon Marketplace di footer. Kosongkan jika belum punya toko di marketplace tersebut.')
         ->assertSeeText('Biaya admin per pesanan (rupiah)')
@@ -89,6 +89,7 @@ it('shows the PRD messages inline', function (array $input, string $field, strin
     'long testimonials title' => [['testimonials_title' => str_repeat('a', 121)], 'testimonials_title', 'Judul testimoni maksimal 120 karakter.'],
     'long closing title' => [['cta_title' => str_repeat('a', 121)], 'cta_title', 'Judul ajakan penutup maksimal 120 karakter.'],
     'long closing text' => [['cta_text' => str_repeat('a', 301)], 'cta_text', 'Teks ajakan penutup maksimal 300 karakter.'],
+    'long course list text' => [['home_courses_text' => str_repeat('a', 2001)], 'home_courses_text', 'Teks di bawah daftar kursus maksimal 2.000 karakter.'],
     'long company name' => [['company_name' => str_repeat('a', 121)], 'company_name', 'Nama perusahaan maksimal 120 karakter.'],
     'long disclaimer' => [['footer_disclaimer' => str_repeat('a', 601)], 'footer_disclaimer', 'Disclaimer maksimal 600 karakter.'],
     'long guarantee' => [['checkout_guarantee' => str_repeat('a', 151)], 'checkout_guarantee', 'Garansi maksimal 150 karakter.'],

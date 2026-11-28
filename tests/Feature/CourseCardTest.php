@@ -58,21 +58,30 @@ it('lists course facts and hides participants when there are none', function () 
     expect((string) $this->blade('<x-course-meta :course="$course" :participants="true" />', ['course' => $course]))->toContain('Sudah diikuti 120 orang');
 });
 
-it('labels the card with level and category and invites a look inside', function () {
-    $course = Course::factory()->published()->for(Category::factory()->create(['name' => 'Lele']))->create([
-        'level' => 'Pemula', 'short_description' => 'Dari galon bekas sampai panen pertama, cukup di teras rumah.',
+it('puts the category on top, the brief labels under the title and invites a look inside', function () {
+    $course = Course::factory()->published()->for(Category::factory()->create(['name' => 'Budidaya Ikan Dalam Galon']))->create([
+        'level' => 'Pemula', 'badge' => 'Terlaris', 'rating' => 4.8, 'fish_type' => 'Ikan Lele',
+        'short_description' => 'Dari galon bekas sampai panen pertama, cukup di teras rumah.',
     ]);
     CourseSegment::factory()->for($course)->create(['duration_seconds' => 900]);
-    App\Models\CourseMaterial::factory()->for($course)->create();
+    App\Models\CourseMaterial::factory()->for($course)->create(['title' => 'Handbook Bluecore']);
     $card = app(CourseQuery::class)->cards()->firstOrFail();
 
     $html = (string) $this->blade('<x-course-card :course="$course" />', ['course' => $card]);
 
-    expect($html)->toContain('<span class="course-card__cat">Pemula • Lele</span>')
+    expect($html)->toContain('<span class="course-card__cat">Budidaya Ikan Dalam Galon</span>')
+        ->toMatch('#<span class="course-card__labels">\s*<span class="badge badge--hot">Terlaris</span>\s*<span class="course-card__rating"><svg.*?</svg>\s*<span class="sr-only">Rating</span> 4,8</span>\s*<span>Ikan Lele</span>\s*</span>#s')
         ->toContain('<span class="course-card__desc">Dari galon bekas sampai panen pertama, cukup di teras rumah.</span>')
-        ->toContain('1 materi PDF')
+        ->toContain('Handbook Bluecore')
+        ->not->toContain('1 materi PDF')
         ->toContain('Akses selamanya')
         ->toContain('<span class="course-card__more">Lihat isi kursus</span>');
+});
+
+it('leaves out the label row when a course has no brief labels', function () {
+    $course = cardCourse();
+
+    expect((string) $this->blade('<x-course-card :course="$course" />', ['course' => $course]))->not->toContain('course-card__labels');
 });
 
 it('shows only the category without a level and no invite for owners', function () {
@@ -84,4 +93,13 @@ it('shows only the category without a level and no invite for owners', function 
     expect($html)->toContain('<span class="course-card__cat">Lele</span>')
         ->not->toContain('course-card__desc')
         ->not->toContain('course-card__more');
+});
+
+it('names the only PDF and counts several', function () {
+    $course = cardCourse();
+    $course->setAttribute('materials_count', 1)->setRelation('materials', collect([new App\Models\CourseMaterial(['title' => 'Handbook Bluecore'])]));
+    expect((string) $this->blade('<x-course-meta :course="$course" />', ['course' => $course]))->toContain('Handbook Bluecore')->not->toContain('materi PDF');
+
+    $course->setAttribute('materials_count', 2);
+    expect((string) $this->blade('<x-course-meta :course="$course" />', ['course' => $course]))->toContain('2 materi PDF')->not->toContain('Handbook Bluecore');
 });

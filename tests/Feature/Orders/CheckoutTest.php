@@ -37,6 +37,7 @@ it('shows the order summary with the admin fee and total', function () {
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
         ->assertOk()
         ->assertSee('<h1>Satu Langkah Lagi untuk Mulai Menyiapkan Galonmu</h1>', false)
+        ->assertSee('<p class="checkout-lead">Belajar sebelum beli bibit, agar keuntungan maksimal sejak panen pertama!</p>', false)
         ->assertSeeText('Lele Galon')
         ->assertSeeText('Mulai dari satu galon.')
         ->assertSeeInOrder(['Harga kursus', 'Rp 150.000', 'Biaya admin', 'Rp 2.500', 'Total', 'Rp 152.500'])
@@ -181,4 +182,13 @@ it('offers whichever help contact is set', function () {
 
     $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
         ->assertSeeText('Bantuan akses melalui support@bluecore.co.id.');
+});
+
+it('names the only PDF in the checkout facts', function () {
+    App\Models\CourseMaterial::factory()->for($this->course)->create(['title' => 'Handbook Bluecore']);
+
+    $this->actingAs($this->user)->get('/courses/lele-galon/checkout')
+        ->assertOk()
+        ->assertSee('<span>Handbook Bluecore</span>', false)
+        ->assertDontSeeText('1 materi PDF');
 });

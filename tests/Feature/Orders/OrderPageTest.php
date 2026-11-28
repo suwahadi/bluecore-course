@@ -243,3 +243,14 @@ it('still logs a status check that Duitku refuses for another reason', function 
 
     Illuminate\Support\Facades\Log::shouldHaveReceived('warning')->with('Duitku status check failed', Mockery::any())->once();
 });
+
+it('names the only PDF in the order course facts', function () {
+    statusReply('01');
+    App\Models\CourseMaterial::factory()->for($this->course)->create(['title' => 'Handbook Bluecore']);
+    $order = ownerOrder();
+
+    $this->actingAs($this->owner)->get('/order/'.$order->uuid)
+        ->assertOk()
+        ->assertSee('<span>Handbook Bluecore</span>', false)
+        ->assertDontSeeText('1 materi PDF');
+});

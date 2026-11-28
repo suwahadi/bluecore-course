@@ -39,6 +39,9 @@ function validCourse(array $overrides = []): array
         'short_description' => 'Mulai dari satu galon.',
         'description' => "Paragraf satu.\n\nParagraf dua.",
         'level' => ' Pemula ',
+        'badge' => 'Terlaris',
+        'rating' => '4.8',
+        'fish_type' => 'Ikan Lele',
         ...$overrides,
     ];
 }
@@ -81,6 +84,7 @@ it('creates a draft with a WebP thumbnail and opens its edit page', function () 
     $course = Course::firstWhere('slug', 'budidaya-lele-galon');
     $response->assertRedirect(route('admin.courses.edit', $course))->assertSessionHas('status', 'Kursus disimpan sebagai draf.');
     expect($course)->status->toBe(CourseStatus::Draft)->published_at->toBeNull()->price->toBe(150000)->level->toBe('Pemula')
+        ->badge->toBe('Terlaris')->rating->toBe(4.8)->fish_type->toBe('Ikan Lele')
         ->and($course->thumbnail_path)->toMatch('#^courses/[a-z0-9]{14}\.webp$#');
     Storage::disk('public')->assertExists($course->thumbnail_path);
 });
@@ -99,6 +103,11 @@ it('shows the PRD messages inside the dialog that failed', function (array $inpu
     'long short description' => [['short_description' => str_repeat('a', 301)], 'short_description', 'Deskripsi singkat maksimal 300 karakter.'],
     'missing category' => [['category_id' => ''], 'category_id', 'Pilih kategori kursus.'],
     'long level' => [['level' => str_repeat('a', 41)], 'level', 'Level maksimal 40 karakter.'],
+    'long badge' => [['badge' => str_repeat('a', 31)], 'badge', 'Label sorotan maksimal 30 karakter.'],
+    'rating above five' => [['rating' => '5.1'], 'rating', 'Rating harus angka 1 sampai 5, contoh 4.8.'],
+    'rating below one' => [['rating' => '0.5'], 'rating', 'Rating harus angka 1 sampai 5, contoh 4.8.'],
+    'rating not a number' => [['rating' => 'bagus'], 'rating', 'Rating harus angka 1 sampai 5, contoh 4.8.'],
+    'long fish type' => [['fish_type' => str_repeat('a', 41)], 'fish_type', 'Jenis ikan maksimal 40 karakter.'],
     'fake thumbnail' => [['thumbnail' => UploadedFile::fake()->create('sampul.jpg', 10, 'text/plain')], 'thumbnail', 'Gambar harus JPG, PNG, atau WebP.'],
 ]);
 

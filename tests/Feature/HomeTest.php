@@ -242,3 +242,30 @@ it('titles the testimonials from the settings', function () {
     $this->get('/')->assertOk()
         ->assertSee('<h2 id="testimonials-title">Bukan Cuma Berani Mulai, Tapi Tahu Apa yang Harus Dilakukan.</h2>', false);
 });
+
+it('follows the course list with the brief pitch and a link to the full course', function () {
+    $course = featuredCourse();
+    Settings::set(['home_courses_text' => "Di kursus lengkap, kamu akan **menjalankannya**.\n\n- Kenapa bibit sehat pun bisa stres?\n\n<script>x</script>"]);
+
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->toMatch('#Kursus terbaru.*<div class="prose">\s*<p>Di kursus lengkap, kamu akan <strong>menjalankannya</strong>.</p>#s')
+        ->toContain('<li>Kenapa bibit sehat pun bisa stres?</li>')
+        ->not->toContain('<script>x</script>')
+        ->toContain('<a class="btn btn--primary btn--block" href="'.route('courses.show', $course).'">Lihat kursus lengkap</a>');
+});
+
+it('drops the course list pitch when its text is empty or no course is published', function () {
+    Settings::set(['home_courses_text' => 'Di kursus lengkap.']);
+    $this->get('/')->assertOk()->assertDontSee('home-pitch', false);
+
+    featuredCourse();
+    Settings::set(['home_courses_text' => null]);
+    $this->get('/')->assertOk()->assertDontSee('home-pitch', false);
+});
+
+it('writes the testimonial author and city on one line', function () {
+    Testimonial::factory()->create(['name' => '[Nama pembeli]', 'note' => '[Kota]']);
+
+    $this->get('/')->assertOk()->assertSee('<figcaption><strong>[Nama pembeli]</strong> <span>• [Kota]</span></figcaption>', false);
+});

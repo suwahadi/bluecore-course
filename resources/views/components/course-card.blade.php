@@ -14,8 +14,21 @@
         @endif
     </span>
     <div class="course-card__body">
-        <span class="course-card__cat">{{ collect([$course->level, $course->category?->name])->filter()->implode(' • ') }}</span>
+        <span class="course-card__cat">{{ $course->category?->name }}</span>
         <span class="course-card__title">{{ $course->title }}</span>
+        @if ($course->badge || $course->rating || $course->fish_type)
+            <span class="course-card__labels">
+                @if ($course->badge)
+                    <span class="badge badge--hot">{{ $course->badge }}</span>
+                @endif
+                @if ($course->rating)
+                    <span class="course-card__rating"><x-icon name="star" :size="14" :solid="true" /><span class="sr-only">Rating</span> {{ number_format($course->rating, 1, ',', '') }}</span>
+                @endif
+                @if ($course->fish_type)
+                    <span>{{ $course->fish_type }}</span>
+                @endif
+            </span>
+        @endif
         @if (filled($course->short_description))
             <span class="course-card__desc">{{ $course->short_description }}</span>
         @endif

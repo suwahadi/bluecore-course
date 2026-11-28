@@ -44,7 +44,7 @@ class CheckoutController extends Controller
             return redirect()->to(url('/order/'.$open->uuid));
         }
 
-        $course->load('category')->loadCount(['segments', 'materials'])->loadSum('segments', 'duration_seconds');
+        $course->load(['category', 'materials:id,course_id,title'])->loadCount(['segments', 'materials'])->loadSum('segments', 'duration_seconds');
         $adminFee = (int) Settings::get('admin_fee');
 
         Tracking::push('begin_checkout', [

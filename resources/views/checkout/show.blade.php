@@ -11,6 +11,7 @@
         <div class="wrap">
             <div class="page-head">
                 <h1>Satu Langkah Lagi untuk Mulai Menyiapkan Galonmu</h1>
+                <p class="checkout-lead">Belajar sebelum beli bibit, agar keuntungan maksimal sejak panen pertama!</p>
             </div>
             <div class="two-col checkout-layout">
                 <div class="panel checkout-item">

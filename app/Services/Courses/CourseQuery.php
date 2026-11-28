@@ -21,7 +21,7 @@ class CourseQuery
     {
         return Course::query()
             ->published()
-            ->with('category')
+            ->with(['category', 'materials:id,course_id,title'])
             ->withCount(['segments', 'materials'])
             ->withSum('segments', 'duration_seconds');
     }

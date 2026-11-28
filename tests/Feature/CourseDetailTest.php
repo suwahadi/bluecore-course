@@ -47,7 +47,7 @@ it('shows the course facts, videos and materials without a player', function () 
         ->assertSeeInOrder(['Panduan galon', '1,2 MB'])
         ->assertSeeText('2 video')
         ->assertSeeText('25 menit')
-        ->assertSeeText('1 materi PDF')
+        ->assertSee('<span>Panduan galon</span></li>', false)
         ->assertSeeText('Akses selamanya')
         ->assertSeeText('Sudah diikuti 2 orang')
         ->assertSeeText('Bisa diunduh setelah punya akses.');

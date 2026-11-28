@@ -4,6 +4,7 @@
     $heroSubtitle = Settings::get('hero_subtitle');
     $ctaTitle = Settings::get('cta_title');
     $ctaText = Settings::get('cta_text');
+    $pitchHtml = \App\Support\Markdown::html(Settings::get('home_courses_text'));
 @endphp
 <x-layouts.app>
     <section class="section section--hero">
@@ -44,6 +45,17 @@
                         <x-course-card :course="$course" :owned="isset($owned[$course->id])" :progress="$owned[$course->id] ?? null" />
                     @endforeach
                 </div>
+                @if ($pitchHtml && $featured)
+                    <div class="upsell home-pitch">
+                        <div class="upsell__copy">
+                            <div class="prose">{!! $pitchHtml !!}</div>
+                        </div>
+                        <div class="panel upsell__cta">
+                            <a class="btn btn--primary btn--block" href="{{ $courseUrl }}">Lihat kursus lengkap</a>
+                            <p class="upsell__price">{{ \App\Support\Format::rupiah($featured->price) }} • Bayar sekali, akses selamanya</p>
+                        </div>
+                    </div>
+                @endif
             @endif
         </div>
     </section>

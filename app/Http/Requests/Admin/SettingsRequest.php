@@ -51,6 +51,7 @@ class SettingsRequest extends FormRequest
             'hero_eyebrow.max' => 'Teks kecil hero maksimal 60 karakter.',
             'hero_title.max' => 'Judul hero maksimal 120 karakter.',
             'hero_subtitle.max' => 'Subjudul hero maksimal 200 karakter.',
+            'home_courses_text.max' => 'Teks di bawah daftar kursus maksimal 2.000 karakter.',
             'testimonials_title.max' => 'Judul testimoni maksimal 120 karakter.',
             'cta_title.max' => 'Judul ajakan penutup maksimal 120 karakter.',
             'cta_text.max' => 'Teks ajakan penutup maksimal 300 karakter.',

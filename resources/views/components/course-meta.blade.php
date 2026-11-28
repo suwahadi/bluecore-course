@@ -6,8 +6,12 @@
         $items[] = ['clock', \App\Support\Format::duration((int) $course->segments_sum_duration_seconds)];
     }
 
-    if ((int) ($course->materials_count ?? 0) > 0) {
-        $items[] = ['file', $course->materials_count.' materi PDF'];
+    $materialCount = (int) ($course->materials_count ?? 0);
+
+    if ($materialCount === 1 && $course->relationLoaded('materials') && $course->materials->first()) {
+        $items[] = ['file', $course->materials->first()->title];
+    } elseif ($materialCount > 0) {
+        $items[] = ['file', $materialCount.' materi PDF'];
     }
 
     $items[] = ['infinity', 'Akses selamanya'];

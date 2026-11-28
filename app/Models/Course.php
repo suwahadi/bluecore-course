@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
-    'category_id', 'level', 'title', 'slug', 'short_description', 'description', 'thumbnail_path',
+    'category_id', 'level', 'badge', 'rating', 'fish_type', 'title', 'slug', 'short_description', 'description', 'thumbnail_path',
     'price', 'compare_at_price', 'status', 'published_at',
 ])]
 class Course extends Model
@@ -27,6 +27,7 @@ class Course extends Model
     {
         return [
             'price' => 'integer',
+            'rating' => 'float',
             'compare_at_price' => 'integer',
             'status' => CourseStatus::class,
             'published_at' => 'datetime',
